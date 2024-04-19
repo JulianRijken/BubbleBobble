@@ -1,0 +1,3 @@
+[submodule "Julgen"]
+	path = Julgen
+	url = https://github.com/JulianRijken/Julgen.git

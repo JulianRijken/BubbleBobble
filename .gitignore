@@ -1,0 +1,5 @@
+.vs/
+build/
+out/
+*.user
+compile_commands.json
