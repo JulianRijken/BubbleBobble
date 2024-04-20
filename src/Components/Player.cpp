@@ -1,11 +1,16 @@
 #include "Player.h"
-#include "GameObject.h"
-#include "MessageQueue.h"
 
 #include <GameTime.h>
 
-bb::Player::Player(GameObject* parentPtr, Animator* animator, SpriteRenderer* spriteRenderer) :
-	Component(parentPtr, "PlayerController"), m_AnimatorPtr(animator),m_SpriteRenderer(spriteRenderer)
+#include "Game.h"
+#include "GameObject.h"
+#include "MessageQueue.h"
+
+bb::Player::Player(GameObject* parentPtr, int playerIndex, Animator* animator, SpriteRenderer* spriteRenderer) :
+    Component(parentPtr, "PlayerController"),
+    m_PlayerIndex(playerIndex),
+    m_AnimatorPtr(animator),
+    m_SpriteRenderer(spriteRenderer)
 {
     if(m_AnimatorPtr == nullptr)
         m_AnimatorPtr = parentPtr->GetComponent<Animator>();
@@ -16,8 +21,13 @@ bb::Player::Player(GameObject* parentPtr, Animator* animator, SpriteRenderer* sp
     assert(m_AnimatorPtr);
     assert(m_SpriteRenderer);
 
-    m_AnimatorPtr->PlayAnimation("Idle",true);    
+    m_AnimatorPtr->PlayAnimation("Idle", true);
+
+    Game::GetInstance().SetPlayer(playerIndex, this);
 }
+
+bb::Player::~Player() { Game::GetInstance().SetPlayer(m_PlayerIndex, nullptr); }
+
 
 void bb::Player::Kill()
 {
@@ -56,8 +66,8 @@ void bb::Player::AddScore()
     MessageQueue::Broadcast(Message{ MessageType::PlayerScoreChanged, { m_Score } });
 }
 
-
-
+// TODO: This is getting called directly from the input
+//       make sure this is not happening more than once a frame!
 void bb::Player::Move(float input)
 {
     if(m_IsDead)
@@ -66,10 +76,10 @@ void bb::Player::Move(float input)
     Transform().Translate(glm::vec3{input * GameTime::GetDeltaTimeF() * 10.0f,0,0});
 
     if(input > 0)
-        m_SpriteRenderer->FlipX = false;
+        m_SpriteRenderer->m_FlipX = false;
     else
     if(input < 0)
-        m_SpriteRenderer->FlipX = true;
+        m_SpriteRenderer->m_FlipX = true;
 }
 
 // TODO: Find a way to make the input context optional like the timer in afterburner

@@ -13,9 +13,17 @@ namespace bb
     class Player : public Component
     {
     public:
-        Player(GameObject* parentPtr, Animator* animator = nullptr, SpriteRenderer* spriteRenderer = nullptr);
+        Player(GameObject* parentPtr, int playerIndex, Animator* animator = nullptr,
+               SpriteRenderer* spriteRenderer = nullptr);
 
-        [[nodiscard]] Event<int>& GetOnDeath() {return m_OnDeathEvent; }
+        ~Player() override;
+
+        Player(const Player&) = delete;
+        Player(Player&&) noexcept = delete;
+        Player& operator=(const Player&) = delete;
+        Player& operator=(Player&&) noexcept = delete;
+
+        [[nodiscard]] Event<int>& GetOnDeath() { return m_OnDeathEvent; }
         [[nodiscard]] Event<int>& GetOnScoreChange() {return m_OnScoreChangeEvent; }
 
 
@@ -43,6 +51,7 @@ namespace bb
 
         int m_Lives{3};
         int m_Score{0};
+        int m_PlayerIndex{ 0 };
         bool m_IsDead{false};
 
         std::string m_DeathAnimationName{"Death"};

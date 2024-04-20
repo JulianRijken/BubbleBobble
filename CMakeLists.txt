@@ -8,7 +8,8 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 
 set(BB_SOURCE_FILES
-    ${SOURCE_DIR}/Game.cpp
+     ${SOURCE_DIR}/GameEntry.cpp
+     ${SOURCE_DIR}/Game.h                           ${SOURCE_DIR}/Game.cpp
 
      ${SOURCE_DIR}/Components/AutoMove.cpp          ${SOURCE_DIR}/Components/AutoMove.h
      ${SOURCE_DIR}/Components/AutoRotateAround.cpp  ${SOURCE_DIR}/Components/AutoRotateAround.h
@@ -24,6 +25,7 @@ add_executable(${TARGET_NAME}
 )
 
 target_include_directories(${TARGET_NAME} PUBLIC
+    ${SOURCE_DIR}
     ${SOURCE_DIR}/Components
 )
 
