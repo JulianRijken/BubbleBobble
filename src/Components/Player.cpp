@@ -53,7 +53,7 @@ void bb::Player::AddScore()
 
     // Global event for whole game and all players (also non-blocking)
     // ALso does not care who listens and listeners don't care who sends
-    MessageQueue::Broadcast(Message{MessageType::PlayerScoreChanged,m_Score});
+    MessageQueue::Broadcast(Message{ MessageType::PlayerScoreChanged, { m_Score } });
 }
 
 

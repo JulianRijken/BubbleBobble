@@ -15,6 +15,18 @@
 
 using namespace jul;
 
+
+enum class InputBind
+{
+    TestLivesButton,
+    Jump,
+    MoveLeft,
+    MoveRight,
+    MoveStick,
+    Attack,
+};
+
+
 void LoadResources()
 {
     ResourceManager::LoadFont("Lingua", "Lingua.otf", 36);
@@ -199,20 +211,23 @@ void MainScene()
 
 void jul::Julgen::InitSettings()
 {
-    GameSettings::g_WindowTitle = "Bubble Bobble Made In Julgen";
-    GameSettings::g_RenderWidth = 32 * 8 * 4;
-    GameSettings::g_RenderHeight = 26 * 8 * 4;
-    GameSettings::g_WindowWidth = GameSettings::g_RenderWidth;
-    GameSettings::g_WindowHeight = GameSettings::g_RenderHeight;
+    GameSettings::s_WindowTitle = "Bubble Bobble Made In Julgen";
+    GameSettings::s_RenderWidth = 32 * 8 * 4;
+    GameSettings::s_RenderHeight = 26 * 8 * 4;
+    GameSettings::s_WindowWidth = GameSettings::s_RenderWidth;
+    GameSettings::s_WindowHeight = GameSettings::s_RenderHeight;
 
-    Input::g_InputActions = {
-        {InputBind::TestLivesButton,                 { { SDL_SCANCODE_X }, { SDL_CONTROLLER_BUTTON_B }, {} }},
-        {           InputBind::Jump,             { { SDL_SCANCODE_SPACE }, { SDL_CONTROLLER_BUTTON_B }, {} }},
-        {       InputBind::MoveLeft,         { { SDL_SCANCODE_A }, { SDL_CONTROLLER_BUTTON_DPAD_LEFT }, {} }},
-        {      InputBind::MoveRight,        { { SDL_SCANCODE_D }, { SDL_CONTROLLER_BUTTON_DPAD_RIGHT }, {} }},
-        {      InputBind::MoveStick,                               { {}, {}, { SDL_CONTROLLER_AXIS_LEFTX } }},
-        {         InputBind::Attack, { { SDL_SCANCODE_E, SDL_SCANCODE_Z }, { SDL_CONTROLLER_BUTTON_A }, {} }},
-    };
+    Input::AddAction(InputBind::TestLivesButton, { { SDL_SCANCODE_X }, { SDL_CONTROLLER_BUTTON_B }, {} });
+    Input::AddAction(InputBind::Jump, { { SDL_SCANCODE_SPACE }, { SDL_CONTROLLER_BUTTON_B }, {} });
+    Input::AddAction(InputBind::MoveLeft, { { SDL_SCANCODE_A }, { SDL_CONTROLLER_BUTTON_DPAD_LEFT }, {} });
+    Input::AddAction(InputBind::MoveRight, { { SDL_SCANCODE_D }, { SDL_CONTROLLER_BUTTON_DPAD_RIGHT }, {} });
+    Input::AddAction(InputBind::MoveStick, { {}, {}, { SDL_CONTROLLER_AXIS_LEFTX } });
+    Input::AddAction(InputBind::Attack,
+                     {
+                         { SDL_SCANCODE_E, SDL_SCANCODE_Z },
+                         { SDL_CONTROLLER_BUTTON_A },
+                         {}
+    });
 }
 
 void jul::Julgen::GameStart()

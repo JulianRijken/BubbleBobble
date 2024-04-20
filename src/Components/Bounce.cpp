@@ -19,7 +19,7 @@ void Bounce::FixedUpdate()
 	pos += m_Velocity * jul::GameTime::GetFixedDeltaTimeF();
 
 
-    const float ground = jul::GameSettings::g_WindowHeight - m_Offset;
+    const float ground = jul::GameSettings::s_WindowHeight - m_Offset;
 
 
     if(pos.y > ground)
