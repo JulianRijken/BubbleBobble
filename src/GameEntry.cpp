@@ -1,10 +1,13 @@
 #include <Animator.h>
+#include <Box2D/Box2D.h>
 #include <fmt/core.h>
 #include <GameSettings.h>
 #include <Input.h>
 #include <Julgen.h>
 #include <MathExtensions.h>
+#include <Physics.h>
 #include <ResourceManager.h>
+#include <Rigidbody.h>
 #include <SceneManager.h>
 #include <TextRenderer.h>
 
@@ -167,8 +170,8 @@ void MainScene(Scene& scene)
     auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 2, 0, 0 });
     player2GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BobbleCharacter"), 0);
     player2GameObject->AddComponent<Animator>();
+    player2GameObject->AddComponent<Rigidbody>();
     auto* player2 = player2GameObject->AddComponent<bb::Player>(1);
-
 
     auto* scoreInfoText = scene.AddGameObject("InfoText", { 30, 70, 0 });
     scoreInfoText->AddComponent<TextRenderer>(
@@ -219,6 +222,15 @@ void MainScene(Scene& scene)
             levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
         }
     }
+}
+
+void TestScene(Scene& scene)
+{
+    auto* go = scene.AddGameObject("BubbleCharacter", { -2, 0, 0 });
+    go->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
+    go->AddComponent<Animator>();
+    go->AddComponent<Rigidbody>();
+    go->AddComponent<bb::Player>(1);
 }
 
 void InitControls()
@@ -279,4 +291,15 @@ void jul::Julgen::GameStart()
 
     SceneManager::GetInstance().LoadScene("mainScene", MainScene);
     SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
+    // SceneManager::GetInstance().LoadScene("testScene", TestScene);
+
+
+    b2BodyDef groundBodyDef;
+    groundBodyDef.position.Set(0.0f, -11.0f);
+
+    b2Body* groundBody = Physics::GetInstance().GetWorld().CreateBody(&groundBodyDef);
+
+    b2PolygonShape groundBox;
+    groundBox.SetAsBox(50.0f, 10.0f);
+    groundBody->CreateFixture(&groundBox, 0.0f);
 }
