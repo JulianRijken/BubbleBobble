@@ -1,9 +1,9 @@
 #pragma once
+#include "Animator.h"
 #include "Command.h"
 #include "Component.h"
-
-#include "Animator.h"
 #include "Event.h"
+#include "Rigidbody.h"
 
 
 using namespace jul;
@@ -14,7 +14,7 @@ namespace bb
     {
     public:
         Player(GameObject* parentPtr, int playerIndex, Animator* animator = nullptr,
-               SpriteRenderer* spriteRenderer = nullptr);
+               SpriteRenderer* spriteRenderer = nullptr, Rigidbody* rigidbody = nullptr);
 
         ~Player() override;
 
@@ -45,6 +45,7 @@ namespace bb
     private:
 
         void Update() override;
+        void FixedUpdate() override;
 
         Event<int> m_OnDeathEvent{};
         Event<int> m_OnScoreChangeEvent{};
@@ -54,10 +55,15 @@ namespace bb
         int m_PlayerIndex{ 0 };
         bool m_IsDead{false};
 
+        float m_MovementInput{};
+
         std::string m_DeathAnimationName{"Death"};
         std::string m_IdleAnimationName{"Idle"};
         std::string m_WalkAnimationName{"Walk"};
-        Animator* m_AnimatorPtr{nullptr};
+
+
+        Animator* m_AnimatorPtr{ nullptr };
         SpriteRenderer* m_SpriteRenderer{nullptr};
+        Rigidbody* m_Rigidbody{ nullptr };
     };
 }

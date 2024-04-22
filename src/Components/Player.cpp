@@ -2,21 +2,27 @@
 
 #include <GameTime.h>
 
+#include "fmt/core.h"
 #include "Game.h"
 #include "GameObject.h"
 #include "MessageQueue.h"
 
-bb::Player::Player(GameObject* parentPtr, int playerIndex, Animator* animator, SpriteRenderer* spriteRenderer) :
+bb::Player::Player(GameObject* parentPtr, int playerIndex, Animator* animator, SpriteRenderer* spriteRenderer,
+                   Rigidbody* rigidbody) :
     Component(parentPtr, "PlayerController"),
     m_PlayerIndex(playerIndex),
     m_AnimatorPtr(animator),
-    m_SpriteRenderer(spriteRenderer)
+    m_SpriteRenderer(spriteRenderer),
+    m_Rigidbody(rigidbody)
 {
     if(m_AnimatorPtr == nullptr)
         m_AnimatorPtr = parentPtr->GetComponent<Animator>();
 
     if(m_SpriteRenderer == nullptr)
         m_SpriteRenderer = parentPtr->GetComponent<SpriteRenderer>();
+
+    if(m_Rigidbody == nullptr)
+        m_Rigidbody = parentPtr->GetComponent<Rigidbody>();
 
     assert(m_AnimatorPtr);
     assert(m_SpriteRenderer);
@@ -73,7 +79,7 @@ void bb::Player::Move(float input)
     if(m_IsDead)
         return;
 
-    Transform().Translate(glm::vec3{input * GameTime::GetDeltaTimeF() * 10.0f,0,0});
+    m_MovementInput = input;
 
     if(input > 0)
         m_SpriteRenderer->m_FlipX = false;
@@ -83,16 +89,9 @@ void bb::Player::Move(float input)
 }
 
 // TODO: Find a way to make the input context optional like the timer in afterburner
-void bb::Player::OnTestLivesInput(InputContext /*unused*/)
-{
-    Kill();
-}
+void bb::Player::OnTestLivesInput(InputContext /*unused*/) { Kill(); }
 
-
-void bb::Player::OnMoveLeftInput(InputContext /*unused*/)
-{
-    Move(-1.0f);
-}
+void bb::Player::OnMoveLeftInput(InputContext) { Move(-1.0f); }
 
 void bb::Player::OnMoveRightInput(InputContext /*unused*/)
 {
@@ -119,4 +118,24 @@ void bb::Player::Update()
 
     if(not m_AnimatorPtr->IsPlaying())   
         m_AnimatorPtr->PlayAnimation(m_IdleAnimationName);
+}
+
+void bb::Player::FixedUpdate()
+{
+    // TODO Make sure add force multiplies by my fixed time step
+    // m_Rigidbody->GetBody().ApplyForceToCenter({ m_MovementInput * 50, 0 }, true);
+
+
+    m_Rigidbody->GetBody().ApplyLinearImpulseToCenter({ m_MovementInput * 5, 0 }, true);
+
+    auto velocity = m_Rigidbody->GetBody().GetLinearVelocity();
+    m_Rigidbody->GetBody().ApplyForceToCenter({ -velocity.x * 40, 0 }, true);
+
+
+    if(m_Rigidbody->GetBody().GetPosition().y < -40)
+        m_Rigidbody->GetBody().SetTransform({ 0, 30 }, 0);
+
+
+    // Todo input should also check for up events
+    m_MovementInput = 0;
 }

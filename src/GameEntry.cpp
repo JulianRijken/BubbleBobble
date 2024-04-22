@@ -162,12 +162,15 @@ void MainScene(Scene& scene)
     fpsCounter->AddComponent<TextRenderer>("error", ResourceManager::GetFont("LinguaSmall"), 100);
     fpsCounter->AddComponent<FpsCounter>();
 
-    auto* go = scene.AddGameObject("BubbleCharacter", { -2, 0, 0 });
-    go->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
-    go->AddComponent<Animator>();
-    auto* player1 = go->AddComponent<bb::Player>(0);
+    // Player 1
+    auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -2, 10, 0 });
+    player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
+    player1GameObject->AddComponent<Animator>();
+    player1GameObject->AddComponent<Rigidbody>();
+    auto* player1 = player1GameObject->AddComponent<bb::Player>(0);
 
-    auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 2, 0, 0 });
+    // Player 2
+    auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 2, 15, 0 });
     player2GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BobbleCharacter"), 0);
     player2GameObject->AddComponent<Animator>();
     player2GameObject->AddComponent<Rigidbody>();
@@ -235,31 +238,30 @@ void TestScene(Scene& scene)
 
 void InitControls()
 {
-    Input::GetInstance().RegisterCommand<PlayerInputCommand>(
+    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::TestLivesButton, ButtonState::Down, 0, false, 0, &bb::Player::OnTestLivesInput);
-    Input::GetInstance().RegisterCommand<PlayerInputCommand>(
+    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::MoveLeft, ButtonState::Held, 0, false, 0, &bb::Player::OnMoveLeftInput);
-    Input::GetInstance().RegisterCommand<PlayerInputCommand>(
+    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::MoveRight, ButtonState::Held, 0, false, 0, &bb::Player::OnMoveRightInput);
-    Input::GetInstance().RegisterCommand<PlayerInputCommand>(
+    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::MoveStick, ButtonState::Held, 0, false, 0, &bb::Player::OnMoveStickInput);
-    Input::GetInstance().RegisterCommand<PlayerInputCommand>(
+    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::Attack, ButtonState::Down, 0, false, 0, &bb::Player::OnAttackInput);
 
-    Input::GetInstance().RegisterCommand<PlayerInputCommand>(
+    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::TestLivesButton, ButtonState::Down, 1, true, 1, &bb::Player::OnTestLivesInput);
-    Input::GetInstance().RegisterCommand<PlayerInputCommand>(
+    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::MoveLeft, ButtonState::Held, 1, true, 1, &bb::Player::OnMoveLeftInput);
-    Input::GetInstance().RegisterCommand<PlayerInputCommand>(
+    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::MoveRight, ButtonState::Held, 1, true, 1, &bb::Player::OnMoveRightInput);
-    Input::GetInstance().RegisterCommand<PlayerInputCommand>(
+    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::MoveStick, ButtonState::Held, 1, true, 1, &bb::Player::OnMoveStickInput);
-    Input::GetInstance().RegisterCommand<PlayerInputCommand>(
+    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::Attack, ButtonState::Down, 1, true, 1, &bb::Player::OnAttackInput);
 }
 
-
-void jul::Julgen::InitSettings()
+void jul::Julgen::PreInit()
 {
     GameSettings::s_WindowTitle = "Bubble Bobble Made In Julgen";
     GameSettings::s_RenderWidth = 32 * 8 * 4;
@@ -289,6 +291,7 @@ void jul::Julgen::GameStart()
     // BubbleBobble NES
     LoadResources();
 
+
     SceneManager::GetInstance().LoadScene("mainScene", MainScene);
     SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
     // SceneManager::GetInstance().LoadScene("testScene", TestScene);
@@ -296,10 +299,10 @@ void jul::Julgen::GameStart()
 
     b2BodyDef groundBodyDef;
     groundBodyDef.position.Set(0.0f, -11.0f);
-
     b2Body* groundBody = Physics::GetInstance().GetWorld().CreateBody(&groundBodyDef);
 
+    // Collider
     b2PolygonShape groundBox;
-    groundBox.SetAsBox(50.0f, 10.0f);
+    groundBox.SetAsBox(5.0f, 10.0f);
     groundBody->CreateFixture(&groundBox, 0.0f);
 }
