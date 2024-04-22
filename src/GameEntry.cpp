@@ -4,6 +4,7 @@
 #include <GameSettings.h>
 #include <Input.h>
 #include <Julgen.h>
+#include <Locator.h>
 #include <MathExtensions.h>
 #include <Physics.h>
 #include <ResourceManager.h>
@@ -299,7 +300,7 @@ void jul::Julgen::GameStart()
 
     b2BodyDef groundBodyDef;
     groundBodyDef.position.Set(0.0f, -11.0f);
-    b2Body* groundBody = Physics::GetInstance().GetWorld().CreateBody(&groundBodyDef);
+    b2Body* groundBody = Locator::Get<Physics>().GetWorld().CreateBody(&groundBodyDef);
 
     // Collider
     b2PolygonShape groundBox;
