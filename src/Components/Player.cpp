@@ -2,7 +2,6 @@
 
 #include <GameTime.h>
 
-#include "fmt/core.h"
 #include "Game.h"
 #include "GameObject.h"
 #include "MessageQueue.h"
@@ -123,18 +122,11 @@ void bb::Player::Update()
 void bb::Player::FixedUpdate()
 {
     // TODO Make sure add force multiplies by my fixed time step
-    // m_Rigidbody->GetBody().ApplyForceToCenter({ m_MovementInput * 50, 0 }, true);
+    m_Rigidbody->AddForce({ m_MovementInput * 5, 0 }, ForceMode::Impulse);
+    m_Rigidbody->AddForce({ -m_Rigidbody->Velicty().x * 40, 0 }, ForceMode::Force);
 
-
-    m_Rigidbody->GetBody().ApplyLinearImpulseToCenter({ m_MovementInput * 5, 0 }, true);
-
-    auto velocity = m_Rigidbody->GetBody().GetLinearVelocity();
-    m_Rigidbody->GetBody().ApplyForceToCenter({ -velocity.x * 40, 0 }, true);
-
-
-    if(m_Rigidbody->GetBody().GetPosition().y < -40)
-        m_Rigidbody->GetBody().SetTransform({ 0, 30 }, 0);
-
+    if(m_Rigidbody->Positon().y < -40)
+        m_Rigidbody->SetPosition({ 0, 30 });
 
     // Todo input should also check for up events
     m_MovementInput = 0;
