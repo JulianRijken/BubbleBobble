@@ -171,10 +171,11 @@ void MainScene(Scene& scene)
     auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -2, 10, 0 });
     player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
     player1GameObject->AddComponent<Animator>();
-    player1GameObject->AddComponent<Rigidbody>(Rigidbody::Settings{});
+    player1GameObject->AddComponent<Rigidbody>();
     player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f, .restitution = 0.2f, .size = {2, 2}
     });
+
     auto* player1 = player1GameObject->AddComponent<bb::Player>(0);
 
 
@@ -182,7 +183,7 @@ void MainScene(Scene& scene)
     auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 2, 15, 0 });
     player2GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BobbleCharacter"), 0);
     player2GameObject->AddComponent<Animator>();
-    player2GameObject->AddComponent<Rigidbody>(Rigidbody::Settings{});
+    player2GameObject->AddComponent<Rigidbody>();
     player2GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
         .restitution = 0.2f,
@@ -244,8 +245,22 @@ void MainScene(Scene& scene)
             auto* levelTile = scene.AddGameObject("LevelTile", { i, -2, 0 });
             levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
             levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                .size{1.0f,  1.0f},
-                .center{0.5f, -0.5f}
+                .size = {1.0f,  1.0f},
+                  .center = {0.5f, -0.5f}
+            });
+        }
+    }
+
+
+    for(int i = 7; i < 13; ++i)
+    {
+        {
+            auto* levelTile = scene.AddGameObject("LevelTile", { i, -4, 0 });
+            levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 1, 0 });
+            levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
+                .restitution = 1.0f,
+                .size = {1.0f,  1.0f},
+                .center = {0.5f, -0.5f},
             });
         }
     }
