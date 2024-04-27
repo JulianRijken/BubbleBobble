@@ -173,7 +173,7 @@ void MainScene(Scene& scene)
     player1GameObject->AddComponent<Animator>();
     player1GameObject->AddComponent<Rigidbody>(Rigidbody::Settings{});
     player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 0.0f, .restitution = 1.0f, .size = {2, 2}
+        .friction = 0.0f, .restitution = 0.2f, .size = {2, 2}
     });
     auto* player1 = player1GameObject->AddComponent<bb::Player>(0);
 
@@ -185,7 +185,7 @@ void MainScene(Scene& scene)
     player2GameObject->AddComponent<Rigidbody>(Rigidbody::Settings{});
     player2GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
-        .restitution = 1.0f,
+        .restitution = 0.2f,
         .size = {2, 2},
     });
     auto* player2 = player2GameObject->AddComponent<bb::Player>(1);
