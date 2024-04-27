@@ -15,7 +15,7 @@ Bounce::Bounce(jul::GameObject* parent, float offset, float restitution) :
 
 void Bounce::FixedUpdate()
 {
-	vec3 pos = Transform().WorldPosition();
+	vec3 pos = GetTransform().WorldPosition();
 	pos += m_Velocity * jul::GameTime::GetFixedDeltaTimeF();
 
 
@@ -32,5 +32,5 @@ void Bounce::FixedUpdate()
 
 	m_Velocity.y += jul::GameTime::GetFixedDeltaTimeF() * GRAVITY;
 
-	Transform().SetLocalPosition(pos);
+	GetTransform().SetLocalPosition(pos);
 }

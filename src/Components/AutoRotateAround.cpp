@@ -22,5 +22,5 @@ void AutoRotateAround::Update()
 		0
 	};
 
-	Transform().SetLocalPosition(targetPosition);
+	GetTransform().SetLocalPosition(targetPosition);
 } 

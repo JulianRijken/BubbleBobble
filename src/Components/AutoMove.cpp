@@ -13,9 +13,9 @@ AutoMove::AutoMove(jul::GameObject* parent,
 
 void AutoMove::Update()
 {
-	Transform().Translate(m_Velocity * jul::GameTime::GetDeltaTimeF());
+	GetTransform().Translate(m_Velocity * jul::GameTime::GetDeltaTimeF());
 
-    glm::vec3 currentPosition{Transform().WorldPosition()};
+    glm::vec3 currentPosition{GetTransform().WorldPosition()};
 
     if(m_BoundingBox.x > 0 or m_BoundingBox.y > 0 or m_BoundingBox.z > 0)
     {
@@ -35,5 +35,5 @@ void AutoMove::Update()
             currentPosition.z += 2 * (m_BoundingBox.z + m_BoundingBoxCenter.z);
     }
 
-    Transform().SetWorldPosition(currentPosition);
+    GetTransform().SetWorldPosition(currentPosition);
 }
