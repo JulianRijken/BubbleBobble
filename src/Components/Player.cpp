@@ -122,8 +122,8 @@ void bb::Player::Update()
 void bb::Player::FixedUpdate()
 {
     // TODO Make sure add force multiplies by my fixed time step
-    m_Rigidbody->AddForce({ m_MovementInput * 5, 0 }, ForceMode::Impulse);
-    m_Rigidbody->AddForce({ -m_Rigidbody->Velicty().x * 40, 0 }, ForceMode::Force);
+    m_Rigidbody->AddForce({ m_MovementInput * 5, 0 }, Rigidbody::ForceMode::Impulse);
+    m_Rigidbody->AddForce({ -m_Rigidbody->Velicty().x * 40, 0 }, Rigidbody::ForceMode::Force);
 
     if(m_Rigidbody->Positon().y < -40)
         m_Rigidbody->SetPosition({ 0, 30 });

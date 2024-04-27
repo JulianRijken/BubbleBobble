@@ -163,18 +163,20 @@ void MainScene(Scene& scene)
     fpsCounter->AddComponent<TextRenderer>("error", ResourceManager::GetFont("LinguaSmall"), 100);
     fpsCounter->AddComponent<FpsCounter>();
 
+
     // Player 1
     auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -2, 10, 0 });
     player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
     player1GameObject->AddComponent<Animator>();
-    player1GameObject->AddComponent<Rigidbody>();
+    player1GameObject->AddComponent<Rigidbody>(Rigidbody::Settings{});
     auto* player1 = player1GameObject->AddComponent<bb::Player>(0);
+
 
     // Player 2
     auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 2, 15, 0 });
     player2GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BobbleCharacter"), 0);
     player2GameObject->AddComponent<Animator>();
-    player2GameObject->AddComponent<Rigidbody>();
+    player2GameObject->AddComponent<Rigidbody>(Rigidbody::Settings{});
     auto* player2 = player2GameObject->AddComponent<bb::Player>(1);
 
     auto* scoreInfoText = scene.AddGameObject("InfoText", { 30, 70, 0 });
@@ -233,7 +235,7 @@ void TestScene(Scene& scene)
     auto* go = scene.AddGameObject("BubbleCharacter", { -2, 0, 0 });
     go->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
     go->AddComponent<Animator>();
-    go->AddComponent<Rigidbody>();
+    go->AddComponent<Rigidbody>(Rigidbody::Settings{});
     go->AddComponent<bb::Player>(1);
 }
 
