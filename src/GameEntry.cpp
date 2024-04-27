@@ -308,13 +308,11 @@ void jul::Julgen::PreInit()
     InitControls();
 }
 
-
 void jul::Julgen::GameStart()
 {
     // going for https://www.youtube.com/watch?v=VyK_cpp9pT4
     // BubbleBobble NES
     LoadResources();
-
 
     SceneManager::GetInstance().LoadScene("mainScene", MainScene);
     SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);

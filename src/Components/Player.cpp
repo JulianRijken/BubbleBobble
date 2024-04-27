@@ -4,7 +4,10 @@
 
 #include "Game.h"
 #include "GameObject.h"
+#include "Locator.h"
 #include "MessageQueue.h"
+#include "Sound.h"
+
 
 bb::Player::Player(GameObject* parentPtr, int playerIndex, Animator* animator, SpriteRenderer* spriteRenderer,
                    Rigidbody* rigidbody) :
@@ -36,6 +39,9 @@ bb::Player::~Player() { Game::GetInstance().SetPlayer(m_PlayerIndex, nullptr); }
 
 void bb::Player::Kill()
 {
+    Locator::Get<Sound>().PlaySound();
+
+
     if(m_IsDead)
         return;
 
@@ -49,6 +55,7 @@ void bb::Player::Kill()
     if(m_Lives == 0)
         m_IsDead = true;
 }
+
 
 void bb::Player::Attack()
 {
