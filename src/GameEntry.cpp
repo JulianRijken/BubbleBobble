@@ -65,7 +65,10 @@ void LoadResources()
     ResourceManager::LoadSprite("background", "background.tga", 32);
     ResourceManager::LoadSprite("Dot", "Dot.png", 32);
 
-    ResourceManager::LoadSprite("LevelTiles", "LevelTiles.png", 8, { 0, 0 }, 25, 5);
+    ResourceManager::LoadSprite("DebugCube", "DebugCube.png", 4, { 0, 0 });
+
+
+    ResourceManager::LoadSprite("LevelTiles", "LevelTiles.png", 8, { 0.0f, 0.0f }, 25, 5);
 
     // TODO: as you can see animations around bound to a sprite
     //       in this senario you can see how that's not optimal
@@ -169,6 +172,9 @@ void MainScene(Scene& scene)
     player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
     player1GameObject->AddComponent<Animator>();
     player1GameObject->AddComponent<Rigidbody>(Rigidbody::Settings{});
+    player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f, .restitution = 1.0f, .size = {2, 2}
+    });
     auto* player1 = player1GameObject->AddComponent<bb::Player>(0);
 
 
@@ -177,7 +183,13 @@ void MainScene(Scene& scene)
     player2GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BobbleCharacter"), 0);
     player2GameObject->AddComponent<Animator>();
     player2GameObject->AddComponent<Rigidbody>(Rigidbody::Settings{});
+    player2GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f,
+        .restitution = 1.0f,
+        .size = {2, 2},
+    });
     auto* player2 = player2GameObject->AddComponent<bb::Player>(1);
+
 
     auto* scoreInfoText = scene.AddGameObject("InfoText", { 30, 70, 0 });
     scoreInfoText->AddComponent<TextRenderer>(
@@ -217,15 +229,24 @@ void MainScene(Scene& scene)
         player2Hud->AddComponent<bb::PlayerHUD>(player2, scoreText, livesText, SDL_Color(52, 168, 230, 255));
     }
 
+
     for(int i = -5; i < 5; ++i)
     {
         {
             auto* levelTile = scene.AddGameObject("LevelTile", { i, -1, 0 });
             levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
+            levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
+                .size{1.0f,  1.0f},
+                .center{0.5f, -0.5f}
+            });
         }
         {
             auto* levelTile = scene.AddGameObject("LevelTile", { i, -2, 0 });
             levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
+            levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
+                .size{1.0f,  1.0f},
+                .center{0.5f, -0.5f}
+            });
         }
     }
 }
@@ -281,7 +302,7 @@ void jul::Julgen::PreInit()
                      {
                          { SDL_SCANCODE_E, SDL_SCANCODE_Z },
                          { SDL_CONTROLLER_BUTTON_A },
-                         {}
+                         {},
     });
 
     InitControls();
@@ -297,15 +318,9 @@ void jul::Julgen::GameStart()
 
     SceneManager::GetInstance().LoadScene("mainScene", MainScene);
     SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
-    // SceneManager::GetInstance().LoadScene("testScene", TestScene);
 
-
-    b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(0.0f, -11.0f);
-    b2Body* groundBody = Locator::Get<Physics>().GetWorld().CreateBody(&groundBodyDef);
-
-    // Collider
-    b2PolygonShape groundBox;
-    groundBox.SetAsBox(5.0f, 10.0f);
-    groundBody->CreateFixture(&groundBox, 0.0f);
+    // Unload and load for testing purpouses
+    SceneManager::GetInstance().UnloadScene("mainScene");
+    SceneManager::GetInstance().LoadScene("mainScene", MainScene);
+    SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
 }
