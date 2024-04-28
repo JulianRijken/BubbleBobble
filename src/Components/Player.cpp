@@ -39,10 +39,7 @@ bb::Player::~Player() { Game::GetInstance().SetPlayer(m_PlayerIndex, nullptr); }
 
 void bb::Player::Kill()
 {
-    Locator::Get<Sound>().PlaySound(0);
-
-    // MessageQueue::Broadcast(0);
-
+    Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
 
     if(m_IsDead)
         return;

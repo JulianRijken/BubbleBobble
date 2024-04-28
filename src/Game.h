@@ -11,6 +11,21 @@ namespace bb
         PlayerScoreChanged
     };
 
+    enum class InputBind
+    {
+        TestLivesButton,
+        Jump,
+        MoveLeft,
+        MoveRight,
+        MoveStick,
+        Attack,
+    };
+
+    enum class Sounds
+    {
+        GameStart,
+    };
+
 
     class Game final : public jul::Singleton<Game>
     {

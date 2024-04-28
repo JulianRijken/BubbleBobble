@@ -10,6 +10,7 @@
 #include <ResourceManager.h>
 #include <Rigidbody.h>
 #include <SceneManager.h>
+#include <Sound.h>
 #include <TextRenderer.h>
 
 #include "AutoMove.h"
@@ -20,16 +21,6 @@
 
 using namespace jul;
 using namespace bb;
-
-enum class InputBind
-{
-    TestLivesButton,
-    Jump,
-    MoveLeft,
-    MoveRight,
-    MoveStick,
-    Attack,
-};
 
 class PlayerInputCommand final : public BaseCommand
 {
@@ -57,6 +48,8 @@ private:
 
 void LoadResources()
 {
+    ResourceManager::BindSound(Sounds::GameStart, "SFX/The Quest Begins.ogg", true);
+
     ResourceManager::LoadFont("Lingua", "Lingua.otf", 36);
     ResourceManager::LoadFont("LinguaSmall", "Lingua.otf", 16);
     ResourceManager::LoadFont("NES", "NES_Font.ttf", 36);
