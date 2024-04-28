@@ -6,6 +6,12 @@
 
 namespace bb
 {
+    enum class MessageType
+    {
+        PlayerScoreChanged
+    };
+
+
     class Game final : public jul::Singleton<Game>
     {
     public:

@@ -39,7 +39,9 @@ bb::Player::~Player() { Game::GetInstance().SetPlayer(m_PlayerIndex, nullptr); }
 
 void bb::Player::Kill()
 {
-    Locator::Get<Sound>().PlaySound();
+    Locator::Get<Sound>().PlaySound(0);
+
+    // MessageQueue::Broadcast(0);
 
 
     if(m_IsDead)
@@ -75,7 +77,7 @@ void bb::Player::AddScore()
 
     // Global event for whole game and all players (also non-blocking)
     // ALso does not care who listens and listeners don't care who sends
-    MessageQueue::Broadcast(Message{ MessageType::PlayerScoreChanged, { m_Score } });
+    MessageQueue::Broadcast(MessageType::PlayerScoreChanged, { m_Score });
 }
 
 // TODO: This is getting called directly from the input
