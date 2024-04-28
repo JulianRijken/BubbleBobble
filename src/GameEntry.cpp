@@ -141,21 +141,20 @@ void MainMenuScene(Scene& scene)
     {
         for(int y = -15; y < 15; ++y)
         {
-            if(math::RandomValue<float>() > 0.95f)
-            {
-                auto* levelTile = scene.AddGameObject("LevelTile", { x, y, 0 });
-                levelTile->AddComponent<SpriteRenderer>(
-                    ResourceManager::GetSprite("LevelTiles"), -100, glm::ivec2{ 4, jul::math::RandomRange(13, 14) });
-                levelTile->AddComponent<AutoMove>(glm::vec3{ 0.0f, 2.0f, 0 }, glm::vec3{ 16, 15, 1 });
+            if(math::RandomValue<float>() < 0.95f)
+                continue;
 
-                auto* bubbleParticle = scene.AddGameObject("BubbleCharacter", { x, y, 0 });
-                bubbleParticle->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleParticle"), -90);
-                bubbleParticle->AddComponent<Animator>()->PlayAnimation(
-                    "Twinkle", true, jul::math::RandomValue<float>());
-                bubbleParticle->AddComponent<AutoMove>(
-                    glm::vec3{ jul::math::RandomRange(-1.0f, 1.0f), jul::math::RandomRange(2.0f, 4.0f), 0 },
-                    glm::vec3{ 16, 15, 1 });
-            }
+            auto* levelTile = scene.AddGameObject("LevelTile", { x, y, 0 });
+            levelTile->AddComponent<SpriteRenderer>(
+                ResourceManager::GetSprite("LevelTiles"), -100, glm::ivec2{ 4, jul::math::RandomRange(13, 14) });
+            levelTile->AddComponent<AutoMove>(glm::vec3{ 0.0f, 2.0f, 0 }, glm::vec3{ 16, 15, 1 });
+
+            auto* bubbleParticle = scene.AddGameObject("BubbleCharacter", { x, y, 0 });
+            bubbleParticle->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleParticle"), -90);
+            bubbleParticle->AddComponent<Animator>()->PlayAnimation("Twinkle", true, jul::math::RandomValue<float>());
+            bubbleParticle->AddComponent<AutoMove>(
+                glm::vec3{ jul::math::RandomRange(-1.0f, 1.0f), jul::math::RandomRange(2.0f, 4.0f), 0 },
+                glm::vec3{ 16, 15, 1 });
         }
     }
 }
@@ -254,15 +253,13 @@ void MainScene(Scene& scene)
 
     for(int i = 7; i < 13; ++i)
     {
-        {
-            auto* levelTile = scene.AddGameObject("LevelTile", { i, -4, 0 });
-            levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 1, 0 });
-            levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                .restitution = 1.0f,
-                .size = {1.0f,  1.0f},
-                .center = {0.5f, -0.5f},
-            });
-        }
+        auto* levelTile = scene.AddGameObject("LevelTile", { i, -4, 0 });
+        levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 1, 0 });
+        levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
+            .restitution = 1.0f,
+            .size = {1.0f,  1.0f},
+            .center = {0.5f, -0.5f},
+        });
     }
 }
 
@@ -307,6 +304,8 @@ void jul::Julgen::PreInit()
     GameSettings::s_RenderHeight = 26 * 8 * 4;
     GameSettings::s_WindowWidth = GameSettings::s_RenderWidth;
     GameSettings::s_WindowHeight = GameSettings::s_RenderHeight;
+    GameSettings::s_ShowConsole = true;
+
 
     Input::AddAction(InputBind::TestLivesButton, { { SDL_SCANCODE_X }, { SDL_CONTROLLER_BUTTON_B }, {} });
     Input::AddAction(InputBind::Jump, { { SDL_SCANCODE_SPACE }, { SDL_CONTROLLER_BUTTON_B }, {} });
