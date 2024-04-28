@@ -6,6 +6,7 @@
 #include <Julgen.h>
 #include <Locator.h>
 #include <MathExtensions.h>
+#include <MessageQueue.h>
 #include <Physics.h>
 #include <ResourceManager.h>
 #include <Rigidbody.h>
@@ -49,6 +50,8 @@ private:
 void LoadResources()
 {
     ResourceManager::BindSound(Sounds::GameStart, "SFX/The Quest Begins.ogg", true);
+    ResourceManager::BindSound(Sounds::FireBubble, "SFX/Bubble Bobble SFX (2).wav");
+    ResourceManager::BindSound(Sounds::Death, "SFX/Bubble Bobble SFX (3).wav");
 
     ResourceManager::LoadFont("Lingua", "Lingua.otf", 36);
     ResourceManager::LoadFont("LinguaSmall", "Lingua.otf", 16);
@@ -186,11 +189,10 @@ void MainScene(Scene& scene)
 
     auto* scoreInfoText = scene.AddGameObject("InfoText", { 30, 70, 0 });
     scoreInfoText->AddComponent<TextRenderer>(
-        "add Score: Z or gamepad A", ResourceManager::GetFont("NESSmall"), 100, true);
+        "Attack: Z or gamepad A", ResourceManager::GetFont("NESSmall"), 100, true);
 
     auto* livesInfoText = scene.AddGameObject("InfoText", { 30, 90, 0 });
-    livesInfoText->AddComponent<TextRenderer>(
-        "add Lives: X or gamepad B", ResourceManager::GetFont("NESSmall"), 100, true);
+    livesInfoText->AddComponent<TextRenderer>("Kill: X or gamepad B", ResourceManager::GetFont("NESSmall"), 100, true);
 
     auto* moveInfoText = scene.AddGameObject("InfoText", { 30, 110, 0 });
     moveInfoText->AddComponent<TextRenderer>(
@@ -320,6 +322,8 @@ void jul::Julgen::GameStart()
     // going for https://www.youtube.com/watch?v=VyK_cpp9pT4
     // BubbleBobble NES
     LoadResources();
+
+    MessageQueue::Broadcast(MessageType::GameStart);
 
     SceneManager::GetInstance().LoadScene("mainScene", MainScene);
     SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);

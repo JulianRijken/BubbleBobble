@@ -39,10 +39,10 @@ bb::Player::~Player() { Game::GetInstance().SetPlayer(m_PlayerIndex, nullptr); }
 
 void bb::Player::Kill()
 {
-    Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
-
     if(m_IsDead)
         return;
+
+    MessageQueue::Broadcast(MessageType::PlayerDied);
 
     assert(m_AnimatorPtr);
     m_AnimatorPtr->PlayAnimation(m_DeathAnimationName);
@@ -58,8 +58,12 @@ void bb::Player::Kill()
 
 void bb::Player::Attack()
 {
-    if(not m_IsDead)
-        m_AnimatorPtr->PlayAnimation("Attack",false);
+    if(m_IsDead)
+        return;
+
+    m_AnimatorPtr->PlayAnimation("Attack", false);
+
+    MessageQueue::Broadcast(MessageType::PlayerAttack);
 
     // TODO: Remove from attack
     AddScore();
@@ -71,10 +75,6 @@ void bb::Player::AddScore()
 
     // Can be used by individual observers and just this player instance
     m_OnScoreChangeEvent.Invoke(m_Score);
-
-    // Global event for whole game and all players (also non-blocking)
-    // ALso does not care who listens and listeners don't care who sends
-    MessageQueue::Broadcast(MessageType::PlayerScoreChanged, { m_Score });
 }
 
 // TODO: This is getting called directly from the input
