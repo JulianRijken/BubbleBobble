@@ -19,6 +19,7 @@ namespace bb
     enum class InputBind
     {
         TestLivesButton,
+        ToggleSound,
         Jump,
         MoveLeft,
         MoveRight,

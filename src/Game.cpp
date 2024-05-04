@@ -17,7 +17,7 @@ void bb::Game::OnMessage(const Message& message)
     switch(static_cast<MessageType>(message.id))
     {
         case MessageType::GameStart:
-            Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
+            // Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
             break;
         case MessageType::PlayerDied:
             Locator::Get<Sound>().PlaySound((int)Sounds::Death);

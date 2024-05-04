@@ -1,6 +1,8 @@
 #include "Player.h"
 
 #include <GameTime.h>
+#include <Sound_Null.h>
+#include <Sound_System.h>
 
 #include "Game.h"
 #include "GameObject.h"
