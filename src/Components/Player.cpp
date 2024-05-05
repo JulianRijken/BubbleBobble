@@ -1,15 +1,11 @@
 #include "Player.h"
 
 #include <GameTime.h>
-#include <Sound_Null.h>
-#include <Sound_System.h>
+#include <Physics.h>
 
 #include "Game.h"
 #include "GameObject.h"
-#include "Locator.h"
 #include "MessageQueue.h"
-#include "Sound.h"
-
 
 bb::Player::Player(GameObject* parentPtr, int playerIndex, Animator* animator, SpriteRenderer* spriteRenderer,
                    Rigidbody* rigidbody) :
@@ -138,4 +134,12 @@ void bb::Player::FixedUpdate()
 
     // Todo input should also check for up events
     m_MovementInput = 0;
+}
+
+void bb::Player::OnCollisionPreSolve(b2Contact* collision)
+{
+    if(m_Rigidbody->Velocity().y > 0)
+        collision->SetEnabled(false);
+    else
+        collision->SetEnabled(true);
 }

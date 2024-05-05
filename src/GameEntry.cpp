@@ -162,16 +162,16 @@ void MainScene(Scene& scene)
     fpsCounter->AddComponent<FpsCounter>();
 
 
-    // Player 1
-    auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -2, 10, 0 });
-    player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
-    player1GameObject->AddComponent<Animator>();
-    player1GameObject->AddComponent<Rigidbody>();
-    player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 0.0f, .restitution = 0.2f, .size = {2, 2}
-    });
+    // // Player 1
+    // auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -2, 10, 0 });
+    // player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
+    // player1GameObject->AddComponent<Animator>();
+    // player1GameObject->AddComponent<Rigidbody>();
+    // player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
+    //     .friction = 0.0f, .restitution = 0.2f, .size = {2, 2}
+    // });
 
-    auto* player1 = player1GameObject->AddComponent<bb::Player>(0);
+    // auto* player1 = player1GameObject->AddComponent<bb::Player>(0);
 
     // Player 2
     auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 2, 15, 0 });
@@ -180,7 +180,7 @@ void MainScene(Scene& scene)
     player2GameObject->AddComponent<Rigidbody>();
     player2GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
-        .restitution = 0.2f,
+        .restitution = 0.1f,
         .size = {2, 2},
     });
     auto* player2 = player2GameObject->AddComponent<bb::Player>(1);
@@ -197,18 +197,18 @@ void MainScene(Scene& scene)
     moveInfoText->AddComponent<TextRenderer>(
         "MOVE PLAYER: A-D OR D-PAD OR L-STICK", ResourceManager::GetFont("NESSmall"), 100, true);
 
-    GameObject* player1Hud = scene.AddGameObject("PlayerHUD", { 30, 150, 0 });
-    {
-        auto* livesGameObject = scene.AddGameObject("LivesText", { 0, 0, 0 });
-        auto* livesText = livesGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
+    // GameObject* player1Hud = scene.AddGameObject("PlayerHUD", { 30, 150, 0 });
+    // {
+    //     auto* livesGameObject = scene.AddGameObject("LivesText", { 0, 0, 0 });
+    //     auto* livesText = livesGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
 
-        auto* scoreGameObject = scene.AddGameObject("ScoreText", { 0, 50, 0 });
-        auto* scoreText = scoreGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
+    //     auto* scoreGameObject = scene.AddGameObject("ScoreText", { 0, 50, 0 });
+    //     auto* scoreText = scoreGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
 
-        scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-        livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-        player1Hud->AddComponent<bb::PlayerHUD>(player1, scoreText, livesText, SDL_Color(92, 230, 52, 255));
-    }
+    //     scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
+    //     livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
+    //     player1Hud->AddComponent<bb::PlayerHUD>(player1, scoreText, livesText, SDL_Color(92, 230, 52, 255));
+    // }
 
     GameObject* player2Hud = scene.AddGameObject("PlayerHUD", { 30, 300, 0 });
     {
@@ -223,26 +223,33 @@ void MainScene(Scene& scene)
         player2Hud->AddComponent<bb::PlayerHUD>(player2, scoreText, livesText, SDL_Color(52, 168, 230, 255));
     }
 
+    auto* levelTile = scene.AddGameObject("LevelTile", { 0, -1, 0 });
+    levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
+    levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .size{1.0f,  1.0f},
+        .center{0.5f, -0.5f}
+    });
 
-    for(int i = -5; i < 5; ++i)
-    {
-        {
-            auto* levelTile = scene.AddGameObject("LevelTile", { i, -1, 0 });
-            levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
-            levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                .size{1.0f,  1.0f},
-                .center{0.5f, -0.5f}
-            });
-        }
-        {
-            auto* levelTile = scene.AddGameObject("LevelTile", { i, -2, 0 });
-            levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
-            levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                .size = {1.0f,  1.0f},
-                  .center = {0.5f, -0.5f}
-            });
-        }
-    }
+
+    // for(int i = -5; i < 5; ++i)
+    // {
+    //     {
+    //         auto* levelTile = scene.AddGameObject("LevelTile", { i, -1, 0 });
+    //         levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0
+    //         }); levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
+    //             .size{1.0f,  1.0f},
+    //             .center{0.5f, -0.5f}
+    //         });
+    //     }
+    //     {
+    //         auto* levelTile = scene.AddGameObject("LevelTile", { i, -2, 0 });
+    //         levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0
+    //         }); levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
+    //             .size = {1.0f,  1.0f},
+    //               .center = {0.5f, -0.5f}
+    //         });
+    //     }
+    // }
 
 
     for(int i = 7; i < 13; ++i)

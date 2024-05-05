@@ -3,6 +3,7 @@
 #include "Command.h"
 #include "Component.h"
 #include "Event.h"
+#include "ICollisionListener.h"
 #include "Rigidbody.h"
 
 
@@ -10,7 +11,7 @@ using namespace jul;
 
 namespace bb
 {
-    class Player : public Component
+    class Player : public Component, public ICollisionListener
     {
     public:
         Player(GameObject* parentPtr, int playerIndex, Animator* animator = nullptr,
@@ -65,5 +66,8 @@ namespace bb
         Animator* m_AnimatorPtr{ nullptr };
         SpriteRenderer* m_SpriteRenderer{nullptr};
         Rigidbody* m_Rigidbody{ nullptr };
+
+
+        void OnCollisionPreSolve(b2Contact* collision) override;
     };
 }
