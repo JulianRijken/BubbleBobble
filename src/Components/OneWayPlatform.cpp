@@ -10,23 +10,20 @@ bb::OneWayPlatform::OneWayPlatform(GameObject* parentPtr) :
 {
 }
 
-void bb::OneWayPlatform::OnCollisionPreSolve(b2Contact* contact, b2Fixture* otherFixture)
+void bb::OneWayPlatform::OnCollisionPreSolve(Collision collision)
 {
-    auto* player = static_cast<BoxCollider*>(otherFixture->GetUserData())->GetGameObject()->GetComponent<Player>();
+    auto* player =
+        static_cast<BoxCollider*>(collision.otherFixture->GetUserData())->GetGameObject()->GetComponent<Player>();
     if(player == nullptr)
         return;
 
-    b2Fixture* thisFixture = contact->GetFixtureA();
-    if(otherFixture == contact->GetFixtureA())
-        thisFixture = contact->GetFixtureB();
-
-
     b2WorldManifold worldManifold;
-    contact->GetWorldManifold(&worldManifold);
+    collision.contact->GetWorldManifold(&worldManifold);
 
-    glm::vec2 hitNormal = { worldManifold.normal.x, worldManifold.normal.y };
-    float dot = glm::dot(hitNormal, glm::vec2{ 0, 1 });
-    float delta = otherFixture->GetAABB(0).lowerBound.y - thisFixture->GetAABB(0).upperBound.y;
+    const glm::vec2 hitNormal = { worldManifold.normal.x, worldManifold.normal.y };
+    const float dot = glm::dot(hitNormal, glm::vec2{ 0, 1 });
 
-    contact->SetEnabled(dot > 1.0f - DOT_EPSILON and delta > DELTA_EPSILON);
+    float delta = collision.otherFixture->GetAABB(0).lowerBound.y - collision.thisFixture->GetAABB(0).upperBound.y;
+
+    collision.contact->SetEnabled(dot > 1.0f - DOT_EPSILON and delta > DELTA_EPSILON);
 }

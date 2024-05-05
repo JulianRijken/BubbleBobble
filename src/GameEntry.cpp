@@ -245,12 +245,12 @@ void MainScene(Scene& scene)
 
     for(int x = -2; x < 2; ++x)
     {
-        for(int y = 0; y < 9; ++y)
+        for(int y = 0; y < 4; ++y)
         {
             auto* levelTile = scene.AddGameObject("LevelTile", { 10 + x, 3 + y, 0 });
             levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 2, 0 });
 
-            if(y == 8)
+            if(y == 3)
             {
                 levelTile->AddComponent<OneWayPlatform>();
 
