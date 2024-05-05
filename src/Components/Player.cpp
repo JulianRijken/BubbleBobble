@@ -3,7 +3,6 @@
 #include <GameTime.h>
 #include <Physics.h>
 
-#include "fmt/core.h"
 #include "Game.h"
 #include "GameObject.h"
 #include "MessageQueue.h"
@@ -136,39 +135,3 @@ void bb::Player::FixedUpdate()
     // Todo input should also check for up events
     m_MovementInput = 0;
 }
-
-void bb::Player::OnCollisionPreSolve(b2Contact* contact)
-{
-
-    activeContacts.erase(contact);
-    fmt::println("count: {}", activeContacts.size());
-    if(not activeContacts.empty())
-    {
-        contact->SetEnabled(false);
-        activeContacts.insert(contact);
-        return;
-    }
-
-    activeContacts.insert(contact);
-
-
-    b2WorldManifold worldManifold;
-    contact->GetWorldManifold(&worldManifold);
-
-    // Normal points from fixture a to b
-    glm::vec2 hitNormal = { worldManifold.normal.x, worldManifold.normal.y };
-    float dot = glm::dot(hitNormal, glm::vec2{ 0, 1 });
-
-    fmt::println("dot: {}", dot);
-
-    if(dot > 0.0 or m_Rigidbody->Velocity().y < 0)
-        contact->SetEnabled(true);
-    else
-        contact->SetEnabled(false);
-}
-
-void bb::Player::OnCollisionBegin(b2Contact*) {}
-
-void bb::Player::OnCollisionEnd(b2Contact* contact) { activeContacts.erase(contact); }
-
-void bb::Player::OnCollisionPostSolve(b2Contact*) {}

@@ -8,17 +8,18 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # Add all files from game
 set(BB_SOURCE_FILES
-     ${SOURCE_DIR}/GameEntry.cpp
-     ${SOURCE_DIR}/Game.h                           ${SOURCE_DIR}/Game.cpp
+    ${SOURCE_DIR}/GameEntry.cpp
+    ${SOURCE_DIR}/Game.cpp                            ${SOURCE_DIR}/Game.h
 
-     ${SOURCE_DIR}/Components/AutoMove.cpp          ${SOURCE_DIR}/Components/AutoMove.h
-     ${SOURCE_DIR}/Components/AutoRotateAround.cpp  ${SOURCE_DIR}/Components/AutoRotateAround.h
-     ${SOURCE_DIR}/Components/Bounce.cpp            ${SOURCE_DIR}/Components/Bounce.h
-     ${SOURCE_DIR}/Components/FpsCounter.cpp        ${SOURCE_DIR}/Components/FpsCounter.h
-     ${SOURCE_DIR}/Components/PlotExample.cpp       ${SOURCE_DIR}/Components/PlotExample.h
-     ${SOURCE_DIR}/Components/Player.cpp            ${SOURCE_DIR}/Components/Player.h
-     ${SOURCE_DIR}/Components/Character.cpp         ${SOURCE_DIR}/Components/Character.h
-     ${SOURCE_DIR}/Components/PlayerHUD.cpp         ${SOURCE_DIR}/Components/PlayerHUD.h
+    ${SOURCE_DIR}/Components/OneWayPlatform.h       ${SOURCE_DIR}/Components/OneWayPlatform.cpp
+    ${SOURCE_DIR}/Components/AutoMove.h             ${SOURCE_DIR}/Components/AutoMove.cpp
+    ${SOURCE_DIR}/Components/AutoRotateAround.h     ${SOURCE_DIR}/Components/AutoRotateAround.cpp
+    ${SOURCE_DIR}/Components/Bounce.h               ${SOURCE_DIR}/Components/Bounce.cpp
+    ${SOURCE_DIR}/Components/FpsCounter.h           ${SOURCE_DIR}/Components/FpsCounter.cpp
+    ${SOURCE_DIR}/Components/PlotExample.h          ${SOURCE_DIR}/Components/PlotExample.cpp
+    ${SOURCE_DIR}/Components/Player.h               ${SOURCE_DIR}/Components/Player.cpp
+    ${SOURCE_DIR}/Components/Character.h            ${SOURCE_DIR}/Components/Character.cpp
+    ${SOURCE_DIR}/Components/PlayerHUD.h            ${SOURCE_DIR}/Components/PlayerHUD.cpp
 )
 # Adds the source files to the executible
 add_executable(${TARGET_NAME} ${BB_SOURCE_FILES})
