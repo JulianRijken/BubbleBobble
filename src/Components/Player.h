@@ -1,4 +1,6 @@
 #pragma once
+#include <unordered_set>
+
 #include "Animator.h"
 #include "Command.h"
 #include "Component.h"
@@ -55,10 +57,16 @@ namespace bb
         int m_Score{0};
         int m_PlayerIndex{ 0 };
         bool m_IsDead{false};
+        bool m_MovingTroughPlatform{ false };
+
 
         float m_MovementInput{};
 
-        std::string m_DeathAnimationName{"Death"};
+        std::unordered_set<b2Contact*> activeContacts{};
+        std::unordered_set<b2Contact*> clearedContacts{};
+
+
+        std::string m_DeathAnimationName{ "Death" };
         std::string m_IdleAnimationName{"Idle"};
         std::string m_WalkAnimationName{"Walk"};
 
@@ -68,6 +76,9 @@ namespace bb
         Rigidbody* m_Rigidbody{ nullptr };
 
 
-        void OnCollisionPreSolve(b2Contact* collision) override;
+        void OnCollisionPreSolve(b2Contact* contact) override;
+        void OnCollisionBegin(b2Contact*) override;
+        void OnCollisionEnd(b2Contact*) override;
+        void OnCollisionPostSolve(b2Contact*) override;
     };
 }

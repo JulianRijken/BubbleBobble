@@ -223,7 +223,7 @@ void MainScene(Scene& scene)
         player2Hud->AddComponent<bb::PlayerHUD>(player2, scoreText, livesText, SDL_Color(52, 168, 230, 255));
     }
 
-    auto* levelTile = scene.AddGameObject("LevelTile", { 0, -1, 0 });
+    auto* levelTile = scene.AddGameObject("LevelTile", { 1, -1, 0 });
     levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
     levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
         .size{1.0f,  1.0f},
@@ -252,9 +252,21 @@ void MainScene(Scene& scene)
     // }
 
 
-    for(int i = 7; i < 13; ++i)
+    for(int y = 0; y < 5; ++y)
     {
-        auto* levelTile = scene.AddGameObject("LevelTile", { i, 3, 0 });
+        auto* levelTile = scene.AddGameObject("LevelTile", { 10, 3 + y, 0 });
+        levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 2, 0 });
+        levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
+            .restitution = 0.2f,
+            .size = {1.0f,  1.0f},
+            .center = {0.5f, -0.5f},
+        });
+    }
+
+
+    for(int i = -5; i < 7; ++i)
+    {
+        auto* levelTile = scene.AddGameObject("LevelTile", { 14, i, 0 });
         levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 2, 0 });
         levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
             .restitution = 0.2f,
