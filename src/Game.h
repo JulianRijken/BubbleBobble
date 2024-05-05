@@ -34,11 +34,32 @@ namespace bb
         Death
     };
 
+    enum class BlockSolidity
+    {
+        None,
+        Semi,
+        Solid
+    };
+
+    struct Block
+    {
+        glm::vec2 block;
+        BlockSolidity solidity;
+    };
+
+    struct Map
+    {
+        std::vector<Block> blocks;
+    };
+
 
     class Game final : public jul::Singleton<Game>
     {
     public:
         Game();
+
+        static Map LoadMap(std::string fileName);
+
 
         Player* GetPlayer(int playerIndex);
         void SetPlayer(int playerIndex, Player* player);

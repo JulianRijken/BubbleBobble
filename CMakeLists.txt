@@ -6,6 +6,17 @@ add_subdirectory(Julgen)
 set(TARGET_NAME BubbleBobble)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+# include(FetchContent)
+
+# FetchContent_Declare(
+#       json
+#       GIT_REPOSITORY https://github.com/nlohmann/json.git
+#       GIT_SHALLOW
+#       GIT_TAG v3.11.3
+# )
+# FetchContent_MakeAvailable(json)
+
+
 # Add all files from game
 set(BB_SOURCE_FILES
     ${SOURCE_DIR}/GameEntry.cpp
@@ -21,14 +32,25 @@ set(BB_SOURCE_FILES
     ${SOURCE_DIR}/Components/Character.h            ${SOURCE_DIR}/Components/Character.cpp
     ${SOURCE_DIR}/Components/PlayerHUD.h            ${SOURCE_DIR}/Components/PlayerHUD.cpp
 )
+
+
+
 # Adds the source files to the executible
-add_executable(${TARGET_NAME} ${BB_SOURCE_FILES})
+add_executable(${TARGET_NAME}
+    ${BB_SOURCE_FILES}
+)
 
 # Include source directories
 target_include_directories(${TARGET_NAME} PUBLIC
     ${SOURCE_DIR}
     ${SOURCE_DIR}/Components
 )
+
+target_include_directories(${TARGET_NAME} PRIVATE
+    ${libjxl_BINARY_DIR}
+    ${libjxl_SOURCE_DIR}
+)
+
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
@@ -54,3 +76,4 @@ endif()
 
 
 target_link_libraries(${TARGET_NAME} PRIVATE julgen)
+# target_link_libraries(${TARGET_NAME} PRIVATE nlohmann_json::nlohmann_json)
