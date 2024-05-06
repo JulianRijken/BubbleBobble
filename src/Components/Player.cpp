@@ -76,7 +76,11 @@ void bb::Player::AddScore()
     m_OnScoreChangeEvent.Invoke(m_Score);
 }
 
-void bb::Player::Jump() { m_Rigidbody->AddForce({ 0, 20 }, Rigidbody::ForceMode::Impulse); }
+void bb::Player::Jump()
+{
+    if(IsGrounded())
+        m_Rigidbody->AddForce({ 0, 15 }, Rigidbody::ForceMode::VelocityChange);
+}
 
 // TODO: This is getting called directly from the input
 //       make sure this is not happening more than once a frame!
@@ -96,17 +100,27 @@ void bb::Player::Move(float input)
 
 bool bb::Player::IsGrounded()
 {
+    auto lower = m_Rigidbody->GetBody()->GetFixtureList()[0].GetAABB(0).lowerBound;
+    float bottom = lower.y;
+    float center = m_Rigidbody->Positon().x;
 
-    auto result = Locator::Get<Physics>().RayCast({ 0, 0 }, { 0, 1 }, 1000);
+    RayCastResult result{};
+    if(Locator::Get<Physics>().RayCast(
+           { center - (m_ColiderWidth * 0.5f), bottom }, { 0, -1 }, m_GroundDistanceCheck, result))
+        return true;
+    if(Locator::Get<Physics>().RayCast({ center, bottom }, { 0, -1 }, m_GroundDistanceCheck, result))
+        return true;
+    if(Locator::Get<Physics>().RayCast(
+           { center + (m_ColiderWidth * 0.5f), bottom }, { 0, -1 }, m_GroundDistanceCheck, result))
+        return true;
 
-    fmt::println("result: {} {}", result.point.x, result.point.y);
-    return true;
+    return false;
 }
 
 // TODO: Find a way to make the input context optional like the timer in afterburner
 void bb::Player::OnTestLivesInput(InputContext /*unused*/) { Kill(); }
 
-void bb::Player::OnMoveLeftInput(InputContext) { Move(-1.0f); }
+void bb::Player::OnMoveLeftInput(InputContext /*unused*/) { Move(-1.0f); }
 
 void bb::Player::OnMoveRightInput(InputContext /*unused*/)
 {
@@ -130,8 +144,6 @@ void bb::Player::OnAttackInput(InputContext /*unused*/)
 
 void bb::Player::Update()
 {
-    fmt::println("Grounded: {}", IsGrounded());
-
     if(m_IsDead)
         return;
 

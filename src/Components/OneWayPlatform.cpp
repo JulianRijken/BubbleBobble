@@ -1,6 +1,7 @@
 #include "OneWayPlatform.h"
 
 #include <GameObject.h>
+#include <GameTime.h>
 #include <Physics.h>
 
 #include "Player.h"
@@ -17,7 +18,9 @@ void bb::OneWayPlatform::OnCollisionPreSolve(Collision collision, const b2Manifo
     if(player == nullptr)
         return;
 
-    float delta = collision.otherFixture->GetAABB(0).lowerBound.y - collision.thisFixture->GetAABB(0).upperBound.y;
+    const float offset = collision.otherFixture->GetBody()->GetLinearVelocity().y * GameTime::GetFixedDeltaTimeF();
+    const float delta =
+        collision.otherFixture->GetAABB(0).lowerBound.y - offset - collision.thisFixture->GetAABB(0).upperBound.y;
 
     collision.contact->SetEnabled(delta > DELTA_EPSILON);
 }

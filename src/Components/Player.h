@@ -61,6 +61,9 @@ namespace bb
         bool m_MovingTroughPlatform{ false };
         float m_MovementInput{};
 
+        float m_ColiderWidth{ 1.9f };
+        float m_GroundDistanceCheck{ 0.2f };
+
         std::string m_DeathAnimationName{ "Death" };
         std::string m_IdleAnimationName{"Idle"};
         std::string m_WalkAnimationName{"Walk"};

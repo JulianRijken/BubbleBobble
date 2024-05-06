@@ -14,8 +14,7 @@ namespace bb
     public:
         OneWayPlatform(GameObject* parentPtr);
 
-        static constexpr float DOT_EPSILON = 0.05f;
-        static constexpr float DELTA_EPSILON = -0.1f;
+        static constexpr float DELTA_EPSILON = -0.05f;
 
     private:
         void OnCollisionPreSolve(Collision collision, const b2Manifold* oldManifold) override;

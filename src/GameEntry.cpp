@@ -158,9 +158,9 @@ void MainMenuScene(Scene& scene)
 
 void MainScene(Scene& scene)
 {
-    GameObject* fpsCounter = scene.AddGameObject("Fps Counter", { 20, 20, 0 });
-    fpsCounter->AddComponent<TextRenderer>("error", ResourceManager::GetFont("LinguaSmall"), 100);
-    fpsCounter->AddComponent<FpsCounter>();
+    // GameObject* fpsCounter = scene.AddGameObject("Fps Counter", { 20, 20, 0 });
+    // fpsCounter->AddComponent<TextRenderer>("error", ResourceManager::GetFont("LinguaSmall"), 100);
+    // fpsCounter->AddComponent<FpsCounter>();
 
 
     // // Player 1
@@ -297,8 +297,8 @@ void jul::Julgen::PreInit()
 {
     // 32 by 28 tiles
     GameSettings::s_WindowTitle = "Bubble Bobble Made In Julgen";
-    GameSettings::s_RenderWidth = 32 * 8 * 4;
-    GameSettings::s_RenderHeight = 28 * 8 * 4;
+    GameSettings::s_RenderWidth = 32 * 8;
+    GameSettings::s_RenderHeight = 28 * 8;
 
 
     GameSettings::s_WindowWidth = 32 * 8 * 4;
@@ -331,10 +331,9 @@ void jul::Julgen::GameStart()
 
     MessageQueue::Broadcast(MessageType::GameStart);
 
-    SceneManager::GetInstance().LoadScene("mainScene", MainScene);
 
-    // SceneManager::GetInstance().LoadScene("mainScene", MainScene);
-    // SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
+    SceneManager::GetInstance().LoadScene("mainScene", MainScene);
+    SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
 
     // // Unload and load for testing purpouses
     // SceneManager::GetInstance().UnloadScene("mainScene");
