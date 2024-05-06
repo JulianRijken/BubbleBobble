@@ -7,6 +7,9 @@
 
 #include <array>
 
+
+class SDL_Surface;
+
 namespace bb
 {
     enum class MessageType
@@ -43,7 +46,7 @@ namespace bb
 
     struct Block
     {
-        glm::vec2 block;
+        glm::vec2 position;
         BlockSolidity solidity;
     };
 
@@ -58,15 +61,18 @@ namespace bb
     public:
         Game();
 
-        static Map LoadMap(std::string fileName);
-
-
         Player* GetPlayer(int playerIndex);
         void SetPlayer(int playerIndex, Player* player);
 
+        std::vector<Map>& GetMaps() { return m_Maps; }
+
     private:
         std::array<Player*, 2> m_Players{};
+        std::vector<Map> m_Maps{};
 
         void OnMessage(const Message& message);
+
+        void ParseMaps(const std::string& fileName);
+        SDL_Surface* JxlToSurface(const std::string& fileName);
     };
 }  // namespace bb

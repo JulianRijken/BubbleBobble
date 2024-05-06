@@ -15,10 +15,10 @@ namespace bb
         OneWayPlatform(GameObject* parentPtr);
 
         static constexpr float DOT_EPSILON = 0.05f;
-        static constexpr float DELTA_EPSILON = -0.2f;
+        static constexpr float DELTA_EPSILON = -0.1f;
 
     private:
-        void OnCollisionPreSolve(Collision collision) override;
+        void OnCollisionPreSolve(Collision collision, const b2Manifold* oldManifold) override;
     };
 
 }  // namespace bb

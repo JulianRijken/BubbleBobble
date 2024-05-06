@@ -163,129 +163,93 @@ void MainScene(Scene& scene)
     fpsCounter->AddComponent<FpsCounter>();
 
 
-    // Player 1
-    auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { 2, 20, 0 });
-    player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
-    player1GameObject->AddComponent<Animator>();
-    player1GameObject->AddComponent<Rigidbody>();
-    player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 0.0f, .restitution = 0.2f, .size = {2, 2}
-    });
+    // // Player 1
+    // auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -3, 10, 0 });
+    // player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
+    // player1GameObject->AddComponent<Animator>();
+    // player1GameObject->AddComponent<Rigidbody>();
+    // player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
+    //     .friction = 0.0f, .restitution = 0.2f, .size = {2, 2}
+    // });
 
-    auto* player1 = player1GameObject->AddComponent<bb::Player>(0);
+    // auto* player1 = player1GameObject->AddComponent<bb::Player>(0);
 
     // Player 2
-    auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 2, 15, 0 });
+    auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 3, 10, 0 });
     player2GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BobbleCharacter"), 0);
     player2GameObject->AddComponent<Animator>();
-    player2GameObject->AddComponent<Rigidbody>();
+    player2GameObject->AddComponent<Rigidbody>(Rigidbody::Settings{ .gravityScale = 2 });
     player2GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
-        .restitution = 0.0f,
-        .size = {2, 2},
+        .restitution = 0.05f,
+        .size = {1.90f, 1.90f},
     });
-    auto* player2 = player2GameObject->AddComponent<bb::Player>(1);
+    player2GameObject->AddComponent<bb::Player>(1);
 
 
-    auto* scoreInfoText = scene.AddGameObject("InfoText", { 30, 70, 0 });
-    scoreInfoText->AddComponent<TextRenderer>(
-        "Attack: Z or gamepad A", ResourceManager::GetFont("NESSmall"), 100, true);
+    // auto* scoreInfoText = scene.AddGameObject("InfoText", { 30, 70, 0 });
+    // scoreInfoText->AddComponent<TextRenderer>(
+    //     "Attack: Z or gamepad A", ResourceManager::GetFont("NESSmall"), 100, true);
 
-    auto* livesInfoText = scene.AddGameObject("InfoText", { 30, 90, 0 });
-    livesInfoText->AddComponent<TextRenderer>("Kill: X or gamepad B", ResourceManager::GetFont("NESSmall"), 100, true);
+    // auto* livesInfoText = scene.AddGameObject("InfoText", { 30, 90, 0 });
+    // livesInfoText->AddComponent<TextRenderer>("Kill: X or gamepad B", ResourceManager::GetFont("NESSmall"), 100,
+    // true);
 
-    auto* moveInfoText = scene.AddGameObject("InfoText", { 30, 110, 0 });
-    moveInfoText->AddComponent<TextRenderer>(
-        "MOVE PLAYER: A-D OR D-PAD OR L-STICK", ResourceManager::GetFont("NESSmall"), 100, true);
+    // auto* moveInfoText = scene.AddGameObject("InfoText", { 30, 110, 0 });
+    // moveInfoText->AddComponent<TextRenderer>(
+    //     "MOVE PLAYER: A-D OR D-PAD OR L-STICK", ResourceManager::GetFont("NESSmall"), 100, true);
 
-    GameObject* player1Hud = scene.AddGameObject("PlayerHUD", { 30, 150, 0 });
+
+    // GameObject* player1Hud = scene.AddGameObject("PlayerHUD", { 30, 150, 0 });
+    // {
+    //     auto* livesGameObject = scene.AddGameObject("LivesText", { 0, 0, 0 });
+    //     auto* livesText = livesGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
+
+    //     auto* scoreGameObject = scene.AddGameObject("ScoreText", { 0, 50, 0 });
+    //     auto* scoreText = scoreGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
+
+    //     scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
+    //     livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
+    //     player1Hud->AddComponent<bb::PlayerHUD>(player1, scoreText, livesText, SDL_Color(92, 230, 52, 255));
+    // }
+
+    // GameObject* player2Hud = scene.AddGameObject("PlayerHUD", { 30, 300, 0 });
+    // {
+    //     auto* livesGameObject = scene.AddGameObject("LivesText", { 0, 0, 0 });
+    //     auto* livesText = livesGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
+
+    //     auto* scoreGameObject = scene.AddGameObject("ScoreText", { 0, 50, 0 });
+    //     auto* scoreText = scoreGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
+
+    //     scoreGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
+    //     livesGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
+    //     player2Hud->AddComponent<bb::PlayerHUD>(player2, scoreText, livesText, SDL_Color(52, 168, 230, 255));
+    // }
+
+    auto& maps = Game::GetInstance().GetMaps();
+
+    for(auto&& block : maps[1].blocks)
     {
-        auto* livesGameObject = scene.AddGameObject("LivesText", { 0, 0, 0 });
-        auto* livesText = livesGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
+        auto* tile = scene.AddGameObject("LevelTile", { block.position.x, block.position.y, 0 });
+        tile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
 
-        auto* scoreGameObject = scene.AddGameObject("ScoreText", { 0, 50, 0 });
-        auto* scoreText = scoreGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
-
-        scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-        livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-        player1Hud->AddComponent<bb::PlayerHUD>(player1, scoreText, livesText, SDL_Color(92, 230, 52, 255));
-    }
-
-    GameObject* player2Hud = scene.AddGameObject("PlayerHUD", { 30, 300, 0 });
-    {
-        auto* livesGameObject = scene.AddGameObject("LivesText", { 0, 0, 0 });
-        auto* livesText = livesGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
-
-        auto* scoreGameObject = scene.AddGameObject("ScoreText", { 0, 50, 0 });
-        auto* scoreText = scoreGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
-
-        scoreGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
-        livesGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
-        player2Hud->AddComponent<bb::PlayerHUD>(player2, scoreText, livesText, SDL_Color(52, 168, 230, 255));
-    }
-
-    auto* levelTile = scene.AddGameObject("LevelTile", { 1, 5, 0 });
-    levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
-    levelTile->AddComponent<OneWayPlatform>();
-    levelTile->AddComponent<Rigidbody>(Rigidbody::Settings{ .mode = Rigidbody::Mode::Kinematic });
-    levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .size{1.0f,  1.0f},
-        .center{0.5f, -0.5f}
-    });
-
-    auto* levelTile5 = scene.AddGameObject("LevelTile", { 2, 7, 0 });
-    levelTile5->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
-    levelTile5->AddComponent<OneWayPlatform>();
-    levelTile5->AddComponent<Rigidbody>(Rigidbody::Settings{ .mode = Rigidbody::Mode::Kinematic });
-    levelTile5->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .size{1.0f,  1.0f},
-        .center{0.5f, -0.5f}
-    });
-
-
-    for(int x = -2; x < 2; ++x)
-    {
-        for(int y = 0; y < 4; ++y)
+        if(block.solidity == BlockSolidity::Semi)
         {
-            auto* levelTile = scene.AddGameObject("LevelTile", { 10 + x, 3 + y, 0 });
-            levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 2, 0 });
-
-            if(y == 3)
-            {
-                levelTile->AddComponent<OneWayPlatform>();
-
-                levelTile->AddComponent<Rigidbody>(Rigidbody::Settings{ .mode = Rigidbody::Mode::Kinematic });
-                levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                    .restitution = 0.2f,
-                    .size = {1.0f,  1.0f},
-                    .center = {0.5f, -0.5f},
-                });
-            }
+            tile->AddComponent<OneWayPlatform>();
+            tile->AddComponent<Rigidbody>(Rigidbody::Settings{ .mode = Rigidbody::Mode::Static });
+            tile->AddComponent<BoxCollider>(BoxCollider::Settings{
+                .size{1.0f,  1.0f},
+                .center{0.5f, -0.5f}
+            });
         }
-    }
 
-
-    for(int i = -5; i < 7; ++i)
-    {
-        auto* levelTile = scene.AddGameObject("LevelTile", { 14, i, 0 });
-        levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 2, 0 });
-        levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
-            .restitution = 0.2f,
-            .size = {1.0f,  1.0f},
-            .center = {0.5f, -0.5f},
-        });
-    }
-
-
-    for(int i = -13; i < 13; ++i)
-    {
-        auto* levelTile = scene.AddGameObject("LevelTile", { i, -4, 0 });
-        levelTile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 1, 0 });
-        levelTile->AddComponent<BoxCollider>(BoxCollider::Settings{
-            .restitution = 1.01f,
-            .size = {1.0f,  1.0f},
-            .center = {0.5f, -0.5f},
-        });
+        if(block.solidity == BlockSolidity::Solid)
+        {
+            tile->AddComponent<BoxCollider>(BoxCollider::Settings{
+                .size{1.0f,  1.0f},
+                .center{0.5f, -0.5f}
+            });
+        }
     }
 }
 
@@ -310,6 +274,8 @@ void InitControls()
         (int)InputBind::MoveStick, ButtonState::Held, 0, false, 0, &bb::Player::OnMoveStickInput);
     Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::Attack, ButtonState::Down, 0, false, 0, &bb::Player::OnAttackInput);
+    Input::RegisterCommand<PlayerInputCommand>(
+        (int)InputBind::Jump, ButtonState::Down, 0, false, 0, &bb::Player::OnJumpInput);
 
     Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::TestLivesButton, ButtonState::Down, 1, true, 1, &bb::Player::OnTestLivesInput);
@@ -321,17 +287,22 @@ void InitControls()
         (int)InputBind::MoveStick, ButtonState::Held, 1, true, 1, &bb::Player::OnMoveStickInput);
     Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::Attack, ButtonState::Down, 1, true, 1, &bb::Player::OnAttackInput);
+    Input::RegisterCommand<PlayerInputCommand>(
+        (int)InputBind::Jump, ButtonState::Down, 1, true, 1, &bb::Player::OnJumpInput);
 
     Input::RegisterCommand<MuteGameCommand>((int)InputBind::ToggleSound, ButtonState::Down, 1, true);
 }
 
 void jul::Julgen::PreInit()
 {
+    // 32 by 28 tiles
     GameSettings::s_WindowTitle = "Bubble Bobble Made In Julgen";
     GameSettings::s_RenderWidth = 32 * 8 * 4;
-    GameSettings::s_RenderHeight = 26 * 8 * 4;
-    GameSettings::s_WindowWidth = GameSettings::s_RenderWidth;
-    GameSettings::s_WindowHeight = GameSettings::s_RenderHeight;
+    GameSettings::s_RenderHeight = 28 * 8 * 4;
+
+
+    GameSettings::s_WindowWidth = 32 * 8 * 4;
+    GameSettings::s_WindowHeight = 28 * 8 * 4;
     GameSettings::s_ShowConsole = true;
 
 
@@ -361,10 +332,12 @@ void jul::Julgen::GameStart()
     MessageQueue::Broadcast(MessageType::GameStart);
 
     SceneManager::GetInstance().LoadScene("mainScene", MainScene);
-    SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
 
-    // Unload and load for testing purpouses
-    SceneManager::GetInstance().UnloadScene("mainScene");
-    SceneManager::GetInstance().LoadScene("mainScene", MainScene);
-    SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
+    // SceneManager::GetInstance().LoadScene("mainScene", MainScene);
+    // SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
+
+    // // Unload and load for testing purpouses
+    // SceneManager::GetInstance().UnloadScene("mainScene");
+    // SceneManager::GetInstance().LoadScene("mainScene", MainScene);
+    // SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
 }

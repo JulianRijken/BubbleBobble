@@ -1,5 +1,6 @@
 #include "Player.h"
 
+#include <fmt/core.h>
 #include <GameTime.h>
 #include <Physics.h>
 
@@ -75,6 +76,8 @@ void bb::Player::AddScore()
     m_OnScoreChangeEvent.Invoke(m_Score);
 }
 
+void bb::Player::Jump() { m_Rigidbody->AddForce({ 0, 20 }, Rigidbody::ForceMode::Impulse); }
+
 // TODO: This is getting called directly from the input
 //       make sure this is not happening more than once a frame!
 void bb::Player::Move(float input)
@@ -89,6 +92,15 @@ void bb::Player::Move(float input)
     else
     if(input < 0)
         m_SpriteRenderer->m_FlipX = true;
+}
+
+bool bb::Player::IsGrounded()
+{
+
+    auto result = Locator::Get<Physics>().RayCast({ 0, 0 }, { 0, 1 }, 1000);
+
+    fmt::println("result: {} {}", result.point.x, result.point.y);
+    return true;
 }
 
 // TODO: Find a way to make the input context optional like the timer in afterburner
@@ -109,6 +121,8 @@ void bb::Player::OnMoveStickInput(InputContext context)
         Move(std::get<float>(context.value()));
 }
 
+void bb::Player::OnJumpInput(InputContext /*unused*/) { Jump(); }
+
 void bb::Player::OnAttackInput(InputContext /*unused*/)
 {
     Attack();
@@ -116,6 +130,8 @@ void bb::Player::OnAttackInput(InputContext /*unused*/)
 
 void bb::Player::Update()
 {
+    fmt::println("Grounded: {}", IsGrounded());
+
     if(m_IsDead)
         return;
 
@@ -129,8 +145,8 @@ void bb::Player::FixedUpdate()
     m_Rigidbody->AddForce({ m_MovementInput * 5, 0 }, Rigidbody::ForceMode::Impulse);
     m_Rigidbody->AddForce({ -m_Rigidbody->Velocity().x * 40, 0 }, Rigidbody::ForceMode::Force);
 
-    if(m_Rigidbody->Positon().y < -40)
-        m_Rigidbody->SetPosition({ 0, 30 });
+    if(m_Rigidbody->Positon().y < -15)
+        m_Rigidbody->SetPosition({ 0, 15 });
 
     // Todo input should also check for up events
     m_MovementInput = 0;

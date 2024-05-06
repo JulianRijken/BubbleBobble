@@ -36,12 +36,14 @@ namespace bb
         void Jump();
         void Move(float input);
 
+        bool IsGrounded();
+
 
         void OnTestLivesInput(InputContext context);
         void OnMoveLeftInput(InputContext context);
         void OnMoveRightInput(InputContext context);
         void OnMoveStickInput(InputContext context);
-        // void OnJumpInput(InputContext context);
+        void OnJumpInput(InputContext context);
         void OnAttackInput(InputContext context);
 
     private:
