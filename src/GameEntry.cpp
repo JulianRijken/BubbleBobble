@@ -77,6 +77,8 @@ void LoadResources()
                                 6,
                                 { { "Idle", SpriteAnimation{ { { 0, 0 }, { 1, 0 } }, 7 } },
                                   { "Walk", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 7 } },
+                                  { "Jump", SpriteAnimation{ { { 0, 1 }, { 1, 1 }, { 2, 1 }, { 3, 1 } }, 4 } },
+                                  { "Falling", SpriteAnimation{ { { 2, 1 }, { 3, 1 } }, 4 } },
                                   { "Death",
                                     SpriteAnimation{ { { 0, 3 },
                                                        { 1, 3 },
@@ -90,7 +92,7 @@ void LoadResources()
                                                        { 5, 3 },
                                                        { 6, 3 } },
                                                      10 } },
-                                  { "Attack", SpriteAnimation{ { { 0, 2 } }, 1 } } });
+                                  { "Attack", SpriteAnimation{ { { 0, 2 } }, 5 } } });
 
     ResourceManager::LoadSprite("BobbleCharacter",
                                 "BobbleCharacter.png",
@@ -117,7 +119,7 @@ void LoadResources()
                                                        { 5, 3 },
                                                        { 6, 3 } },
                                                      10 } },
-                                  { "Attack", SpriteAnimation{ { { 0, 2 } }, 1 } } });
+                                  { "Attack", SpriteAnimation{ { { 0, 2 } }, 5 } } });
 
 
     ResourceManager::LoadSprite("BubbleParticle",
@@ -164,16 +166,17 @@ void MainScene(Scene& scene)
     // fpsCounter->AddComponent<FpsCounter>();
 
 
-    // // Player 1
-    // auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -3, 10, 0 });
-    // player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
-    // player1GameObject->AddComponent<Animator>();
-    // player1GameObject->AddComponent<Rigidbody>();
-    // player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
-    //     .friction = 0.0f, .restitution = 0.2f, .size = {2, 2}
-    // });
-
-    // auto* player1 = player1GameObject->AddComponent<bb::Player>(0);
+    // Player 1
+    auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -3, 10, 0 });
+    player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
+    player1GameObject->AddComponent<Animator>();
+    player1GameObject->AddComponent<Rigidbody>();
+    player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f,
+        .restitution = 0.1f,
+        .size = {1.80f, 1.95f},
+    });
+    player1GameObject->AddComponent<bb::Player>(0);
 
     // Player 2
     auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 3, 10, 0 });
@@ -294,8 +297,8 @@ void jul::Julgen::PreInit()
 {
     // 32 by 28 tiles
     GameSettings::s_WindowTitle = "Bubble Bobble Made In Julgen";
-    GameSettings::s_RenderWidth = 32 * 8 * 4;
-    GameSettings::s_RenderHeight = 28 * 8 * 4;
+    GameSettings::s_RenderWidth = 32 * 8;
+    GameSettings::s_RenderHeight = 28 * 8;
 
 
     GameSettings::s_WindowWidth = 32 * 8 * 4;

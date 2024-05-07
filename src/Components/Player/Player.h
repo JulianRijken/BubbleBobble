@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Animator.h>
+#include <BoxCollider.h>
 #include <Command.h>
 #include <Component.h>
 #include <Event.h>
@@ -22,8 +23,11 @@ namespace bb
         friend class PlayerAttackignState;
 
     public:
+        static constexpr float GROUND_CHECK_DISTANCE{ 0.3f };
+
         Player(GameObject* parentPtr, int playerIndex, Animator* animator = nullptr,
-               SpriteRenderer* spriteRenderer = nullptr, Rigidbody* rigidbody = nullptr);
+               SpriteRenderer* spriteRenderer = nullptr, Rigidbody* rigidbody = nullptr,
+               BoxCollider* collider = nullptr);
 
         ~Player() override;
 
@@ -72,9 +76,6 @@ namespace bb
 
         float m_MovementInput{};
 
-        float m_ColiderWidth{ 1.8f };
-        float m_GroundDistanceCheck{ 0.4f };
-
         std::string m_DeathAnimationName{ "Death" };
         std::string m_IdleAnimationName{"Idle"};
         std::string m_WalkAnimationName{ "Walk" };
@@ -84,5 +85,6 @@ namespace bb
         Animator* m_AnimatorPtr{ nullptr };
         Rigidbody* m_Rigidbody{ nullptr };
         SpriteRenderer* m_SpriteRenderer{ nullptr };
+        BoxCollider* m_Collider{ nullptr };
     };
 }
