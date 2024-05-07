@@ -15,11 +15,9 @@
 #include <TextRenderer.h>
 
 #include "AutoMove.h"
-#include "FpsCounter.h"
 #include "Game.h"
 #include "OneWayPlatform.h"
 #include "Player.h"
-#include "PlayerHUD.h"
 
 using namespace jul;
 using namespace bb;
@@ -104,6 +102,8 @@ void LoadResources()
                                 6,
                                 { { "Idle", SpriteAnimation{ { { 0, 0 }, { 1, 0 } }, 7 } },
                                   { "Walk", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 7 } },
+                                  { "Jump", SpriteAnimation{ { { 0, 1 }, { 1, 1 }, { 2, 1 }, { 3, 1 } }, 4 } },
+                                  { "Falling", SpriteAnimation{ { { 2, 1 }, { 3, 1 } }, 4 } },
                                   { "Death",
                                     SpriteAnimation{ { { 0, 3 },
                                                        { 1, 3 },
@@ -118,6 +118,7 @@ void LoadResources()
                                                        { 6, 3 } },
                                                      10 } },
                                   { "Attack", SpriteAnimation{ { { 0, 2 } }, 1 } } });
+
 
     ResourceManager::LoadSprite("BubbleParticle",
                                 "BubbleParticle.png",
@@ -178,11 +179,11 @@ void MainScene(Scene& scene)
     auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 3, 10, 0 });
     player2GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BobbleCharacter"), 0);
     player2GameObject->AddComponent<Animator>();
-    player2GameObject->AddComponent<Rigidbody>(Rigidbody::Settings{ .gravityScale = 2 });
+    player2GameObject->AddComponent<Rigidbody>();
     player2GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
-        .restitution = 0.05f,
-        .size = {1.90f, 1.90f},
+        .restitution = 0.1f,
+        .size = {1.80f, 1.95f},
     });
     player2GameObject->AddComponent<bb::Player>(1);
 
@@ -265,8 +266,6 @@ void TestScene(Scene& scene)
 void InitControls()
 {
     Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::TestLivesButton, ButtonState::Down, 0, false, 0, &bb::Player::OnTestLivesInput);
-    Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::MoveLeft, ButtonState::Held, 0, false, 0, &bb::Player::OnMoveLeftInput);
     Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::MoveRight, ButtonState::Held, 0, false, 0, &bb::Player::OnMoveRightInput);
@@ -277,8 +276,6 @@ void InitControls()
     Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::Jump, ButtonState::Down, 0, false, 0, &bb::Player::OnJumpInput);
 
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::TestLivesButton, ButtonState::Down, 1, true, 1, &bb::Player::OnTestLivesInput);
     Input::RegisterCommand<PlayerInputCommand>(
         (int)InputBind::MoveLeft, ButtonState::Held, 1, true, 1, &bb::Player::OnMoveLeftInput);
     Input::RegisterCommand<PlayerInputCommand>(
@@ -297,8 +294,8 @@ void jul::Julgen::PreInit()
 {
     // 32 by 28 tiles
     GameSettings::s_WindowTitle = "Bubble Bobble Made In Julgen";
-    GameSettings::s_RenderWidth = 32 * 8;
-    GameSettings::s_RenderHeight = 28 * 8;
+    GameSettings::s_RenderWidth = 32 * 8 * 4;
+    GameSettings::s_RenderHeight = 28 * 8 * 4;
 
 
     GameSettings::s_WindowWidth = 32 * 8 * 4;
