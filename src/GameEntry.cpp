@@ -62,6 +62,16 @@ void LoadResources()
 
     ResourceManager::LoadSprite("DebugCube", "DebugCube.png", 4, { 0, 0 });
 
+    ResourceManager::LoadSprite("AttackBubble",
+                                "AttackBubble.png",
+                                8,
+                                {
+                                    0.5f, 0.5f
+    },
+                                1,
+                                6,
+                                { { "Spawn", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 16 } },
+                                  { "Pop", SpriteAnimation{ { { 4, 0 }, { 5, 0 } }, 16 } } });
 
     ResourceManager::LoadSprite("LevelTiles", "LevelTiles.png", 8, { 0.0f, 0.0f }, 25, 5);
 
@@ -92,7 +102,7 @@ void LoadResources()
                                                        { 5, 3 },
                                                        { 6, 3 } },
                                                      10 } },
-                                  { "Attack", SpriteAnimation{ { { 0, 2 } }, 5 } } });
+                                  { "Attack", SpriteAnimation{ { { 0, 2 } }, 6 } } });
 
     ResourceManager::LoadSprite("BobbleCharacter",
                                 "BobbleCharacter.png",
@@ -119,7 +129,7 @@ void LoadResources()
                                                        { 5, 3 },
                                                        { 6, 3 } },
                                                      10 } },
-                                  { "Attack", SpriteAnimation{ { { 0, 2 } }, 5 } } });
+                                  { "Attack", SpriteAnimation{ { { 0, 2 } }, 6 } } });
 
 
     ResourceManager::LoadSprite("BubbleParticle",
@@ -307,9 +317,24 @@ void jul::Julgen::PreInit()
 
 
     Input::AddAction(InputBind::TestLivesButton, { { SDL_SCANCODE_X }, { SDL_CONTROLLER_BUTTON_B }, {} });
-    Input::AddAction(InputBind::Jump, { { SDL_SCANCODE_SPACE }, { SDL_CONTROLLER_BUTTON_B }, {} });
-    Input::AddAction(InputBind::MoveLeft, { { SDL_SCANCODE_A }, { SDL_CONTROLLER_BUTTON_DPAD_LEFT }, {} });
-    Input::AddAction(InputBind::MoveRight, { { SDL_SCANCODE_D }, { SDL_CONTROLLER_BUTTON_DPAD_RIGHT }, {} });
+    Input::AddAction(InputBind::Jump,
+                     {
+                         { SDL_SCANCODE_SPACE, SDL_SCANCODE_W, SDL_SCANCODE_UP },
+                         { SDL_CONTROLLER_BUTTON_B },
+                         {}
+    });
+    Input::AddAction(InputBind::MoveLeft,
+                     {
+                         { SDL_SCANCODE_A, SDL_SCANCODE_LEFT },
+                         { SDL_CONTROLLER_BUTTON_DPAD_LEFT },
+                         {}
+    });
+    Input::AddAction(InputBind::MoveRight,
+                     {
+                         { SDL_SCANCODE_D, SDL_SCANCODE_RIGHT },
+                         { SDL_CONTROLLER_BUTTON_DPAD_RIGHT },
+                         {}
+    });
     Input::AddAction(InputBind::MoveStick, { {}, {}, { SDL_CONTROLLER_AXIS_LEFTX } });
     Input::AddAction(InputBind::Attack,
                      {

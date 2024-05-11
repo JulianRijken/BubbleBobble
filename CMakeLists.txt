@@ -12,8 +12,10 @@ set(BB_SOURCE_FILES
     ${SOURCE_DIR}/GameEntry.cpp
     ${SOURCE_DIR}/Game.cpp                          ${SOURCE_DIR}/Game.h
 
+    ${SOURCE_DIR}/Components/AttackBubble.h         ${SOURCE_DIR}/Components/AttackBubble.cpp
+
     ${SOURCE_DIR}/Components/Player/Player.h        ${SOURCE_DIR}/Components/Player/Player.cpp
-    ${SOURCE_DIR}/Components/Player/PlayerState.h
+    ${SOURCE_DIR}/Components/Player/PlayerState.h   ${SOURCE_DIR}/Components/Player/PlayerState.cpp
 
     ${SOURCE_DIR}/Components/OneWayPlatform.h       ${SOURCE_DIR}/Components/OneWayPlatform.cpp
     ${SOURCE_DIR}/Components/AutoMove.h             ${SOURCE_DIR}/Components/AutoMove.cpp
@@ -28,7 +30,6 @@ set(BB_SOURCE_FILES
 # Adds the source files to the executible
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
-    src/Components/Player/PlayerState.cpp
 )
 
 # Include source directories

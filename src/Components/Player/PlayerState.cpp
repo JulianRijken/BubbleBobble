@@ -2,12 +2,16 @@
 
 #include <Animator.h>
 #include <Box2D/Box2D.h>
+#include <fmt/core.h>
 #include <GameTime.h>
 #include <MessageQueue.h>
+#include <ResourceManager.h>
+#include <SceneManager.h>
 #include <SpriteRenderer.h>
 
 #include <glm/geometric.hpp>
 
+#include "AttackBubble.h"
 #include "Game.h"
 #include "Player.h"
 
@@ -24,11 +28,15 @@ void bb::PlayerWalkingState::Update(Player& player)
 
     if(not player.IsGrounded() and m_TimeWalking > MIN_TIME_WALKING_BEFORE_GROUND_CHECK)
     {
-        player.SetState(player.m_JumpingState.get());
+        player.SetMovementState(player.m_JumpingState.get());
         return;
     }
 
     player.HandleFlip();
+
+    if(not player.m_AnimatorPtr->IsPlaying())
+        player.m_AnimatorPtr->PlayAnimation(player.m_IdleAnimationName, true);
+
 
     if(std::abs(player.m_Rigidbody->Velocity().x) > 2)
     {
@@ -44,7 +52,7 @@ void bb::PlayerWalkingState::Update(Player& player)
 
 void bb::PlayerWalkingState::FixedUpdate(Player& player)
 {
-    player.m_Rigidbody->AddForce({ player.m_MovementInput * 8, player.m_Rigidbody->Velocity().y },
+    player.m_Rigidbody->AddForce({ player.m_MovementInput * MOVE_SPEED, player.m_Rigidbody->Velocity().y },
                                  Rigidbody::ForceMode::VelocityChange);
 }
 
@@ -54,12 +62,16 @@ void bb::PlayerWalkingState::OnJumpInput(Player& player)
     {
         player.m_Rigidbody->AddForce({ player.m_Rigidbody->Velocity().x, PlayerJumpingState::JUMP_FORCE },
                                      Rigidbody::ForceMode::VelocityChange);
-        player.SetState(player.m_JumpingState.get());
+        player.SetMovementState(player.m_JumpingState.get());
         return;
     }
 }
 
-void bb::PlayerWalkingState::OnAttackInput(Player& player) { player.SetState(player.m_AttackignState.get()); }
+void bb::PlayerWalkingState::OnAttackInput(Player& player)
+{
+    if(player.m_ActiveAttackState != player.m_AttackignState.get())
+        player.SetAttackState(player.m_AttackignState.get());
+}
 
 void bb::PlayerWalkingState::OnExitState(Player& player) { player.m_Rigidbody->SetGravityScale(1.0f); }
 
@@ -88,7 +100,7 @@ void bb::PlayerJumpingState::Update(Player& player)
     // Go out of state
     if(player.IsGrounded())
     {
-        player.SetState(player.m_WalkingState.get());
+        player.SetMovementState(player.m_WalkingState.get());
         return;
     }
 
@@ -107,7 +119,7 @@ void bb::PlayerJumpingState::Update(Player& player)
 
 void bb::PlayerJumpingState::FixedUpdate(Player& player)
 {
-    glm::vec2 currentVelocity = player.m_Rigidbody->Velocity();
+    const glm::vec2 currentVelocity = player.m_Rigidbody->Velocity();
 
     if(m_Falling)
     {
@@ -136,45 +148,49 @@ void bb::PlayerJumpingState::FixedUpdate(Player& player)
                                          Rigidbody::ForceMode::VelocityChange);
         }
     }
-
-
-    // if(player.m_MovementInput > 0 and m_LastVelocity < 0)
-    //     m_LastVelocity = 0;
-    // else if(player.m_MovementInput < 0 and m_LastVelocity > 0)
-    //     m_LastVelocity = 0;
-
-    // if(std::abs(m_LastVelocity) > 0.5f)
-    // {
-    //     const glm::vec2 currentVelocity = player.m_Rigidbody->Velocity();
-    //     player.m_Rigidbody->AddForce({ m_LastVelocity, currentVelocity.y }, Rigidbody::ForceMode::VelocityChange);
-    // }
-    // else
-    // {
-    //     player.m_Rigidbody->AddForce({ player.m_MovementInput * 1, 0 }, Rigidbody::ForceMode::Impulse);
-    //     player.m_Rigidbody->AddForce({ -player.m_Rigidbody->Velocity().x * 20, 0 }, Rigidbody::ForceMode::Force);
-    // }
-
-
-    // if(player.m_Rigidbody->Positon().y < m_SlowFalHeight)
-    //     player.m_Rigidbody->AddForce({ 0, -player.m_Rigidbody->Velocity().y * 3 }, Rigidbody::ForceMode::Force);
 }
 
 void bb::PlayerJumpingState::OnExitState(Player& player) { player.m_Rigidbody->SetGravityScale(1.0f); }
 
-void bb::PlayerJumpingState::OnAttackInput(Player& player) { player.SetState(player.m_AttackignState.get()); }
+void bb::PlayerJumpingState::OnAttackInput(Player& player)
+{
+    if(player.m_ActiveAttackState != player.m_AttackignState.get())
+        player.SetAttackState(player.m_AttackignState.get());
+}
 
 void bb::PlayerAttackignState::OnEnterState(Player& player)
 {
-    player.m_AnimatorPtr->PlayAnimation("Attack");
+    if(GameTime::GetElapsedTime() - m_TimeOfLastAttack < TIME_BETWEEN_FIRE)
+    {
+        player.m_ActiveAttackState = nullptr;
+        return;
+    }
 
+    m_TimeOfLastAttack = GameTime::GetElapsedTime();
+
+    player.m_AnimatorPtr->PlayAnimation(player.m_AttackAnimationName);
     MessageQueue::Broadcast(MessageType::PlayerAttack);
 
-    // TODO: Remove from attack
-    player.AddScore();
+
+    glm::vec3 spawnPosition = player.GetTransform().WorldPosition();
+    const float direction = player.m_SpriteRenderer->m_FlipX ? -1.0f : 1.0f;
+
+    spawnPosition.x += player.m_Collider->GetSettings().size.x * static_cast<float>(direction);
+
+    auto* bubble = SceneManager::GetInstance().AddGameObject("AttackBubble", spawnPosition);
+    bubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), 0);
+    bubble->AddComponent<Animator>();
+    bubble->AddComponent<Rigidbody>();
+    bubble->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.5f,
+        .restitution = 0.8f,
+        .size = {1.5, 1.5f},
+    });
+    bubble->AddComponent<AttackBubble>(glm::vec3{ direction * FIRE_POWER, 0, 0 });
 }
 
 void bb::PlayerAttackignState::Update(Player& player)
 {
-    if(not player.m_AnimatorPtr->IsPlaying())
-        player.SetState(player.m_WalkingState.get());
+    if(not player.m_AnimatorPtr->IsActiveAnimation(player.m_AttackAnimationName))
+        player.SetAttackState(nullptr);
 }

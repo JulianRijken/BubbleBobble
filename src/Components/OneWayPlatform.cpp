@@ -4,8 +4,6 @@
 #include <GameTime.h>
 #include <Physics.h>
 
-#include "Player.h"
-
 bb::OneWayPlatform::OneWayPlatform(GameObject* parentPtr) :
     jul::Component(parentPtr, "One Way Platform")
 {
@@ -13,9 +11,8 @@ bb::OneWayPlatform::OneWayPlatform(GameObject* parentPtr) :
 
 void bb::OneWayPlatform::OnCollisionPreSolve(Collision collision, const b2Manifold*)
 {
-    auto* player =
-        static_cast<BoxCollider*>(collision.otherFixture->GetUserData())->GetGameObject()->GetComponent<Player>();
-    if(player == nullptr)
+
+    if(collision.otherFixture->GetBody()->GetType() != b2_dynamicBody)
         return;
 
     const float offset = collision.otherFixture->GetBody()->GetLinearVelocity().y * GameTime::GetFixedDeltaTimeF();

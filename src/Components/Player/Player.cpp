@@ -78,23 +78,33 @@ bool bb::Player::IsGrounded()
     const glm::vec2 halfSize = m_Collider->GetSettings().size / 2.0f;
     const float castHeight = lowerBound.y + halfSize.y;
     const float castDistance = GROUND_CHECK_DISTANCE + halfSize.y;
-    constexpr glm::vec2 CAST_DIRECTIOn = { 0, -1 };
+    constexpr glm::vec2 castDirection = { 0, -1 };
 
-    if(Physics::RayCast({ center - (halfSize.x), castHeight }, CAST_DIRECTIOn, castDistance))
+    if(Physics::RayCast({ center - (halfSize.x), castHeight }, castDirection, castDistance))
         return true;
-    if(Physics::RayCast({ center, castHeight }, CAST_DIRECTIOn, castDistance))
+    if(Physics::RayCast({ center, castHeight }, castDirection, castDistance))
         return true;
-    if(Physics::RayCast({ center + (halfSize.x), castHeight }, CAST_DIRECTIOn, castDistance))
+    if(Physics::RayCast({ center + (halfSize.x), castHeight }, castDirection, castDistance))
         return true;
 
     return false;
 }
 
-void bb::Player::SetState(PlayerState* nextState)
+void bb::Player::SetMovementState(PlayerState* nextState)
 {
-    m_ActiveState->OnExitState(*this);
+    m_ActiveMovementState->OnExitState(*this);
     nextState->OnEnterState(*this);
-    m_ActiveState = nextState;
+    m_ActiveMovementState = nextState;
+}
+
+void bb::Player::SetAttackState(PlayerState* nextState)
+{
+    if(m_ActiveAttackState)
+        m_ActiveAttackState->OnExitState(*this);
+
+    if(nextState)
+        nextState->OnEnterState(*this);
+    m_ActiveAttackState = nextState;
 }
 
 void bb::Player::HandleFlip()
@@ -112,15 +122,37 @@ void bb::Player::OnMoveRightInput(InputContext /*unused*/) { UpdateMoveInput(1.0
 
 void bb::Player::OnMoveStickInput(InputContext context) { UpdateMoveInput(std::get<float>(context.value())); }
 
-void bb::Player::OnJumpInput(InputContext /*unused*/) { m_ActiveState->OnJumpInput(*this); }
+void bb::Player::OnJumpInput(InputContext /*unused*/)
+{
+    m_ActiveMovementState->OnJumpInput(*this);
 
-void bb::Player::OnAttackInput(InputContext /*unused*/) { m_ActiveState->OnAttackInput(*this); }
+    if(m_ActiveAttackState)
+        m_ActiveAttackState->OnJumpInput(*this);
+}
+
+void bb::Player::OnAttackInput(InputContext /*unused*/)
+{
+    m_ActiveMovementState->OnAttackInput(*this);
+
+    if(m_ActiveAttackState)
+        m_ActiveAttackState->OnAttackInput(*this);
+}
 
 void bb::Player::Update()
 {
-    m_ActiveState->Update(*this);
+    m_ActiveMovementState->Update(*this);
+
+    if(m_ActiveAttackState)
+        m_ActiveAttackState->Update(*this);
+
     // Todo input should also check for up events
     m_MovementInput = 0;
 }
 
-void bb::Player::FixedUpdate() { m_ActiveState->FixedUpdate(*this); }
+void bb::Player::FixedUpdate()
+{
+    m_ActiveMovementState->FixedUpdate(*this);
+
+    if(m_ActiveAttackState)
+        m_ActiveAttackState->FixedUpdate(*this);
+}

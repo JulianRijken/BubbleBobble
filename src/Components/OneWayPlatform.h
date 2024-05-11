@@ -1,5 +1,4 @@
 #pragma once
-#include <Box2D/Dynamics/Contacts/b2Contact.h>
 #include <Component.h>
 #include <ICollisionListener.h>
 #include <Rigidbody.h>

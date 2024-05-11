@@ -23,7 +23,7 @@ namespace bb
         friend class PlayerAttackignState;
 
     public:
-        static constexpr float GROUND_CHECK_DISTANCE{ 0.3f };
+        static constexpr float GROUND_CHECK_DISTANCE{ 0.5f };
 
         Player(GameObject* parentPtr, int playerIndex, Animator* animator = nullptr,
                SpriteRenderer* spriteRenderer = nullptr, Rigidbody* rigidbody = nullptr,
@@ -57,7 +57,8 @@ namespace bb
 
         bool IsGrounded();
 
-        void SetState(PlayerState* nextState);
+        void SetMovementState(PlayerState* nextState);
+        void SetAttackState(PlayerState* nextState);
 
         void HandleFlip();
 
@@ -65,7 +66,8 @@ namespace bb
         std::unique_ptr<PlayerJumpingState> m_JumpingState{ std::make_unique<PlayerJumpingState>() };
         std::unique_ptr<PlayerAttackignState> m_AttackignState{ std::make_unique<PlayerAttackignState>() };
 
-        PlayerState* m_ActiveState{ m_WalkingState.get() };
+        PlayerState* m_ActiveMovementState{ m_WalkingState.get() };
+        PlayerState* m_ActiveAttackState{ nullptr };
 
         Event<int> m_OnDeathEvent{};
         Event<int> m_OnScoreChangeEvent{};
@@ -81,6 +83,7 @@ namespace bb
         std::string m_WalkAnimationName{ "Walk" };
         std::string m_JumpAnimationName{ "Jump" };
         std::string m_FallingAnimationName{ "Falling" };
+        std::string m_AttackAnimationName{ "Attack" };
 
         Animator* m_AnimatorPtr{ nullptr };
         Rigidbody* m_Rigidbody{ nullptr };

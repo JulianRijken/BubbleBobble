@@ -35,7 +35,7 @@ namespace bb
     {
     public:
         static constexpr float WALK_GRAVITY_SCALE{ 3.0f };
-        static constexpr float MOVE_SPEED{ 4.0f };
+        static constexpr float MOVE_SPEED{ 8.0f };
         static constexpr float MIN_TIME_WALKING_BEFORE_GROUND_CHECK{ 0.5f };
 
         void OnEnterState(Player& player) override;
@@ -74,7 +74,13 @@ namespace bb
     class PlayerAttackignState final : public PlayerState
     {
     public:
+        static constexpr float FIRE_POWER = 20.0;
+        static constexpr float TIME_BETWEEN_FIRE = 0.5f;
+
         void OnEnterState(Player& player) override;
         void Update(Player& player) override;
+
+    private:
+        float m_TimeOfLastAttack{};
     };
 }  // namespace bb
