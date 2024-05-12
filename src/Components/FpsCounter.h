@@ -1,6 +1,12 @@
 #pragma once
-#include "Component.h"
-#include "TextRenderer.h"
+#include <Component.h>
+
+using namespace jul;
+
+namespace jul
+{
+    class TextRenderer;
+}
 
 namespace bb
 {
@@ -10,10 +16,9 @@ namespace bb
         FpsCounter(jul::GameObject* parent);
 
     private:
-        void Awake() override;
         void Update() override;
 
-        jul::TextRenderer* m_TextRenderer{};
+        TextRenderer* m_TextRenderer{};
     };
 
 }  // namespace bb

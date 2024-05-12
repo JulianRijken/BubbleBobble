@@ -72,9 +72,10 @@ void LoadResources()
                                     0.5f, 0.5f
     },
                                 1,
-                                6,
-                                { { "Spawn", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 16 } },
-                                  { "Pop", SpriteAnimation{ { { 4, 0 }, { 5, 0 } }, 8 } } });
+                                7,
+                                { { "Spawn", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 12 } },
+                                  { "Idle", SpriteAnimation{ { { 3, 0 }, { 4, 0 } }, 12 } },
+                                  { "Pop", SpriteAnimation{ { { 5, 0 }, { 6, 0 } }, 8 } } });
 
     ResourceManager::LoadSprite("LevelTiles", "LevelTiles.png", 8, { 0.0f, 0.0f }, 25, 5);
 
@@ -218,7 +219,7 @@ void MainScene(Scene& scene)
     zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
         .restitution = 0.1f,
-        .size = {1.80f, 1.95f},
+        .size = {1.90f, 1.90f},
     });
     zenchanGO->AddComponent<ZenChan>();
 
@@ -267,12 +268,13 @@ void MainScene(Scene& scene)
     for(auto&& block : maps[1].blocks)
     {
         auto* tile = scene.AddGameObject("LevelTile", { block.position.x, block.position.y, 0 });
-        tile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, 0 });
 
         if(block.solidity == BlockSolidity::Semi)
         {
-            tile->AddComponent<OneWayPlatform>();
+
+            tile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 2, 0 });
             tile->AddComponent<Rigidbody>(Rigidbody::Settings{ .mode = Rigidbody::Mode::Static });
+            tile->AddComponent<OneWayPlatform>();
             tile->AddComponent<BoxCollider>(BoxCollider::Settings{
                 .size{1.0f,  1.0f},
                 .center{0.5f, -0.5f}
@@ -281,6 +283,7 @@ void MainScene(Scene& scene)
 
         if(block.solidity == BlockSolidity::Solid)
         {
+            tile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 1, 2 });
             tile->AddComponent<BoxCollider>(BoxCollider::Settings{
                 .size{1.0f,  1.0f},
                 .center{0.5f, -0.5f}
@@ -373,8 +376,9 @@ void jul::Julgen::GameStart()
     SceneManager::GetInstance().LoadScene("mainScene", MainScene);
     SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
 
-    // // Unload and load for testing purpouses
-    // SceneManager::GetInstance().UnloadScene("mainScene");
-    // SceneManager::GetInstance().LoadScene("mainScene", MainScene);
-    // SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
+    // Unload and load for testing purpouses
+    SceneManager::GetInstance().UnloadScene("mainScene");
+
+    SceneManager::GetInstance().LoadScene("mainScene", MainScene);
+    SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
 }

@@ -3,6 +3,7 @@
 #include <GameObject.h>
 #include <GameTime.h>
 #include <Physics.h>
+#include <Rigidbody.h>
 
 bb::OneWayPlatform::OneWayPlatform(GameObject* parentPtr) :
     jul::Component(parentPtr, "One Way Platform")

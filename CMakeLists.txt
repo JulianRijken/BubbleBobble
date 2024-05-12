@@ -30,6 +30,7 @@ set(BB_SOURCE_FILES
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
     src/Components/Enemys/ZenChan.h src/Components/Enemys/ZenChan.cpp
+    src/IDamagable.h
 )
 
 # Include source directories
@@ -62,10 +63,10 @@ target_compile_options(${TARGET_NAME} PUBLIC
 
 
 if(WIN32)
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
 
-# fixes the working directory for the debugger, this will now find assets in the correct directory
-set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
+    # fixes the working directory for the debugger, this will now find assets in the correct directory
+    set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
 endif()
 
 

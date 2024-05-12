@@ -5,6 +5,7 @@
 #include <Command.h>
 #include <Component.h>
 #include <Event.h>
+#include <IDamagable.h>
 #include <Rigidbody.h>
 
 #include <memory>
@@ -16,18 +17,18 @@ using namespace jul;
 
 namespace bb
 {
-    class Player : public Component
+    class Player final : public Component, public IDamagable
     {
         friend class PlayerWalkingState;
         friend class PlayerJumpingState;
         friend class PlayerAttackignState;
+        friend class PlayerDeathState;
+        friend class PlayerBubbleState;
 
     public:
         static constexpr float GROUND_CHECK_DISTANCE{ 0.5f };
 
-        Player(GameObject* parentPtr, int playerIndex, Animator* animator = nullptr,
-               SpriteRenderer* spriteRenderer = nullptr, Rigidbody* rigidbody = nullptr,
-               BoxCollider* collider = nullptr);
+        Player(GameObject* parentPtr, int playerIndex);
 
         ~Player() override;
 
@@ -57,17 +58,21 @@ namespace bb
 
         bool IsGrounded();
 
-        void SetMovementState(PlayerState* nextState);
+        void SetMainState(PlayerState* nextState);
         void SetAttackState(PlayerState* nextState);
 
         void HandleFlip();
+
+        void OnDamage() override;
 
         std::unique_ptr<PlayerWalkingState> m_WalkingState{ std::make_unique<PlayerWalkingState>() };
         std::unique_ptr<PlayerJumpingState> m_JumpingState{ std::make_unique<PlayerJumpingState>() };
         std::unique_ptr<PlayerAttackignState> m_AttackignState{ std::make_unique<PlayerAttackignState>() };
         std::unique_ptr<PlayerNullState> m_NullState{ std::make_unique<PlayerNullState>() };
+        std::unique_ptr<PlayerDeathState> m_DeathState{ std::make_unique<PlayerDeathState>() };
+        std::unique_ptr<PlayerBubbleState> m_BubbleState{ std::make_unique<PlayerBubbleState>() };
 
-        PlayerState* m_ActiveMovementState{ m_WalkingState.get() };
+        PlayerState* m_ActiveMainState{ m_WalkingState.get() };
         PlayerState* m_ActiveAttackState{ m_NullState.get() };
 
         Event<int> m_OnDeathEvent{};

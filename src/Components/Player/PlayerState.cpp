@@ -9,12 +9,13 @@
 #include <SceneManager.h>
 #include <SpriteRenderer.h>
 
-#include <glm/geometric.hpp>
-
 #include "AttackBubble.h"
 #include "Game.h"
 #include "Player.h"
 
+/////////////////////
+/// WALKING STATE ///
+/////////////////////
 void bb::PlayerWalkingState::OnEnterState(Player& player)
 {
     m_TimeWalking = 0.0f;
@@ -28,7 +29,7 @@ void bb::PlayerWalkingState::Update(Player& player)
 
     if(not player.IsGrounded() and m_TimeWalking > MIN_TIME_WALKING_BEFORE_GROUND_CHECK)
     {
-        player.SetMovementState(player.m_JumpingState.get());
+        player.SetMainState(player.m_JumpingState.get());
         return;
     }
 
@@ -63,7 +64,7 @@ void bb::PlayerWalkingState::OnJumpInput(Player& player)
         MessageQueue::Broadcast(MessageType::PlayerJump);
         player.m_Rigidbody->AddForce({ player.m_Rigidbody->Velocity().x, PlayerJumpingState::JUMP_FORCE },
                                      Rigidbody::ForceMode::VelocityChange);
-        player.SetMovementState(player.m_JumpingState.get());
+        player.SetMainState(player.m_JumpingState.get());
         return;
     }
 }
@@ -76,9 +77,14 @@ void bb::PlayerWalkingState::OnAttackInput(Player& player)
 
 void bb::PlayerWalkingState::OnExitState(Player& player) { player.m_Rigidbody->SetGravityScale(1.0f); }
 
+void bb::PlayerWalkingState::OnPlayerDamage(Player& player) { player.SetMainState(player.m_DeathState.get()); }
+
+/////////////////////
+/// JUMPING STATE ///
+/////////////////////
 void bb::PlayerJumpingState::OnEnterState(Player& player)
 {
-    m_SlowFallHeight = player.m_Rigidbody->Positon().y;
+    m_SlowFallHeight = player.m_Rigidbody->Position().y;
     m_TimeInJump = 0.0f;
     player.m_Rigidbody->SetGravityScale(0.0f);
 
@@ -101,7 +107,7 @@ void bb::PlayerJumpingState::Update(Player& player)
     // Go out of state
     if(player.IsGrounded())
     {
-        player.SetMovementState(player.m_WalkingState.get());
+        player.SetMainState(player.m_WalkingState.get());
         return;
     }
 
@@ -110,7 +116,7 @@ void bb::PlayerJumpingState::Update(Player& player)
     m_TimeInJump += GameTime::GetDeltaTimeF();
 
     // Tell player he is falling
-    if(player.m_Rigidbody->Positon().y < m_SlowFallHeight)
+    if(player.m_Rigidbody->Position().y < m_SlowFallHeight)
         m_Falling = true;
 
     // Force falling animation when done with jump
@@ -159,6 +165,12 @@ void bb::PlayerJumpingState::OnAttackInput(Player& player)
         player.SetAttackState(player.m_AttackignState.get());
 }
 
+void bb::PlayerJumpingState::OnPlayerDamage(Player& player) { player.SetMainState(player.m_DeathState.get()); }
+
+
+////////////////////
+/// ATTACK STATE ///
+/////////////////////
 void bb::PlayerAttackignState::OnEnterState(Player& player)
 {
     if(GameTime::GetElapsedTime() - m_TimeOfLastAttack < TIME_BETWEEN_FIRE)
@@ -194,4 +206,24 @@ void bb::PlayerAttackignState::Update(Player& player)
 {
     if(not player.m_AnimatorPtr->IsActiveAnimation(player.m_AttackAnimationName))
         player.SetAttackState(player.m_NullState.get());
+}
+
+///////////////////
+/// DEATH STATE ///
+///////////////////
+void bb::PlayerDeathState::OnEnterState(Player& player)
+{
+    player.m_Rigidbody->SetMode(Rigidbody::Mode::Static);
+    player.m_Collider->SetSensor(true);
+
+    MessageQueue::Broadcast(MessageType::PlayerDied);
+    player.m_AnimatorPtr->PlayAnimation(player.m_DeathAnimationName);
+    player.m_Lives--;
+    player.m_OnDeathEvent.Invoke(player.m_Lives);
+}
+
+void bb::PlayerDeathState::OnExitState(Player& player)
+{
+    player.m_Rigidbody->SetMode(Rigidbody::Mode::Dynamic);
+    player.m_Collider->SetSensor(false);
 }

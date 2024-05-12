@@ -1,7 +1,6 @@
 #pragma once
 #include <Component.h>
 #include <ICollisionListener.h>
-#include <Rigidbody.h>
 
 
 using namespace jul;

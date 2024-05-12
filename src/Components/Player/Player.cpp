@@ -8,49 +8,19 @@
 #include "Game.h"
 #include "GameObject.h"
 
-bb::Player::Player(GameObject* parentPtr, int playerIndex, Animator* animator, SpriteRenderer* spriteRenderer,
-                   Rigidbody* rigidbody, BoxCollider* collider) :
+bb::Player::Player(GameObject* parentPtr, int playerIndex) :
     Component(parentPtr, "PlayerController"),
     m_PlayerIndex(playerIndex),
-    m_AnimatorPtr(animator),
-    m_Rigidbody(rigidbody),
-    m_SpriteRenderer(spriteRenderer),
-    m_Collider(collider)
+    m_AnimatorPtr(parentPtr->GetComponent<Animator>()),
+    m_Rigidbody(parentPtr->GetComponent<Rigidbody>()),
+    m_SpriteRenderer(parentPtr->GetComponent<SpriteRenderer>()),
+    m_Collider(parentPtr->GetComponent<BoxCollider>())
 {
-    if(m_AnimatorPtr == nullptr)
-        m_AnimatorPtr = parentPtr->GetComponent<Animator>();
-
-    if(m_SpriteRenderer == nullptr)
-        m_SpriteRenderer = parentPtr->GetComponent<SpriteRenderer>();
-
-    if(m_Rigidbody == nullptr)
-        m_Rigidbody = parentPtr->GetComponent<Rigidbody>();
-
-    if(m_Collider == nullptr)
-        m_Collider = parentPtr->GetComponent<BoxCollider>();
-
-    assert(m_AnimatorPtr);
-    assert(m_SpriteRenderer);
-    assert(m_Rigidbody);
-
     Game::GetInstance().SetPlayer(playerIndex, this);
     m_WalkingState->OnEnterState(*this);
 }
 
 bb::Player::~Player() { Game::GetInstance().SetPlayer(m_PlayerIndex, nullptr); }
-
-
-void bb::Player::Kill()
-{
-    MessageQueue::Broadcast(MessageType::PlayerDied);
-
-    assert(m_AnimatorPtr);
-    m_AnimatorPtr->PlayAnimation(m_DeathAnimationName);
-
-    m_Lives--;
-
-    m_OnDeathEvent.Invoke(m_Lives);
-}
 
 
 void bb::Player::AddScore()
@@ -73,7 +43,7 @@ bool bb::Player::IsGrounded()
         return false;
 
     const b2Vec2& lowerBound = m_Rigidbody->GetBody()->GetFixtureList()[0].GetAABB(0).lowerBound;
-    const float center = m_Rigidbody->Positon().x;
+    const float center = m_Rigidbody->Position().x;
 
     const glm::vec2 halfSize = m_Collider->GetSettings().size / 2.0f;
     const float castHeight = lowerBound.y + halfSize.y;
@@ -90,11 +60,11 @@ bool bb::Player::IsGrounded()
     return false;
 }
 
-void bb::Player::SetMovementState(PlayerState* nextState)
+void bb::Player::SetMainState(PlayerState* nextState)
 {
-    m_ActiveMovementState->OnExitState(*this);
+    m_ActiveMainState->OnExitState(*this);
     nextState->OnEnterState(*this);
-    m_ActiveMovementState = nextState;
+    m_ActiveMainState = nextState;
 }
 
 void bb::Player::SetAttackState(PlayerState* nextState)
@@ -112,6 +82,7 @@ void bb::Player::HandleFlip()
     else if(m_MovementInput > 0)
         m_SpriteRenderer->m_FlipX = false;
 }
+
 
 // TODO: Pfff this sucks and should be fixed using the input system just like the controllers
 void bb::Player::OnMoveLeftInput(InputContext context)
@@ -134,24 +105,30 @@ void bb::Player::OnMoveStickInput(InputContext context) { UpdateMoveInput(std::g
 
 void bb::Player::OnJumpInput(InputContext /*unused*/)
 {
-    m_ActiveMovementState->OnJumpInput(*this);
+    m_ActiveMainState->OnJumpInput(*this);
     m_ActiveAttackState->OnJumpInput(*this);
 }
 
 void bb::Player::OnAttackInput(InputContext /*unused*/)
 {
-    m_ActiveMovementState->OnAttackInput(*this);
+    m_ActiveMainState->OnAttackInput(*this);
     m_ActiveAttackState->OnAttackInput(*this);
 }
 
 void bb::Player::Update()
 {
-    m_ActiveMovementState->Update(*this);
+    m_ActiveMainState->Update(*this);
     m_ActiveAttackState->Update(*this);
 }
 
 void bb::Player::FixedUpdate()
 {
-    m_ActiveMovementState->FixedUpdate(*this);
+    m_ActiveMainState->FixedUpdate(*this);
     m_ActiveAttackState->FixedUpdate(*this);
+}
+
+void bb::Player::OnDamage()
+{
+    m_ActiveAttackState->OnPlayerDamage(*this);
+    m_ActiveMainState->OnPlayerDamage(*this);
 }

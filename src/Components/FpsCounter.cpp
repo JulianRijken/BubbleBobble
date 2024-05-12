@@ -7,11 +7,10 @@
 #include "GameTime.h"
 
 bb::FpsCounter::FpsCounter(jul::GameObject* parent) :
-    Component(parent, "FpsCounter")
+    Component(parent, "FpsCounter"),
+    m_TextRenderer(parent->GetComponent<jul::TextRenderer>())
 {
 }
-
-void bb::FpsCounter::Awake() { m_TextRenderer = GetGameObject()->GetComponent<jul::TextRenderer>(); }
 
 void bb::FpsCounter::Update()
 {

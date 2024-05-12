@@ -4,6 +4,33 @@ namespace bb
 {
     class Player;
 
+    // MAIN   STATE: JUMPING - DEAD - WALKING - BUBBLE
+    // ATTACK STATE: ATTACK
+    //
+    // Attack state is seperated as the character has to
+    // keep the same movement when in attack mode.
+    // This is a Concurrent State Machine :)
+    //
+    //                    ┌─────────┐
+    //           ........─►         ├─────────┐
+    //           │        │ JUMPING │         │
+    //     ......▼.....   │         │    ┌────▼─────┐
+    //     .          .   └────▲────┘    │          │
+    //     .  ATTACK  .        │         │   DEAD   │
+    //     .          .        │         │          │
+    //     ......▲.....   ┌────▼────┐    └────▲─────┘
+    //           │        │         │         │
+    //           .        │ WALKING │         │
+    //           ........─►         ◄─────────┘
+    //                    └────▲────┘
+    //                         │
+    //                    ┌────▼────┐
+    //                    │         │
+    //                    │ BUBBLE  │
+    //                    │         │
+    //                    └─────────┘
+
+
     class PlayerState
     {
     public:
@@ -23,6 +50,8 @@ namespace bb
         virtual void OnAttackInput(Player& /*unused*/){};
         virtual void OnJumpInput(Player& /*unused*/){};
         virtual void OnMoveInput(Player& /*unused*/){};
+
+        virtual void OnPlayerDamage(Player& /*unused*/){};
 
         virtual void OnExitState(Player& /*unused*/){};
 
@@ -54,8 +83,10 @@ namespace bb
         void Update(Player& player) override;
         void FixedUpdate(Player& player) override;
         void OnJumpInput(Player& player) override;
-        void OnAttackInput(Player& player) override;
         void OnExitState(Player& player) override;
+        void OnAttackInput(Player& player) override;
+        void OnPlayerDamage(Player& player) override;
+
 
     private:
         float m_TimeWalking{};
@@ -75,6 +106,7 @@ namespace bb
         void FixedUpdate(Player& player) override;
         void OnExitState(Player& player) override;
         void OnAttackInput(Player& player) override;
+        void OnPlayerDamage(Player& player) override;
 
     private:
         float m_SlowFallHeight{};
@@ -94,5 +126,18 @@ namespace bb
 
     private:
         float m_TimeOfLastAttack{};
+    };
+
+    class PlayerDeathState final : public PlayerState
+    {
+    public:
+        void OnEnterState(Player& player) override;
+        void OnExitState(Player& player) override;
+    };
+
+    class PlayerBubbleState final : public PlayerState
+    {
+        // TODO: Yet to implement bubble state
+        //       this is the state the player has when he is moving between levels
     };
 }  // namespace bb

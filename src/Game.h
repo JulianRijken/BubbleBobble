@@ -75,6 +75,7 @@ namespace bb
         void OnMessage(const Message& message);
 
         void ParseMaps(const std::string& fileName);
-        SDL_Surface* JxlToSurface(const std::string& fileName);
+
+        static SDL_Surface* JxlToSurface(const std::string& fileName);
     };
 }  // namespace bb

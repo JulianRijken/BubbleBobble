@@ -53,11 +53,16 @@ void bb::AttackBubble::Update()
 {
     if(m_Popped)
     {
+        m_Rigidbody->AddForce({}, jul::Rigidbody::ForceMode::VelocityChange);
+
         if(not m_Animator->IsPlaying())
             GetGameObject()->Destroy();
     }
     else
     {
+        if(not m_Animator->IsPlaying())
+            m_Animator->PlayAnimation("Idle");
+
         m_FloatingDuration += GameTime::GetDeltaTimeF();
 
         m_BubbleCenter = {};
@@ -88,10 +93,10 @@ void bb::AttackBubble::FixedUpdate()
 
     if(m_FloatingDuration > DURATION_BEFORE_FLOATING)
     {
-        if(m_Rigidbody->Positon().y < FLOAT_HEIGHT)
+        if(m_Rigidbody->Position().y < FLOAT_HEIGHT)
             m_Rigidbody->AddForce({ 0, BUBBLE_FLOAT_UP_FORCE }, Rigidbody::ForceMode::Force);
 
-        const glm::vec2 direction = m_BubbleCenter - m_Rigidbody->Positon();
+        const glm::vec2 direction = m_BubbleCenter - m_Rigidbody->Position();
         m_Rigidbody->AddForce(direction * BUBBLE_ATTRACTION_FORCE, Rigidbody::ForceMode::Force);
     }
 }
