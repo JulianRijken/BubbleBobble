@@ -6,18 +6,14 @@
 #include "TextRenderer.h"
 #include "GameTime.h"
 
-
-FpsCounter::FpsCounter(jul::GameObject* parent) : 
-	Component(parent,"FpsCounter")
+bb::FpsCounter::FpsCounter(jul::GameObject* parent) :
+    Component(parent, "FpsCounter")
 {
 }
 
-void FpsCounter::Awake()
-{
-    m_TextRenderer = GetGameObject()->GetComponent<jul::TextRenderer>();
-}
+void bb::FpsCounter::Awake() { m_TextRenderer = GetGameObject()->GetComponent<jul::TextRenderer>(); }
 
-void FpsCounter::Update()
+void bb::FpsCounter::Update()
 {
     if (m_TextRenderer == nullptr)
         return;

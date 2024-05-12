@@ -38,7 +38,7 @@ void bb::PlayerWalkingState::Update(Player& player)
         player.m_AnimatorPtr->PlayAnimation(player.m_IdleAnimationName, true);
 
 
-    if(std::abs(player.m_Rigidbody->Velocity().x) > 2)
+    if(std::abs(player.m_Rigidbody->Velocity().x) > 0.0f)
     {
         if(player.m_AnimatorPtr->IsActiveAnimation(player.m_IdleAnimationName))
             player.m_AnimatorPtr->PlayAnimation(player.m_WalkAnimationName, true);

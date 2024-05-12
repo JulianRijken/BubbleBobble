@@ -29,6 +29,7 @@ set(BB_SOURCE_FILES
 # Adds the source files to the executible
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
+    src/Components/Enemys/ZenChan.h src/Components/Enemys/ZenChan.cpp
 )
 
 # Include source directories
@@ -36,6 +37,7 @@ target_include_directories(${TARGET_NAME} PUBLIC
     ${SOURCE_DIR}
     ${SOURCE_DIR}/Components
     ${SOURCE_DIR}/Components/Player
+    ${SOURCE_DIR}/Components/Enemys
 )
 
 target_include_directories(${TARGET_NAME} PRIVATE

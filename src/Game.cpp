@@ -46,7 +46,7 @@ void bb::Game::ParseMaps(const std::string& fileName)
 {
     SDL_Surface* surface = JxlToSurface(fileName);
 
-    uint32_t* pixels = static_cast<uint32_t*>(surface->pixels);
+    auto* pixels = static_cast<uint32_t*>(surface->pixels);
 
     const int levelCount = 2;
     const int levelWidth = 32;

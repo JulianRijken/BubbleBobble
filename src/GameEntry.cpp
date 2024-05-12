@@ -18,6 +18,7 @@
 #include "Game.h"
 #include "OneWayPlatform.h"
 #include "Player.h"
+#include "ZenChan.h"
 
 using namespace jul;
 using namespace bb;
@@ -145,6 +146,18 @@ void LoadResources()
                                 {
                                     { "Twinkle", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 4 } },
                                 });
+
+    ResourceManager::LoadSprite("Enemys",
+                                "Enemys.png",
+                                8,
+                                {
+                                    0.5f, 0.5f
+    },
+                                12,
+                                16,
+                                {
+                                    { "zenchan_normal", SpriteAnimation{ { { 0, 0 }, { 1, 0 } }, 4 } },
+                                });
 }
 
 void MainMenuScene(Scene& scene)
@@ -195,7 +208,19 @@ void MainScene(Scene& scene)
         .restitution = 0.1f,
         .size = {1.80f, 1.95f},
     });
-    player2GameObject->AddComponent<bb::Player>(1);
+    player2GameObject->AddComponent<Player>(1);
+
+
+    auto* zenchanGO = scene.AddGameObject("ZenChan", { 3, 5, 0 });
+    zenchanGO->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    zenchanGO->AddComponent<Animator>();
+    zenchanGO->AddComponent<Rigidbody>();
+    zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f,
+        .restitution = 0.1f,
+        .size = {1.80f, 1.95f},
+    });
+    zenchanGO->AddComponent<ZenChan>();
 
 
     // auto* scoreInfoText = scene.AddGameObject("InfoText", { 30, 70, 0 });

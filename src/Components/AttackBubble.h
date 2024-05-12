@@ -24,7 +24,7 @@ namespace bb
         static constexpr float DURATION_BEFORE_FLOATING = 1.0f;
         static constexpr float FLOAT_HEIGHT = 3;
 
-        static constexpr float POP_DURATION_STRENGTH = 0.01f;
+        static constexpr float POP_DURATION_STRENGTH = 1;
         static constexpr float POP_VELOCITY_STRENGTH = 1;
         static constexpr float POP_THRESHOLD = 15;
 
