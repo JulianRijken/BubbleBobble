@@ -73,7 +73,7 @@ void LoadResources()
                                 1,
                                 6,
                                 { { "Spawn", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 16 } },
-                                  { "Pop", SpriteAnimation{ { { 4, 0 }, { 5, 0 } }, 16 } } });
+                                  { "Pop", SpriteAnimation{ { { 4, 0 }, { 5, 0 } }, 8 } } });
 
     ResourceManager::LoadSprite("LevelTiles", "LevelTiles.png", 8, { 0.0f, 0.0f }, 25, 5);
 
@@ -173,11 +173,6 @@ void MainMenuScene(Scene& scene)
 
 void MainScene(Scene& scene)
 {
-    // GameObject* fpsCounter = scene.AddGameObject("Fps Counter", { 20, 20, 0 });
-    // fpsCounter->AddComponent<TextRenderer>("error", ResourceManager::GetFont("LinguaSmall"), 100);
-    // fpsCounter->AddComponent<FpsCounter>();
-
-
     // Player 1
     auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -3, 10, 0 });
     player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
@@ -309,11 +304,12 @@ void jul::Julgen::PreInit()
 
 
     Input::AddAction(InputBind::TestLivesButton, { { SDL_SCANCODE_X }, { SDL_CONTROLLER_BUTTON_B }, {} });
-    Input::AddAction(InputBind::Jump,
-                     {
-                         { SDL_SCANCODE_SPACE, SDL_SCANCODE_W, SDL_SCANCODE_UP },
-                         { SDL_CONTROLLER_BUTTON_B },
-                         {}
+    Input::AddAction(
+        InputBind::Jump,
+        {
+            { SDL_SCANCODE_SPACE, SDL_SCANCODE_W, SDL_SCANCODE_X, SDL_SCANCODE_UP },
+            { SDL_CONTROLLER_BUTTON_B },
+            {}
     });
     Input::AddAction(InputBind::MoveLeft,
                      {

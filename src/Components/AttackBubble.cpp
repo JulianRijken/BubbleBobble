@@ -22,27 +22,60 @@ bb::AttackBubble::AttackBubble(GameObject* parent, glm::vec3 fireVelocity) :
 
 bb::AttackBubble::~AttackBubble() { g_Bubbles.erase(this); }
 
-void bb::AttackBubble::OnCollisionBegin(Collision /*unused*/)
+void bb::AttackBubble::OnCollisionPreSolve(Collision collision, const b2Manifold*)
 {
-    // fmt::println("Bubble Colliding");
+    if(not collision.contact->IsEnabled())
+        return;
+
+    if(m_FloatingDuration < DURATION_BEFORE_FLOATING)
+        return;
+
+    auto velocityDiffb2 =
+        collision.otherFixture->GetBody()->GetLinearVelocity() - collision.thisFixture->GetBody()->GetLinearVelocity();
+
+    const float bubbleStrenght =
+        (velocityDiffb2.Length() * POP_VELOCITY_STRENGTH) + (m_FloatingDuration * POP_DURATION_STRENGTH);
+
+    if(bubbleStrenght < POP_THRESHOLD)
+        return;
+
+
+    collision.contact->SetEnabled(false);
+
+    if(m_Popped)
+        return;
+
+    m_Popped = true;
+    m_Animator->PlayAnimation("Pop");
 }
 
 void bb::AttackBubble::Update()
 {
-    m_FloatingDuration += GameTime::GetDeltaTimeF();
-
-    m_BubbleCenter = {};
-    if(not g_Bubbles.empty())
+    if(m_Popped)
     {
-        for(auto&& bubble : g_Bubbles)
-            m_BubbleCenter += glm::vec2(bubble->GetTransform().WorldPosition());
+        if(not m_Animator->IsPlaying())
+            GetGameObject()->Destroy();
+    }
+    else
+    {
+        m_FloatingDuration += GameTime::GetDeltaTimeF();
 
-        m_BubbleCenter /= g_Bubbles.size();
+        m_BubbleCenter = {};
+        if(not g_Bubbles.empty())
+        {
+            for(auto&& bubble : g_Bubbles)
+                m_BubbleCenter += glm::vec2(bubble->GetTransform().WorldPosition());
+
+            m_BubbleCenter /= g_Bubbles.size();
+        }
     }
 }
 
 void bb::AttackBubble::FixedUpdate()
 {
+    if(m_Popped)
+        return;
+
     // Add noise
     constexpr float randomForce = 20.0f;
     m_Rigidbody->AddForce(

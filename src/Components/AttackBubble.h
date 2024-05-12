@@ -24,11 +24,15 @@ namespace bb
         static constexpr float DURATION_BEFORE_FLOATING = 1.0f;
         static constexpr float FLOAT_HEIGHT = 3;
 
+        static constexpr float POP_DURATION_STRENGTH = 0.01f;
+        static constexpr float POP_VELOCITY_STRENGTH = 1;
+        static constexpr float POP_THRESHOLD = 15;
+
         AttackBubble(GameObject* parent, glm::vec3 fireVelocity = {});
         ~AttackBubble() override;
 
     private:
-        void OnCollisionBegin(Collision /*unused*/) override;
+        void OnCollisionPreSolve(Collision, const b2Manifold*) override;
         void Update() override;
         void FixedUpdate() override;
 
@@ -38,6 +42,7 @@ namespace bb
         Rigidbody* m_Rigidbody{ nullptr };
 
         float m_FloatingDuration{};
+        bool m_Popped{ false };
 
         static inline std::unordered_set<AttackBubble*> g_Bubbles{};
     };

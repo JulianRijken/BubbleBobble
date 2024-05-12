@@ -31,6 +31,18 @@ namespace bb
         PlayerState() = default;
     };
 
+    class PlayerNullState final : public PlayerState
+    {
+    public:
+        PlayerNullState() = default;
+
+        PlayerNullState(PlayerNullState&&) = delete;
+        PlayerNullState(const PlayerNullState&) = delete;
+        PlayerNullState& operator=(PlayerNullState&&) = delete;
+        PlayerNullState& operator=(const PlayerNullState&) = delete;
+    };
+
+
     class PlayerWalkingState final : public PlayerState
     {
     public:

@@ -99,11 +99,8 @@ void bb::Player::SetMovementState(PlayerState* nextState)
 
 void bb::Player::SetAttackState(PlayerState* nextState)
 {
-    if(m_ActiveAttackState)
-        m_ActiveAttackState->OnExitState(*this);
-
-    if(nextState)
-        nextState->OnEnterState(*this);
+    m_ActiveAttackState->OnExitState(*this);
+    nextState->OnEnterState(*this);
     m_ActiveAttackState = nextState;
 }
 
@@ -138,31 +135,23 @@ void bb::Player::OnMoveStickInput(InputContext context) { UpdateMoveInput(std::g
 void bb::Player::OnJumpInput(InputContext /*unused*/)
 {
     m_ActiveMovementState->OnJumpInput(*this);
-
-    if(m_ActiveAttackState)
-        m_ActiveAttackState->OnJumpInput(*this);
+    m_ActiveAttackState->OnJumpInput(*this);
 }
 
 void bb::Player::OnAttackInput(InputContext /*unused*/)
 {
     m_ActiveMovementState->OnAttackInput(*this);
-
-    if(m_ActiveAttackState)
-        m_ActiveAttackState->OnAttackInput(*this);
+    m_ActiveAttackState->OnAttackInput(*this);
 }
 
 void bb::Player::Update()
 {
     m_ActiveMovementState->Update(*this);
-
-    if(m_ActiveAttackState)
-        m_ActiveAttackState->Update(*this);
+    m_ActiveAttackState->Update(*this);
 }
 
 void bb::Player::FixedUpdate()
 {
     m_ActiveMovementState->FixedUpdate(*this);
-
-    if(m_ActiveAttackState)
-        m_ActiveAttackState->FixedUpdate(*this);
+    m_ActiveAttackState->FixedUpdate(*this);
 }

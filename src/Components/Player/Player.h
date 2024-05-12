@@ -65,9 +65,10 @@ namespace bb
         std::unique_ptr<PlayerWalkingState> m_WalkingState{ std::make_unique<PlayerWalkingState>() };
         std::unique_ptr<PlayerJumpingState> m_JumpingState{ std::make_unique<PlayerJumpingState>() };
         std::unique_ptr<PlayerAttackignState> m_AttackignState{ std::make_unique<PlayerAttackignState>() };
+        std::unique_ptr<PlayerNullState> m_NullState{ std::make_unique<PlayerNullState>() };
 
         PlayerState* m_ActiveMovementState{ m_WalkingState.get() };
-        PlayerState* m_ActiveAttackState{ nullptr };
+        PlayerState* m_ActiveAttackState{ m_NullState.get() };
 
         Event<int> m_OnDeathEvent{};
         Event<int> m_OnScoreChangeEvent{};

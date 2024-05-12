@@ -163,7 +163,7 @@ void bb::PlayerAttackignState::OnEnterState(Player& player)
 {
     if(GameTime::GetElapsedTime() - m_TimeOfLastAttack < TIME_BETWEEN_FIRE)
     {
-        player.m_ActiveAttackState = nullptr;
+        player.m_ActiveAttackState = player.m_NullState.get();
         return;
     }
 
@@ -193,5 +193,5 @@ void bb::PlayerAttackignState::OnEnterState(Player& player)
 void bb::PlayerAttackignState::Update(Player& player)
 {
     if(not player.m_AnimatorPtr->IsActiveAnimation(player.m_AttackAnimationName))
-        player.SetAttackState(nullptr);
+        player.SetAttackState(player.m_NullState.get());
 }
