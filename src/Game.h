@@ -8,7 +8,7 @@
 #include <array>
 
 
-class SDL_Surface;
+struct SDL_Surface;
 
 namespace bb
 {

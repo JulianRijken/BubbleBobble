@@ -166,7 +166,7 @@ void bb::PlayerAttackignState::OnEnterState(Player& player)
         return;
     }
 
-    m_TimeOfLastAttack = GameTime::GetElapsedTime();
+    m_TimeOfLastAttack = GameTime::GetElapsedTimeF();
 
     player.m_AnimatorPtr->PlayAnimation(player.m_AttackAnimationName);
     MessageQueue::Broadcast(MessageType::PlayerAttack);

@@ -22,7 +22,6 @@ set(BB_SOURCE_FILES
     ${SOURCE_DIR}/Components/AutoRotateAround.h     ${SOURCE_DIR}/Components/AutoRotateAround.cpp
     ${SOURCE_DIR}/Components/Bounce.h               ${SOURCE_DIR}/Components/Bounce.cpp
     ${SOURCE_DIR}/Components/FpsCounter.h           ${SOURCE_DIR}/Components/FpsCounter.cpp
-    ${SOURCE_DIR}/Components/PlotExample.h          ${SOURCE_DIR}/Components/PlotExample.cpp
     ${SOURCE_DIR}/Components/Character.h            ${SOURCE_DIR}/Components/Character.cpp
     ${SOURCE_DIR}/Components/PlayerHUD.h            ${SOURCE_DIR}/Components/PlayerHUD.cpp
 )
