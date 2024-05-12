@@ -16,6 +16,7 @@ namespace bb
     {
         PlayerDied,
         PlayerAttack,
+        PlayerJump,
         GameStart,
     };
 
@@ -34,7 +35,8 @@ namespace bb
     {
         GameStart,
         FireBubble,
-        Death
+        Death,
+        Jump
     };
 
     enum class BlockSolidity

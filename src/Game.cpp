@@ -13,6 +13,7 @@ bb::Game::Game()
     MessageQueue::AddListener(MessageType::GameStart, this, &Game::OnMessage);
     MessageQueue::AddListener(MessageType::PlayerAttack, this, &Game::OnMessage);
     MessageQueue::AddListener(MessageType::PlayerDied, this, &Game::OnMessage);
+    MessageQueue::AddListener(MessageType::PlayerJump, this, &Game::OnMessage);
 
     ParseMaps("Levels/Levels.jxl");
 }
@@ -34,6 +35,9 @@ void bb::Game::OnMessage(const Message& message)
             break;
         case MessageType::PlayerAttack:
             Locator::Get<Sound>().PlaySound((int)Sounds::FireBubble);
+            break;
+        case MessageType::PlayerJump:
+            Locator::Get<Sound>().PlaySound((int)Sounds::Jump);
             break;
     }
 }

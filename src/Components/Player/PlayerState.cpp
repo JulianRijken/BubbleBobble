@@ -60,6 +60,7 @@ void bb::PlayerWalkingState::OnJumpInput(Player& player)
 {
     if(player.IsGrounded())
     {
+        MessageQueue::Broadcast(MessageType::PlayerJump);
         player.m_Rigidbody->AddForce({ player.m_Rigidbody->Velocity().x, PlayerJumpingState::JUMP_FORCE },
                                      Rigidbody::ForceMode::VelocityChange);
         player.SetMovementState(player.m_JumpingState.get());

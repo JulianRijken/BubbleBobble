@@ -116,11 +116,24 @@ void bb::Player::HandleFlip()
         m_SpriteRenderer->m_FlipX = false;
 }
 
-void bb::Player::OnMoveLeftInput(InputContext /*unused*/) { UpdateMoveInput(-1.0f); }
+// TODO: Pfff this sucks and should be fixed using the input system just like the controllers
+void bb::Player::OnMoveLeftInput(InputContext context)
+{
+    if(context.state == ButtonState::Down)
+        UpdateMoveInput(-1.0f);
+    else if(m_MovementInput < 0)
+        UpdateMoveInput(0.0f);
+}
 
-void bb::Player::OnMoveRightInput(InputContext /*unused*/) { UpdateMoveInput(1.0f); }
+void bb::Player::OnMoveRightInput(InputContext context)
+{
+    if(context.state == ButtonState::Down)
+        UpdateMoveInput(1.0f);
+    else if(m_MovementInput > 0)
+        UpdateMoveInput(0.0f);
+}
 
-void bb::Player::OnMoveStickInput(InputContext context) { UpdateMoveInput(std::get<float>(context.value())); }
+void bb::Player::OnMoveStickInput(InputContext context) { UpdateMoveInput(std::get<float>(context.value.value())); }
 
 void bb::Player::OnJumpInput(InputContext /*unused*/)
 {
@@ -144,9 +157,6 @@ void bb::Player::Update()
 
     if(m_ActiveAttackState)
         m_ActiveAttackState->Update(*this);
-
-    // Todo input should also check for up events
-    m_MovementInput = 0;
 }
 
 void bb::Player::FixedUpdate()

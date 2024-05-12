@@ -4,6 +4,7 @@
 #include <fmt/core.h>
 #include <GameObject.h>
 #include <GameTime.h>
+#include <MathExtensions.h>
 
 
 bb::AttackBubble::AttackBubble(GameObject* parent, glm::vec3 fireVelocity) :
@@ -21,7 +22,10 @@ bb::AttackBubble::AttackBubble(GameObject* parent, glm::vec3 fireVelocity) :
 
 bb::AttackBubble::~AttackBubble() { g_Bubbles.erase(this); }
 
-void bb::AttackBubble::OnCollisionBegin(Collision /*unused*/) { fmt::println("Bubble Colliding"); }
+void bb::AttackBubble::OnCollisionBegin(Collision /*unused*/)
+{
+    // fmt::println("Bubble Colliding");
+}
 
 void bb::AttackBubble::Update()
 {
@@ -39,6 +43,12 @@ void bb::AttackBubble::Update()
 
 void bb::AttackBubble::FixedUpdate()
 {
+    // Add noise
+    constexpr float randomForce = 20.0f;
+    m_Rigidbody->AddForce(
+        { jul::math::RandomRange(-randomForce, randomForce), jul::math::RandomRange(-randomForce, randomForce) },
+        Rigidbody::ForceMode::Force);
+
 
     // Adds drag
     m_Rigidbody->AddForce(-m_Rigidbody->Velocity(), Rigidbody::ForceMode::Force);

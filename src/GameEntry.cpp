@@ -51,6 +51,8 @@ void LoadResources()
     ResourceManager::BindSound(Sounds::GameStart, "SFX/The Quest Begins.ogg", true);
     ResourceManager::BindSound(Sounds::FireBubble, "SFX/Bubble Bobble SFX (2).wav");
     ResourceManager::BindSound(Sounds::Death, "SFX/Bubble Bobble SFX (3).wav");
+    ResourceManager::BindSound(Sounds::Jump, "SFX/Jump.wav");
+
 
     ResourceManager::LoadFont("Lingua", "Lingua.otf", 36);
     ResourceManager::LoadFont("LinguaSmall", "Lingua.otf", 16);
@@ -278,29 +280,19 @@ void TestScene(Scene& scene)
 
 void InitControls()
 {
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::MoveLeft, ButtonState::Held, 0, false, 0, &bb::Player::OnMoveLeftInput);
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::MoveRight, ButtonState::Held, 0, false, 0, &bb::Player::OnMoveRightInput);
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::MoveStick, ButtonState::Held, 0, false, 0, &bb::Player::OnMoveStickInput);
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::Attack, ButtonState::Down, 0, false, 0, &bb::Player::OnAttackInput);
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::Jump, ButtonState::Down, 0, false, 0, &bb::Player::OnJumpInput);
+    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveLeft, 0, false, 0, &bb::Player::OnMoveLeftInput);
+    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveRight, 0, false, 0, &bb::Player::OnMoveRightInput);
+    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveStick, 0, false, 0, &bb::Player::OnMoveStickInput);
+    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Attack, 0, false, 0, &bb::Player::OnAttackInput);
+    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Jump, 0, false, 0, &bb::Player::OnJumpInput);
 
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::MoveLeft, ButtonState::Held, 1, true, 1, &bb::Player::OnMoveLeftInput);
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::MoveRight, ButtonState::Held, 1, true, 1, &bb::Player::OnMoveRightInput);
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::MoveStick, ButtonState::Held, 1, true, 1, &bb::Player::OnMoveStickInput);
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::Attack, ButtonState::Down, 1, true, 1, &bb::Player::OnAttackInput);
-    Input::RegisterCommand<PlayerInputCommand>(
-        (int)InputBind::Jump, ButtonState::Down, 1, true, 1, &bb::Player::OnJumpInput);
+    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveLeft, 1, true, 1, &bb::Player::OnMoveLeftInput);
+    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveRight, 1, true, 1, &bb::Player::OnMoveRightInput);
+    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveStick, 1, true, 1, &bb::Player::OnMoveStickInput);
+    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Attack, 1, true, 1, &bb::Player::OnAttackInput);
+    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Jump, 1, true, 1, &bb::Player::OnJumpInput);
 
-    Input::RegisterCommand<MuteGameCommand>((int)InputBind::ToggleSound, ButtonState::Down, 1, true);
+    Input::RegisterCommand<MuteGameCommand>((int)InputBind::ToggleSound, 1, true);
 }
 
 void jul::Julgen::PreInit()
