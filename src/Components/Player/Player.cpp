@@ -5,6 +5,7 @@
 #include <MessageQueue.h>
 #include <Physics.h>
 
+#include "AttackBubble.h"
 #include "Game.h"
 #include "GameObject.h"
 
@@ -32,8 +33,6 @@ void bb::Player::AddScore()
 }
 
 
-// TODO: This is getting called directly from the input
-//       make sure this is not happening more than once a frame!
 void bb::Player::UpdateMoveInput(float input) { m_MovementInput = input; }
 
 bool bb::Player::IsGrounded()
@@ -127,8 +126,11 @@ void bb::Player::FixedUpdate()
     m_ActiveAttackState->FixedUpdate(*this);
 }
 
-void bb::Player::OnDamage()
+void bb::Player::OnDamage(Component* instagator)
 {
+    if(dynamic_cast<AttackBubble*>(instagator))
+        return;
+
     m_ActiveAttackState->OnPlayerDamage(*this);
     m_ActiveMainState->OnPlayerDamage(*this);
 }

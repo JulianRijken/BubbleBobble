@@ -2,6 +2,8 @@
 #include <Component.h>
 #include <ICollisionListener.h>
 
+#include "IDamagable.h"
+
 using namespace jul;
 
 namespace jul
@@ -14,7 +16,7 @@ namespace jul
 
 namespace bb
 {
-    class ZenChan final : public Component, public ICollisionListener
+    class ZenChan final : public Component, public ICollisionListener, public IDamagable
     {
     public:
         static constexpr float MOVE_SPEED{ 8.0f };
@@ -31,6 +33,8 @@ namespace bb
 
         void HandleTurning();
         void OnCollisionBegin(Collision collision) override;
+
+        void OnDamage(jul::Component* instigator) override;
 
         Animator* m_Animator{ nullptr };
         Rigidbody* m_Rigidbody{ nullptr };

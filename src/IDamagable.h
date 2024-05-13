@@ -1,5 +1,10 @@
 #pragma once
 
+namespace jul
+{
+    class Component;
+}
+
 class IDamagable
 {
 public:
@@ -10,7 +15,7 @@ public:
     IDamagable& operator=(IDamagable&&) = delete;
     IDamagable& operator=(const IDamagable&) = delete;
 
-    virtual void OnDamage() = 0;
+    virtual void OnDamage(jul::Component* instigator) = 0;
 
 protected:
     IDamagable() = default;

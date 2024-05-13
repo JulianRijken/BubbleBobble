@@ -1,10 +1,13 @@
 #include "AttackBubble.h"
 
 #include <Animator.h>
+#include <BoxCollider.h>
 #include <fmt/core.h>
 #include <GameObject.h>
 #include <GameTime.h>
 #include <MathExtensions.h>
+
+#include "IDamagable.h"
 
 
 bb::AttackBubble::AttackBubble(GameObject* parent, glm::vec3 fireVelocity) :
@@ -47,6 +50,13 @@ void bb::AttackBubble::OnCollisionPreSolve(Collision collision, const b2Manifold
 
     m_Popped = true;
     m_Animator->PlayAnimation("Pop");
+}
+
+void bb::AttackBubble::OnCollisionBegin(Collision collision)
+{
+    const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
+    if(auto* damageable = collider->GetGameObject()->GetComponent<IDamagable>())
+        damageable->OnDamage(this);
 }
 
 void bb::AttackBubble::Update()

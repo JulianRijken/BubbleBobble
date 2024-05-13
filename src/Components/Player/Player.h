@@ -63,7 +63,7 @@ namespace bb
 
         void HandleFlip();
 
-        void OnDamage() override;
+        void OnDamage(jul::Component* instigator) override;
 
         std::unique_ptr<PlayerWalkingState> m_WalkingState{ std::make_unique<PlayerWalkingState>() };
         std::unique_ptr<PlayerJumpingState> m_JumpingState{ std::make_unique<PlayerJumpingState>() };

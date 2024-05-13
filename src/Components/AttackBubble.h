@@ -32,7 +32,9 @@ namespace bb
         ~AttackBubble() override;
 
     private:
-        void OnCollisionPreSolve(Collision, const b2Manifold*) override;
+        void OnCollisionPreSolve(Collision collision, const b2Manifold*) override;
+        void OnCollisionBegin(Collision collision) override;
+
         void Update() override;
         void FixedUpdate() override;
 
