@@ -25,12 +25,12 @@ using namespace bb;
 
 class PlayerInputCommand final : public BaseCommand
 {
-    using InputFunction = std::function<void(InputContext)>;
+    using InputFunction = std::function<void(const InputContext&)>;
 
 public:
-    PlayerInputCommand(int playerIndex, void (Player::*memberFunction)(InputContext)) :
+    PlayerInputCommand(int playerIndex, void (Player::*memberFunction)(const InputContext&)) :
         m_Function(
-            [playerIndex, memberFunction](InputContext context)
+            [playerIndex, memberFunction](const InputContext& context)
             {
                 Player* player = Game::GetInstance().GetPlayer(playerIndex);
                 if(player == nullptr)
@@ -41,7 +41,7 @@ public:
     {
     }
 
-    void Execute(InputContext context) override { m_Function(context); }
+    void Execute(const InputContext& context) override { m_Function(context); }
 
 private:
     InputFunction m_Function;
@@ -175,7 +175,7 @@ void MainMenuScene(Scene& scene)
                 ResourceManager::GetSprite("LevelTiles"), -100, glm::ivec2{ 4, jul::math::RandomRange(13, 14) });
             levelTile->AddComponent<AutoMove>(glm::vec3{ 0.0f, 2.0f, 0 }, glm::vec3{ 16, 15, 1 });
 
-            auto* bubbleParticle = scene.AddGameObject("BubbleCharacter", { x, y, 0 });
+            auto* bubbleParticle = scene.AddGameObject("Bubble Particle", { x, y, 0 });
             bubbleParticle->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleParticle"), -90);
             bubbleParticle->AddComponent<Animator>()->PlayAnimation("Twinkle", true, jul::math::RandomValue<float>());
             bubbleParticle->AddComponent<AutoMove>(
@@ -321,14 +321,14 @@ void InitControls()
 void jul::Julgen::PreInit()
 {
     // 32 by 28 tiles
-    GameSettings::s_WindowTitle = "Bubble Bobble Made In Julgen";
-    GameSettings::s_RenderWidth = 32 * 8;
-    GameSettings::s_RenderHeight = 28 * 8;
+    GameSettings::g_WindowTitle = "Bubble Bobble Made In Julgen";
+    GameSettings::g_RenderWidth = 32 * 8;
+    GameSettings::g_RenderHeight = 28 * 8;
 
 
-    GameSettings::s_WindowWidth = 32 * 8 * 4;
-    GameSettings::s_WindowHeight = 28 * 8 * 4;
-    GameSettings::s_ShowConsole = true;
+    GameSettings::g_WindowWidth = 32 * 8 * 4;
+    GameSettings::g_WindowHeight = 28 * 8 * 4;
+    GameSettings::g_ShowConsole = true;
 
 
     Input::AddAction(InputBind::TestLivesButton, { { SDL_SCANCODE_X }, { SDL_CONTROLLER_BUTTON_B }, {} });

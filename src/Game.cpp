@@ -18,7 +18,7 @@ bb::Game::Game()
     ParseMaps("Levels/Levels.jxl");
 }
 
-bb::Player* bb::Game::GetPlayer(int playerIndex) { return m_Players[playerIndex]; }
+bb::Player* bb::Game::GetPlayer(int playerIndex) const { return m_Players[playerIndex]; }
 
 
 void bb::Game::SetPlayer(int playerIndex, Player* player) { m_Players[playerIndex] = player; }

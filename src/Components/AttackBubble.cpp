@@ -7,7 +7,7 @@
 #include <GameTime.h>
 #include <MathExtensions.h>
 
-#include "IDamagable.h"
+#include "IDamageable.h"
 
 
 bb::AttackBubble::AttackBubble(GameObject* parent, glm::vec3 fireVelocity) :
@@ -25,7 +25,7 @@ bb::AttackBubble::AttackBubble(GameObject* parent, glm::vec3 fireVelocity) :
 
 bb::AttackBubble::~AttackBubble() { g_Bubbles.erase(this); }
 
-void bb::AttackBubble::OnCollisionPreSolve(Collision collision, const b2Manifold*)
+void bb::AttackBubble::OnCollisionPreSolve(const Collision& collision, const b2Manifold*)
 {
     if(not collision.contact->IsEnabled())
         return;
@@ -33,13 +33,13 @@ void bb::AttackBubble::OnCollisionPreSolve(Collision collision, const b2Manifold
     if(m_FloatingDuration < DURATION_BEFORE_FLOATING)
         return;
 
-    auto velocityDiffb2 =
+    const auto velocityDelta =
         collision.otherFixture->GetBody()->GetLinearVelocity() - collision.thisFixture->GetBody()->GetLinearVelocity();
 
-    const float bubbleStrenght =
-        (velocityDiffb2.Length() * POP_VELOCITY_STRENGTH) + (m_FloatingDuration * POP_DURATION_STRENGTH);
+    const float bubbleStrength =
+        (velocityDelta.Length() * POP_VELOCITY_STRENGTH) + (m_FloatingDuration * POP_DURATION_STRENGTH);
 
-    if(bubbleStrenght < POP_THRESHOLD)
+    if(bubbleStrength < POP_THRESHOLD)
         return;
 
 
@@ -52,10 +52,10 @@ void bb::AttackBubble::OnCollisionPreSolve(Collision collision, const b2Manifold
     m_Animator->PlayAnimation("Pop");
 }
 
-void bb::AttackBubble::OnCollisionBegin(Collision collision)
+void bb::AttackBubble::OnCollisionBegin(const Collision& collision)
 {
     const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
-    if(auto* damageable = collider->GetGameObject()->GetComponent<IDamagable>())
+    if(auto* damageable = collider->GetGameObject()->GetComponent<IDamageable>())
         damageable->OnDamage(this);
 }
 

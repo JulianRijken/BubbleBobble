@@ -11,16 +11,18 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(BB_SOURCE_FILES
     ${SOURCE_DIR}/GameEntry.cpp
     ${SOURCE_DIR}/Game.cpp                          ${SOURCE_DIR}/Game.h
+    ${SOURCE_DIR}/IDamageable.h
 
     ${SOURCE_DIR}/Components/AttackBubble.h         ${SOURCE_DIR}/Components/AttackBubble.cpp
 
     ${SOURCE_DIR}/Components/Player/Player.h        ${SOURCE_DIR}/Components/Player/Player.cpp
     ${SOURCE_DIR}/Components/Player/PlayerState.h   ${SOURCE_DIR}/Components/Player/PlayerState.cpp
 
+    ${SOURCE_DIR}/Components/Enemys/ZenChan.h       ${SOURCE_DIR}/Components/Enemys/ZenChan.cpp
+
     ${SOURCE_DIR}/Components/OneWayPlatform.h       ${SOURCE_DIR}/Components/OneWayPlatform.cpp
     ${SOURCE_DIR}/Components/AutoMove.h             ${SOURCE_DIR}/Components/AutoMove.cpp
     ${SOURCE_DIR}/Components/AutoRotateAround.h     ${SOURCE_DIR}/Components/AutoRotateAround.cpp
-    ${SOURCE_DIR}/Components/Bounce.h               ${SOURCE_DIR}/Components/Bounce.cpp
     ${SOURCE_DIR}/Components/FpsCounter.h           ${SOURCE_DIR}/Components/FpsCounter.cpp
     ${SOURCE_DIR}/Components/Character.h            ${SOURCE_DIR}/Components/Character.cpp
     ${SOURCE_DIR}/Components/PlayerHUD.h            ${SOURCE_DIR}/Components/PlayerHUD.cpp
@@ -29,8 +31,6 @@ set(BB_SOURCE_FILES
 # Adds the source files to the executible
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
-    src/Components/Enemys/ZenChan.h src/Components/Enemys/ZenChan.cpp
-    src/IDamagable.h
 )
 
 # Include source directories
@@ -40,12 +40,6 @@ target_include_directories(${TARGET_NAME} PUBLIC
     ${SOURCE_DIR}/Components/Player
     ${SOURCE_DIR}/Components/Enemys
 )
-
-target_include_directories(${TARGET_NAME} PRIVATE
-    ${libjxl_BINARY_DIR}
-    ${libjxl_SOURCE_DIR}
-)
-
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
@@ -61,11 +55,11 @@ target_compile_options(${TARGET_NAME} PUBLIC
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
 
-
+# Visual studio needs to be special
 if(WIN32)
+    # Fix startup project for visual stuidio
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
-
-    # fixes the working directory for the debugger, this will now find assets in the correct directory
+    # Fix working directory for visual studio
     set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
 endif()
 

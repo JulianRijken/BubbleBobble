@@ -5,7 +5,7 @@
 #include "GameObject.h"
 
 bb::PlayerHUD::PlayerHUD(GameObject* parentPtr,Player* player, TextRenderer* scoreText, TextRenderer* livesText, const SDL_Color& color) :
-      jul::Component(parentPtr, "ScoreDisplay"),
+      Component(parentPtr, "ScoreDisplay"),
       m_ScoreText(scoreText),
       m_LivesText(livesText)
 {

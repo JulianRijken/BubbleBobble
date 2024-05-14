@@ -6,11 +6,11 @@
 #include <Rigidbody.h>
 
 bb::OneWayPlatform::OneWayPlatform(GameObject* parentPtr) :
-    jul::Component(parentPtr, "One Way Platform")
+    Component(parentPtr, "One Way Platform")
 {
 }
 
-void bb::OneWayPlatform::OnCollisionPreSolve(Collision collision, const b2Manifold*)
+void bb::OneWayPlatform::OnCollisionPreSolve(const Collision& collision, const b2Manifold*)
 {
 
     if(collision.otherFixture->GetBody()->GetType() != b2_dynamicBody)

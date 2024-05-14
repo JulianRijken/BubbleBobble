@@ -5,23 +5,22 @@
 #include <Command.h>
 #include <Component.h>
 #include <Event.h>
-#include <IDamagable.h>
+#include <IDamageable.h>
 #include <Rigidbody.h>
 
 #include <memory>
 
 #include "PlayerState.h"
 
-
-using namespace jul;
-
 namespace bb
 {
-    class Player final : public Component, public IDamagable
+    using namespace jul;
+
+    class Player final : public Component, public IDamageable
     {
         friend class PlayerWalkingState;
         friend class PlayerJumpingState;
-        friend class PlayerAttackignState;
+        friend class PlayerAttackingState;
         friend class PlayerDeathState;
         friend class PlayerBubbleState;
 
@@ -44,19 +43,19 @@ namespace bb
         void Kill();
         void AddScore();
 
-        void OnMoveLeftInput(InputContext context);
-        void OnMoveRightInput(InputContext context);
-        void OnMoveStickInput(InputContext context);
+        void OnMoveLeftInput(const InputContext& context);
+        void OnMoveRightInput(const InputContext& context);
+        void OnMoveStickInput(const InputContext& context);
 
-        void OnJumpInput(InputContext context);
-        void OnAttackInput(InputContext context);
+        void OnJumpInput(const InputContext& context);
+        void OnAttackInput(const InputContext& context);
 
     private:
         void Update() override;
         void FixedUpdate() override;
         void UpdateMoveInput(float input);
 
-        bool IsGrounded();
+        bool IsGrounded() const;
 
         void SetMainState(PlayerState* nextState);
         void SetAttackState(PlayerState* nextState);
@@ -67,7 +66,7 @@ namespace bb
 
         std::unique_ptr<PlayerWalkingState> m_WalkingState{ std::make_unique<PlayerWalkingState>() };
         std::unique_ptr<PlayerJumpingState> m_JumpingState{ std::make_unique<PlayerJumpingState>() };
-        std::unique_ptr<PlayerAttackignState> m_AttackignState{ std::make_unique<PlayerAttackignState>() };
+        std::unique_ptr<PlayerAttackingState> m_AttackingState{ std::make_unique<PlayerAttackingState>() };
         std::unique_ptr<PlayerNullState> m_NullState{ std::make_unique<PlayerNullState>() };
         std::unique_ptr<PlayerDeathState> m_DeathState{ std::make_unique<PlayerDeathState>() };
         std::unique_ptr<PlayerBubbleState> m_BubbleState{ std::make_unique<PlayerBubbleState>() };

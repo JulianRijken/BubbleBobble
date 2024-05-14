@@ -1,7 +1,6 @@
 #pragma once
 #include <Component.h>
 
-using namespace jul;
 
 namespace jul
 {
@@ -10,6 +9,8 @@ namespace jul
 
 namespace bb
 {
+    using namespace jul;
+
     class FpsCounter final : public jul::Component
     {
     public:

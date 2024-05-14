@@ -71,8 +71,8 @@ void bb::PlayerWalkingState::OnJumpInput(Player& player)
 
 void bb::PlayerWalkingState::OnAttackInput(Player& player)
 {
-    if(player.m_ActiveAttackState != player.m_AttackignState.get())
-        player.SetAttackState(player.m_AttackignState.get());
+    if(player.m_ActiveAttackState != player.m_AttackingState.get())
+        player.SetAttackState(player.m_AttackingState.get());
 }
 
 void bb::PlayerWalkingState::OnExitState(Player& player) { player.m_Rigidbody->SetGravityScale(1.0f); }
@@ -161,8 +161,8 @@ void bb::PlayerJumpingState::OnExitState(Player& player) { player.m_Rigidbody->S
 
 void bb::PlayerJumpingState::OnAttackInput(Player& player)
 {
-    if(player.m_ActiveAttackState != player.m_AttackignState.get())
-        player.SetAttackState(player.m_AttackignState.get());
+    if(player.m_ActiveAttackState != player.m_AttackingState.get())
+        player.SetAttackState(player.m_AttackingState.get());
 }
 
 void bb::PlayerJumpingState::OnPlayerDamage(Player& player) { player.SetMainState(player.m_DeathState.get()); }
@@ -171,7 +171,7 @@ void bb::PlayerJumpingState::OnPlayerDamage(Player& player) { player.SetMainStat
 ////////////////////
 /// ATTACK STATE ///
 /////////////////////
-void bb::PlayerAttackignState::OnEnterState(Player& player)
+void bb::PlayerAttackingState::OnEnterState(Player& player)
 {
     if(GameTime::GetElapsedTime() - m_TimeOfLastAttack < TIME_BETWEEN_FIRE)
     {
@@ -202,7 +202,7 @@ void bb::PlayerAttackignState::OnEnterState(Player& player)
     bubble->AddComponent<AttackBubble>(glm::vec3{ direction * FIRE_POWER, 0, 0 });
 }
 
-void bb::PlayerAttackignState::Update(Player& player)
+void bb::PlayerAttackingState::Update(Player& player)
 {
     if(not player.m_AnimatorPtr->IsActiveAnimation(player.m_AttackAnimationName))
         player.SetAttackState(player.m_NullState.get());

@@ -115,7 +115,7 @@ namespace bb
         bool m_HasManualControl{};
     };
 
-    class PlayerAttackignState final : public PlayerState
+    class PlayerAttackingState final : public PlayerState
     {
     public:
         static constexpr float FIRE_POWER = 20.0;

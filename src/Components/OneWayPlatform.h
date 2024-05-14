@@ -2,12 +2,11 @@
 #include <Component.h>
 #include <ICollisionListener.h>
 
-
-using namespace jul;
-
 namespace bb
 {
-    class OneWayPlatform : public jul::Component, public ICollisionListener
+    using namespace jul;
+
+    class OneWayPlatform : public Component, public ICollisionListener
     {
     public:
         OneWayPlatform(GameObject* parentPtr);
@@ -15,7 +14,7 @@ namespace bb
         static constexpr float DELTA_EPSILON = -0.05f;
 
     private:
-        void OnCollisionPreSolve(Collision collision, const b2Manifold* oldManifold) override;
+        void OnCollisionPreSolve(const Collision& collision, const b2Manifold* oldManifold) override;
     };
 
 }  // namespace bb

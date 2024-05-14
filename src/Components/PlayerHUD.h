@@ -6,10 +6,10 @@
 
 namespace bb
 {
-class PlayerHUD : public jul::Component
+    class PlayerHUD : public Component
     {
     public:
-        PlayerHUD(jul::GameObject* parentPtr, Player* player, TextRenderer* scoreText, TextRenderer* livesText, const SDL_Color& color);
+        PlayerHUD(GameObject* parentPtr, Player* player, TextRenderer* scoreText, TextRenderer* livesText, const SDL_Color& color);
 
     private:
         void UpdateScore(int score);

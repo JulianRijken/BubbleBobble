@@ -7,7 +7,6 @@
 #include <glm/vec3.hpp>
 #include <unordered_set>
 
-using namespace jul;
 
 namespace jul
 {
@@ -16,6 +15,8 @@ namespace jul
 
 namespace bb
 {
+    using namespace jul;
+
     class AttackBubble final : public Component, public ICollisionListener
     {
     public:
@@ -32,8 +33,8 @@ namespace bb
         ~AttackBubble() override;
 
     private:
-        void OnCollisionPreSolve(Collision collision, const b2Manifold*) override;
-        void OnCollisionBegin(Collision collision) override;
+        void OnCollisionPreSolve(const Collision& collision, const b2Manifold*) override;
+        void OnCollisionBegin(const Collision& collision) override;
 
         void Update() override;
         void FixedUpdate() override;

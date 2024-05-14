@@ -2,9 +2,8 @@
 #include <Component.h>
 #include <ICollisionListener.h>
 
-#include "IDamagable.h"
+#include "IDamageable.h"
 
-using namespace jul;
 
 namespace jul
 {
@@ -16,7 +15,9 @@ namespace jul
 
 namespace bb
 {
-    class ZenChan final : public Component, public ICollisionListener, public IDamagable
+    using namespace jul;
+
+    class ZenChan final : public Component, public ICollisionListener, public IDamageable
     {
     public:
         static constexpr float MOVE_SPEED{ 8.0f };
@@ -29,10 +30,10 @@ namespace bb
     private:
         void FixedUpdate() override;
         void Update() override;
-        bool IsGrounded();
+        bool IsGrounded() const;
 
         void HandleTurning();
-        void OnCollisionBegin(Collision collision) override;
+        void OnCollisionBegin(const Collision& collision) override;
 
         void OnDamage(jul::Component* instigator) override;
 
@@ -42,6 +43,8 @@ namespace bb
         BoxCollider* m_Collider{ nullptr };
 
         int m_WalkingDirection{ 1 };
-        float m_TimeSinceLastTrun{};
+        float m_TimeSinceLastTurn{};
     };
 }  // namespace bb
+
+

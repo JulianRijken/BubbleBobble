@@ -35,7 +35,7 @@ void bb::Player::AddScore()
 
 void bb::Player::UpdateMoveInput(float input) { m_MovementInput = input; }
 
-bool bb::Player::IsGrounded()
+bool bb::Player::IsGrounded() const
 {
     // If the player is moving up he is for sure not grounded :)
     if(m_Rigidbody->Velocity().y > 0)
@@ -84,7 +84,7 @@ void bb::Player::HandleFlip()
 
 
 // TODO: Pfff this sucks and should be fixed using the input system just like the controllers
-void bb::Player::OnMoveLeftInput(InputContext context)
+void bb::Player::OnMoveLeftInput(const InputContext& context)
 {
     if(context.state == ButtonState::Down)
         UpdateMoveInput(-1.0f);
@@ -92,7 +92,7 @@ void bb::Player::OnMoveLeftInput(InputContext context)
         UpdateMoveInput(0.0f);
 }
 
-void bb::Player::OnMoveRightInput(InputContext context)
+void bb::Player::OnMoveRightInput(const InputContext& context)
 {
     if(context.state == ButtonState::Down)
         UpdateMoveInput(1.0f);
@@ -100,15 +100,15 @@ void bb::Player::OnMoveRightInput(InputContext context)
         UpdateMoveInput(0.0f);
 }
 
-void bb::Player::OnMoveStickInput(InputContext context) { UpdateMoveInput(std::get<float>(context.value.value())); }
+void bb::Player::OnMoveStickInput(const InputContext& context) { UpdateMoveInput(std::get<float>(context.value.value())); }
 
-void bb::Player::OnJumpInput(InputContext /*unused*/)
+void bb::Player::OnJumpInput(const InputContext& /*unused*/)
 {
     m_ActiveMainState->OnJumpInput(*this);
     m_ActiveAttackState->OnJumpInput(*this);
 }
 
-void bb::Player::OnAttackInput(InputContext /*unused*/)
+void bb::Player::OnAttackInput(const InputContext& /*unused*/)
 {
     m_ActiveMainState->OnAttackInput(*this);
     m_ActiveAttackState->OnAttackInput(*this);
@@ -126,9 +126,9 @@ void bb::Player::FixedUpdate()
     m_ActiveAttackState->FixedUpdate(*this);
 }
 
-void bb::Player::OnDamage(Component* instagator)
+void bb::Player::OnDamage(Component* instigator)
 {
-    if(dynamic_cast<AttackBubble*>(instagator))
+    if(dynamic_cast<AttackBubble*>(instigator))
         return;
 
     m_ActiveAttackState->OnPlayerDamage(*this);

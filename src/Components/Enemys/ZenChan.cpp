@@ -9,7 +9,7 @@
 
 #include <fmt/core.h>
 
-#include "IDamagable.h"
+#include "IDamageable.h"
 
 bb::ZenChan::ZenChan(GameObject* parent) :
     Component(parent),
@@ -25,7 +25,7 @@ bb::ZenChan::ZenChan(GameObject* parent) :
 void bb::ZenChan::FixedUpdate()
 {
     if(IsGrounded())
-        m_Rigidbody->AddForce({ m_WalkingDirection * MOVE_SPEED, 0 }, Rigidbody::ForceMode::VelocityChange);
+        m_Rigidbody->AddForce({ static_cast<float>(m_WalkingDirection) * MOVE_SPEED, 0 }, Rigidbody::ForceMode::VelocityChange);
     else
         m_Rigidbody->AddForce({ 0, -FALL_SPEED }, Rigidbody::ForceMode::VelocityChange);
 
@@ -42,7 +42,7 @@ void bb::ZenChan::FixedUpdate()
     // }
 }
 
-bool bb::ZenChan::IsGrounded()
+bool bb::ZenChan::IsGrounded() const
 {
     // If the player is moving up he is for sure not grounded :)
     if(m_Rigidbody->Velocity().y > 0)
@@ -68,30 +68,31 @@ bool bb::ZenChan::IsGrounded()
 
 void bb::ZenChan::HandleTurning()
 {
-    if(m_TimeSinceLastTrun < MIN_TIME_BETWEEN_TURN)
+    if(m_TimeSinceLastTurn < MIN_TIME_BETWEEN_TURN)
         return;
 
     const glm::vec2 from = m_Rigidbody->Position();
     const glm::vec2 direction = { static_cast<float>(m_WalkingDirection), 0 };
     const float distance = m_Collider->GetSettings().size.x / 2.0f + 0.1f;
+
     RayCastResult result;
     if(Physics::RayCast(from, direction, distance, result))
     {
         // TODO: Welp I could have implemented layers or tags
-        //       But noooo Julian has to get component every physics tick!@
-        if(result.hitCollider->GetGameObject()->GetComponent<IDamagable>())
+        //       But noooo Julian wanted to get component every physics tick!@
+        if(result.hitCollider->GetGameObject()->GetComponent<IDamageable>())
             return;
 
         m_WalkingDirection *= -1;
-        m_TimeSinceLastTrun = 0.0f;
+        m_TimeSinceLastTurn = 0.0f;
     }
 }
 
-void bb::ZenChan::OnCollisionBegin(Collision collision)
+void bb::ZenChan::OnCollisionBegin(const Collision& collision)
 {
     const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
 
-    if(auto* damageable = collider->GetGameObject()->GetComponent<IDamagable>())
+    if(auto* damageable = collider->GetGameObject()->GetComponent<IDamageable>())
         damageable->OnDamage(this);
 }
 
@@ -99,6 +100,6 @@ void bb::ZenChan::OnDamage(jul::Component*) { GetGameObject()->Destroy(); }
 
 void bb::ZenChan::Update()
 {
-    m_TimeSinceLastTrun += GameTime::GetDeltaTimeF();
+    m_TimeSinceLastTurn += GameTime::GetDeltaTimeF();
     m_SpriteRenderer->m_FlipX = m_WalkingDirection > 0;
 }
