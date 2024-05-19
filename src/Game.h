@@ -63,7 +63,7 @@ namespace bb
     public:
         Game();
 
-        Player* GetPlayer(int playerIndex) const;
+        [[nodiscard]] Player* GetPlayer(int playerIndex) const;
         void SetPlayer(int playerIndex, Player* player);
 
         std::vector<Map>& GetMaps() { return m_Maps; }

@@ -18,6 +18,7 @@
 #include "Game.h"
 #include "OneWayPlatform.h"
 #include "Player.h"
+#include "PlayerHUD.h"
 #include "ZenChan.h"
 
 using namespace jul;
@@ -57,8 +58,7 @@ void LoadResources()
 
     ResourceManager::LoadFont("Lingua", "Lingua.otf", 36);
     ResourceManager::LoadFont("LinguaSmall", "Lingua.otf", 16);
-    ResourceManager::LoadFont("NES", "NES_Font.ttf", 36);
-    ResourceManager::LoadFont("NESSmall", "NES_Font.ttf", 16);
+    ResourceManager::LoadFont("NES", "NES_Font.ttf", 8);
 
     ResourceManager::LoadSprite("background", "background.tga", 32);
     ResourceManager::LoadSprite("Dot", "Dot.png", 32);
@@ -237,31 +237,48 @@ void MainScene(Scene& scene)
     //     "MOVE PLAYER: A-D OR D-PAD OR L-STICK", ResourceManager::GetFont("NESSmall"), 100, true);
 
 
-    // GameObject* player1Hud = scene.AddGameObject("PlayerHUD", { 30, 150, 0 });
-    // {
-    //     auto* livesGameObject = scene.AddGameObject("LivesText", { 0, 0, 0 });
-    //     auto* livesText = livesGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
+    GameObject* player1Hud = scene.AddGameObject("Player1HUD");
+    {
+        auto* livesGameObject = scene.AddGameObject("LivesText", { -15, -12, 0 });
+        auto* livesText = livesGameObject->AddComponent<TextRenderer>(
+            "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
+        livesGameObject->AddComponent<SpriteRenderer>(
+            ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
 
-    //     auto* scoreGameObject = scene.AddGameObject("ScoreText", { 0, 50, 0 });
-    //     auto* scoreText = scoreGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
 
-    //     scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-    //     livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-    //     player1Hud->AddComponent<bb::PlayerHUD>(player1, scoreText, livesText, SDL_Color(92, 230, 52, 255));
-    // }
+        auto* scoreGameObject = scene.AddGameObject("ScoreText", { -4, 13, 0 });
+        auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
+            "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 1, 0 });
 
-    // GameObject* player2Hud = scene.AddGameObject("PlayerHUD", { 30, 300, 0 });
-    // {
-    //     auto* livesGameObject = scene.AddGameObject("LivesText", { 0, 0, 0 });
-    //     auto* livesText = livesGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
 
-    //     auto* scoreGameObject = scene.AddGameObject("ScoreText", { 0, 50, 0 });
-    //     auto* scoreText = scoreGameObject->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), 100);
+        livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
+        scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
 
-    //     scoreGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
-    //     livesGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
-    //     player2Hud->AddComponent<bb::PlayerHUD>(player2, scoreText, livesText, SDL_Color(52, 168, 230, 255));
-    // }
+        player1Hud->AddComponent<PlayerHUD>(
+            Game::GetInstance().GetPlayer(0), scoreText, livesText, SDL_Color(255, 255, 255, 255));
+    }
+
+    GameObject* player2Hud = scene.AddGameObject("Player2HUD");
+    {
+        auto* livesGameObject = scene.AddGameObject("LivesText", { 14, -12, 0 });
+        auto* livesText = livesGameObject->AddComponent<TextRenderer>(
+            "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
+        livesGameObject->AddComponent<SpriteRenderer>(
+            ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
+
+
+        auto* scoreGameObject = scene.AddGameObject("ScoreText", { 4, 13, 0 });
+        auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
+            "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0, 0 });
+
+
+        livesGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
+        scoreGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
+
+        player2Hud->AddComponent<PlayerHUD>(
+            Game::GetInstance().GetPlayer(0), scoreText, livesText, SDL_Color(255, 255, 255, 255));
+    }
+
 
     auto& maps = Game::GetInstance().GetMaps();
 
