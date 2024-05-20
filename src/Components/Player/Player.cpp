@@ -128,6 +128,7 @@ void bb::Player::FixedUpdate()
 
 void bb::Player::OnDamage(Component* instigator)
 {
+    // TODO: Maybe avoid a dynamic cast
     if(dynamic_cast<AttackBubble*>(instigator))
         return;
 

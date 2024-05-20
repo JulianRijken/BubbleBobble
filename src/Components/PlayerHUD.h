@@ -20,7 +20,10 @@ namespace bb
         void UpdateLives(int lives);
 
         int m_Score{};
-        float m_VisualScore{};
+
+        // Score as a float *(yes a float)
+        // This is because we need half score for frame independent animation!
+        double m_VisualScore{};
 
         TextRenderer* m_ScoreText{ nullptr };
         TextRenderer* m_LivesText{ nullptr };

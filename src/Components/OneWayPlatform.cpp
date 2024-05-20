@@ -16,7 +16,8 @@ void bb::OneWayPlatform::OnCollisionPreSolve(const Collision& collision, const b
     if(collision.otherFixture->GetBody()->GetType() != b2_dynamicBody)
         return;
 
-    const float offset = collision.otherFixture->GetBody()->GetLinearVelocity().y * GameTime::GetFixedDeltaTimeF();
+    const float offset =
+        collision.otherFixture->GetBody()->GetLinearVelocity().y * GameTime::GetFixedDeltaTime<float>();
     const float delta =
         collision.otherFixture->GetAABB(0).lowerBound.y - offset - collision.thisFixture->GetAABB(0).upperBound.y;
 

@@ -96,10 +96,10 @@ void bb::ZenChan::OnCollisionBegin(const Collision& collision)
         damageable->OnDamage(this);
 }
 
-void bb::ZenChan::OnDamage(jul::Component*) { GetGameObject()->Destroy(); }
+void bb::ZenChan::OnDamage(jul::Component* /*instigator*/) { GetGameObject()->Destroy(); }
 
 void bb::ZenChan::Update()
 {
-    m_TimeSinceLastTurn += GameTime::GetDeltaTimeF();
+    m_TimeSinceLastTurn += GameTime::GetDeltaTime<float>();
     m_SpriteRenderer->m_FlipX = m_WalkingDirection > 0;
 }

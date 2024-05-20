@@ -25,7 +25,7 @@ void bb::PlayerWalkingState::OnEnterState(Player& player)
 
 void bb::PlayerWalkingState::Update(Player& player)
 {
-    m_TimeWalking += GameTime::GetDeltaTimeF();
+    m_TimeWalking += GameTime::GetDeltaTime<float>();
 
     if(not player.IsGrounded() and m_TimeWalking > MIN_TIME_WALKING_BEFORE_GROUND_CHECK)
     {
@@ -113,7 +113,7 @@ void bb::PlayerJumpingState::Update(Player& player)
 
     player.HandleFlip();
 
-    m_TimeInJump += GameTime::GetDeltaTimeF();
+    m_TimeInJump += GameTime::GetDeltaTime<float>();
 
     // Tell player he is falling
     if(player.m_Rigidbody->Position().y < m_SlowFallHeight)
@@ -179,7 +179,7 @@ void bb::PlayerAttackingState::OnEnterState(Player& player)
         return;
     }
 
-    m_TimeOfLastAttack = GameTime::GetElapsedTimeF();
+    m_TimeOfLastAttack = GameTime::GetElapsedTime<float>();
 
     player.m_AnimatorPtr->PlayAnimation(player.m_AttackAnimationName);
     MessageQueue::Broadcast(MessageType::PlayerAttack);

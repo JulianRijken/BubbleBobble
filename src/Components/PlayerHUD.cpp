@@ -30,7 +30,7 @@ bb::PlayerHUD::PlayerHUD(GameObject* parentPtr, Player* player, TextRenderer* sc
 void bb::PlayerHUD::Update()
 {
     m_VisualScore = jul::math::MoveTowards(
-        m_VisualScore, static_cast<float>(m_Score), SCORE_CHANGE_PER_SECOND * jul::GameTime::GetDeltaTimeF());
+        m_VisualScore, static_cast<double>(m_Score), SCORE_CHANGE_PER_SECOND * jul::GameTime::GetDeltaTime());
 
     m_ScoreText->SetText(std::to_string(static_cast<int>(std::ceil(m_VisualScore))));
 }

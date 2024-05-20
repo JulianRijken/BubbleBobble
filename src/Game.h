@@ -2,6 +2,7 @@
 #include <Locator.h>
 #include <MessageQueue.h>
 #include <Player.h>
+#include <Scene.h>
 #include <Singleton.h>
 #include <Sound.h>
 
@@ -78,4 +79,7 @@ namespace bb
 
         static SDL_Surface* JxlToSurface(const std::string& fileName);
     };
+
+    void MainScene(Scene& scene);
+
 }  // namespace bb

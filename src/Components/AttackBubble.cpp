@@ -73,7 +73,7 @@ void bb::AttackBubble::Update()
         if(not m_Animator->IsPlaying())
             m_Animator->PlayAnimation("Idle");
 
-        m_FloatingDuration += GameTime::GetDeltaTimeF();
+        m_FloatingDuration += GameTime::GetDeltaTime<float>();
 
         m_BubbleCenter = {};
         if(not g_Bubbles.empty())

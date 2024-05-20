@@ -13,7 +13,7 @@ AutoMove::AutoMove(jul::GameObject* parent,
 
 void AutoMove::Update()
 {
-	GetTransform().Translate(m_Velocity * jul::GameTime::GetDeltaTimeF());
+    GetTransform().Translate(m_Velocity * jul::GameTime::GetDeltaTime<float>());
 
     glm::vec3 currentPosition{GetTransform().WorldPosition()};
 
