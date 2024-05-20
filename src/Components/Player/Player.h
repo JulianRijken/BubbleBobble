@@ -36,11 +36,10 @@ namespace bb
         Player& operator=(const Player&) = delete;
         Player& operator=(Player&&) noexcept = delete;
 
-        [[nodiscard]] Event<int>& GetOnDeath() { return m_OnDeathEvent; }
+        [[nodiscard]] Event<int>& GetOnDeathEvent() { return m_OnDeathEvent; }
 
-        [[nodiscard]] Event<int>& GetOnScoreChange() { return m_OnScoreChangeEvent; }
+        [[nodiscard]] Event<int>& GetOnScoreChangeEvent() { return m_OnScoreChangeEvent; }
 
-        void Kill();
         void AddScore();
 
         void OnMoveLeftInput(const InputContext& context);
@@ -55,7 +54,7 @@ namespace bb
         void FixedUpdate() override;
         void UpdateMoveInput(float input);
 
-        bool IsGrounded() const;
+        [[nodiscard]] bool IsGrounded() const;
 
         void SetMainState(PlayerState* nextState);
         void SetAttackState(PlayerState* nextState);

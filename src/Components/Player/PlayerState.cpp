@@ -184,6 +184,8 @@ void bb::PlayerAttackingState::OnEnterState(Player& player)
     player.m_AnimatorPtr->PlayAnimation(player.m_AttackAnimationName);
     MessageQueue::Broadcast(MessageType::PlayerAttack);
 
+    player.m_Score += 1000;
+    player.m_OnScoreChangeEvent.Invoke(player.m_Score);
 
     glm::vec3 spawnPosition = player.GetTransform().WorldPosition();
     const float direction = player.m_SpriteRenderer->m_FlipX ? -1.0f : 1.0f;

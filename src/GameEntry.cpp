@@ -187,17 +187,17 @@ void MainMenuScene(Scene& scene)
 
 void MainScene(Scene& scene)
 {
-    // Player 1
-    auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -3, 10, 0 });
-    player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
-    player1GameObject->AddComponent<Animator>();
-    player1GameObject->AddComponent<Rigidbody>();
-    player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 0.0f,
-        .restitution = 0.1f,
-        .size = {1.80f, 1.95f},
-    });
-    player1GameObject->AddComponent<bb::Player>(0);
+    // // Player 1
+    // auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -3, 10, 0 });
+    // player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
+    // player1GameObject->AddComponent<Animator>();
+    // player1GameObject->AddComponent<Rigidbody>();
+    // player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
+    //     .friction = 0.0f,
+    //     .restitution = 0.1f,
+    //     .size = {1.80f, 1.95f},
+    // });
+    // player1GameObject->AddComponent<bb::Player>(0);
 
     // Player 2
     auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 3, 10, 0 });
@@ -237,26 +237,26 @@ void MainScene(Scene& scene)
     //     "MOVE PLAYER: A-D OR D-PAD OR L-STICK", ResourceManager::GetFont("NESSmall"), 100, true);
 
 
-    GameObject* player1Hud = scene.AddGameObject("Player1HUD");
-    {
-        auto* livesGameObject = scene.AddGameObject("LivesText", { -15, -12, 0 });
-        auto* livesText = livesGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
-        livesGameObject->AddComponent<SpriteRenderer>(
-            ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
+    // GameObject* player1Hud = scene.AddGameObject("Player1HUD");
+    // {
+    //     auto* livesGameObject = scene.AddGameObject("LivesText", { -15, -12, 0 });
+    //     auto* livesText = livesGameObject->AddComponent<TextRenderer>(
+    //         "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
+    //     livesGameObject->AddComponent<SpriteRenderer>(
+    //         ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
 
 
-        auto* scoreGameObject = scene.AddGameObject("ScoreText", { -4, 13, 0 });
-        auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 1, 0 });
+    //     auto* scoreGameObject = scene.AddGameObject("ScoreText", { -4, 13, 0 });
+    //     auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
+    //         "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 1, 0 });
 
 
-        livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-        scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
+    //     livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
+    //     scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
 
-        player1Hud->AddComponent<PlayerHUD>(
-            Game::GetInstance().GetPlayer(0), scoreText, livesText, SDL_Color(255, 255, 255, 255));
-    }
+    //     player1Hud->AddComponent<PlayerHUD>(
+    //         Game::GetInstance().GetPlayer(0), scoreText, livesText, SDL_Color(255, 255, 255, 255));
+    // }
 
     GameObject* player2Hud = scene.AddGameObject("Player2HUD");
     {
@@ -276,7 +276,7 @@ void MainScene(Scene& scene)
         scoreGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
 
         player2Hud->AddComponent<PlayerHUD>(
-            Game::GetInstance().GetPlayer(0), scoreText, livesText, SDL_Color(255, 255, 255, 255));
+            Game::GetInstance().GetPlayer(1), scoreText, livesText, SDL_Color(255, 255, 255, 255));
     }
 
 
@@ -393,9 +393,9 @@ void jul::Julgen::GameStart()
     SceneManager::GetInstance().LoadScene("mainScene", MainScene);
     SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
 
-    // Unload and load for testing purpouses
-    SceneManager::GetInstance().UnloadScene("mainScene");
+    // // Unload and load for testing purpouses
+    // SceneManager::GetInstance().UnloadScene("mainScene");
 
-    SceneManager::GetInstance().LoadScene("mainScene", MainScene);
-    SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
+    // SceneManager::GetInstance().LoadScene("mainScene", MainScene);
+    // SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
 }

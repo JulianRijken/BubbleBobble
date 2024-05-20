@@ -6,10 +6,10 @@
 
 namespace bb
 {
-    class PlayerHUD : public Component
+    class PlayerHUD : public Component, public EventListener
     {
     public:
-        inline static constexpr int SCORE_CHANGE_PER_SECOND = 1000;
+        inline static constexpr int SCORE_CHANGE_PER_SECOND = 5000;
 
         PlayerHUD(GameObject* parentPtr, Player* player, TextRenderer* scoreText, TextRenderer* livesText,
                   const SDL_Color& color);
@@ -19,14 +19,12 @@ namespace bb
         void UpdateScore(int score);
         void UpdateLives(int lives);
 
-        int m_TargetScore{};
-
-        // Yes a float for score :(
-        // I need half score for the interpolation to work
-        // (Frame independently)
-        float m_CurrentScore{};
+        int m_Score{};
+        float m_VisualScore{};
 
         TextRenderer* m_ScoreText{ nullptr };
         TextRenderer* m_LivesText{ nullptr };
+
+        Player* m_Player{ nullptr };
     };
 }
