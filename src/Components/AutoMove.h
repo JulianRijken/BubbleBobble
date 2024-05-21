@@ -14,7 +14,7 @@ namespace bb
 
         void SetVelocity(glm::vec3 velocity);
 
-        inline glm::vec3 GetVelocity() const { return m_Velocity; }
+        [[nodiscard]] glm::vec3 GetVelocity() const { return m_Velocity; }
 
     private:
         void Update() override;

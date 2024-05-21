@@ -2,6 +2,7 @@
 
 #include <Animator.h>
 #include <AutoMove.h>
+#include <EaseFunction.h>
 #include <fmt/core.h>
 #include <GameObject.h>
 #include <MathExtensions.h>
@@ -12,7 +13,6 @@
 #include <Tween.h>
 #include <TweenEngine.h>
 
-#include "Scenes.h"
 
 bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameObject* intoTextPtr) :
     Component(parentPtr, "Main Menu"),
@@ -23,7 +23,8 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
     // Show main menu logo
     TweenEngine::Start({ .from = 20.0f,
                          .to = 4.0f,
-                         .duration = 3.0f,
+                         .duration = 2.0f,
+                         .easeFunction = EaseFunction::SineOut,
                          .onUpdate = [this](float value) { m_LogoTransformPtr->SetWorldPosition(0, value, 0); },
                          .onEnd = [this]() { OnLogoLand(); } },
                        GetGameObject());
@@ -51,8 +52,6 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
 
 void bb::MainMenu::OnLogoLand()
 {
-    fmt::println("Show Text!");
-
     for(auto&& bubble : m_Bubbles)
     {
         auto velocity = bubble->GetVelocity();
@@ -60,13 +59,13 @@ void bb::MainMenu::OnLogoLand()
         bubble->SetVelocity(velocity);
     }
 
-
     // Show main menu logo
     TweenEngine::Start(
         {
-            .from = -20.0f,
+            .from = -15.0f,
             .to = 0.0f,
-            .duration = 2.0f,
+            .duration = 3.0f,
+            .easeFunction = EaseFunction::BounceOut,
             .onStart = [this]() { m_IntoTextPtr->SetActive(true); },
             .onUpdate = [this](float value) { m_IntoTextPtr->GetTransform().SetWorldPosition(0, value, 0); },
         },
