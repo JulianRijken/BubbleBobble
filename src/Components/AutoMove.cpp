@@ -3,15 +3,15 @@
 #include "GameTime.h"
 #include "Transform.h"
 
-AutoMove::AutoMove(jul::GameObject* parent,
-                   const glm::vec3& velocity,
-                   const glm::vec3& boundingBox,
-                   const glm::vec3& boundingBoxCenter)
-    : Component(parent, "AutoMove"), m_Velocity(velocity), m_BoundingBox(boundingBox),
-      m_BoundingBoxCenter(boundingBoxCenter)
+bb::AutoMove::AutoMove(jul::GameObject* parent, const glm::vec3& velocity, const glm::vec3& boundingBox,
+                       const glm::vec3& boundingBoxCenter) :
+    Component(parent, "AutoMove"),
+    m_Velocity(velocity),
+    m_BoundingBox(boundingBox),
+    m_BoundingBoxCenter(boundingBoxCenter)
 {}
 
-void AutoMove::Update()
+void bb::AutoMove::Update()
 {
     GetTransform().Translate(m_Velocity * jul::GameTime::GetDeltaTime<float>());
 
@@ -37,3 +37,5 @@ void AutoMove::Update()
 
     GetTransform().SetWorldPosition(currentPosition);
 }
+
+void bb::AutoMove::SetVelocity(glm::vec3 velocity) { m_Velocity = velocity; }

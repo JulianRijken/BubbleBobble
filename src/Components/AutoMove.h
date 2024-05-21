@@ -2,18 +2,26 @@
 #include "Component.h"
 #include <glm/vec3.hpp>
 
-class AutoMove final : public jul::Component
+namespace bb
 {
-public:
+    using namespace jul;
 
-    AutoMove(jul::GameObject* parent,const glm::vec3& velocity = {},const glm::vec3& boundingBox = {},const glm::vec3& boundingBoxCenter = {});
+    class AutoMove final : public jul::Component
+    {
+    public:
+        AutoMove(jul::GameObject* parent, const glm::vec3& velocity = {}, const glm::vec3& boundingBox = {},
+                 const glm::vec3& boundingBoxCenter = {});
 
-private:
+        void SetVelocity(glm::vec3 velocity);
 
-	void Update() override;
+        inline glm::vec3 GetVelocity() const { return m_Velocity; }
 
-	glm::vec3 m_Velocity{};
-    glm::vec3 m_BoundingBox{};
-    glm::vec3 m_BoundingBoxCenter{};
-};
+    private:
+        void Update() override;
 
+        glm::vec3 m_Velocity{};
+        glm::vec3 m_BoundingBox{};
+        glm::vec3 m_BoundingBoxCenter{};
+    };
+
+}  // namespace bb

@@ -1,23 +1,13 @@
-#include <Animator.h>
-#include <Box2D/Box2D.h>
-#include <fmt/core.h>
+#include <Game.h>
 #include <GameSettings.h>
 #include <Input.h>
 #include <Julgen.h>
-#include <Locator.h>
-#include <MathExtensions.h>
-#include <MessageQueue.h>
-#include <Physics.h>
+#include <Player.h>
 #include <ResourceManager.h>
-#include <Rigidbody.h>
 #include <SceneManager.h>
-#include <Sound.h>
-#include <TextRenderer.h>
 
-#include "Game.h"
-#include "MainMenu.h"
-#include "Player.h"
-#include "ZenChan.h"
+#include "Scenes.h"
+
 
 using namespace jul;
 using namespace bb;
@@ -61,6 +51,8 @@ void LoadResources()
     ResourceManager::LoadSprite("background", "background.tga", 32);
     ResourceManager::LoadSprite("Dot", "Dot.png", 32);
     ResourceManager::LoadSprite("Logo", "Logo.png", 8, { 0.5f, 0.5f });
+    ResourceManager::LoadSprite("Julgen_Retro_Logo", "Julgen_Logo_BB_Retro.png", 8, { 0.5f, 0.5f });
+
 
     ResourceManager::LoadSprite("DebugCube", "DebugCube.png", 4, { 0, 0 });
 
@@ -160,24 +152,6 @@ void LoadResources()
                                 });
 }
 
-void MainMenuScene(Scene& scene)
-{
-    auto* logo = scene.AddGameObject("Logo", { 0, 0, 0 });
-    logo->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Logo"), 1);
-
-    auto* mainMenuGO = scene.AddGameObject("MainMenu");
-    mainMenuGO->AddComponent<MainMenu>(&logo->GetTransform());
-}
-
-void TestScene(Scene& scene)
-{
-    auto* go = scene.AddGameObject("BubbleCharacter", { -2, 0, 0 });
-    go->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
-    go->AddComponent<Animator>();
-    go->AddComponent<Rigidbody>(Rigidbody::Settings{});
-    go->AddComponent<bb::Player>(1);
-}
-
 void InitControls()
 {
     Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveLeft, 0, false, 0, &bb::Player::OnMoveLeftInput);
@@ -192,11 +166,13 @@ void InitControls()
     Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Attack, 1, true, 1, &bb::Player::OnAttackInput);
     Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Jump, 1, true, 1, &bb::Player::OnJumpInput);
 
+
     Input::RegisterCommand<MuteGameCommand>((int)InputBind::ToggleSound, 1, true);
 }
 
 void jul::Julgen::PreInit()
 {
+
     // 32 by 28 tiles
     GameSettings::g_WindowTitle = "Bubble Bobble Made In Julgen";
     GameSettings::g_RenderWidth = 32 * 8;
@@ -237,24 +213,21 @@ void jul::Julgen::PreInit()
     });
 
     Input::AddAction(InputBind::ToggleSound, { { SDL_SCANCODE_M }, {}, {} });
+    Input::AddAction(InputBind::ExitIntro,
+                     {
+                         { SDL_SCANCODE_ESCAPE, SDL_SCANCODE_KP_ENTER, SDL_SCANCODE_SPACE },
+                         {},
+                         {}
+    });
+
 
     InitControls();
 }
 
 void jul::Julgen::GameStart()
 {
-    // going for https://www.youtube.com/watch?v=VyK_cpp9pT4
-    // BubbleBobble NES
     LoadResources();
-
-    MessageQueue::Broadcast(MessageType::GameStart);
-
-
+    Game::GetInstance().Initialize();
     SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene);
-
-    // // Unload and load for testing purpouses
-    // SceneManager::GetInstance().UnloadScene("mainScene");
-
-    // SceneManager::GetInstance().LoadScene("mainScene", MainScene);
-    // SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene, SceneLoadMode::Additive);
+    MessageQueue::Broadcast(MessageType::GameStart);
 }

@@ -2,7 +2,6 @@
 #include <Locator.h>
 #include <MessageQueue.h>
 #include <Player.h>
-#include <Scene.h>
 #include <Singleton.h>
 #include <Sound.h>
 
@@ -30,6 +29,7 @@ namespace bb
         MoveRight,
         MoveStick,
         Attack,
+        ExitIntro
     };
 
     enum class Sounds
@@ -58,11 +58,12 @@ namespace bb
         std::vector<Block> blocks;
     };
 
-
+    // going for https://www.youtube.com/watch?v=VyK_cpp9pT4
+    // BubbleBobble NES
     class Game final : public jul::Singleton<Game>
     {
     public:
-        Game();
+        void Initialize();
 
         [[nodiscard]] Player* GetPlayer(int playerIndex) const;
         void SetPlayer(int playerIndex, Player* player);
@@ -79,7 +80,5 @@ namespace bb
 
         static SDL_Surface* JxlToSurface(const std::string& fileName);
     };
-
-    void MainScene(Scene& scene);
 
 }  // namespace bb
