@@ -130,33 +130,61 @@ void bb::MainScene(Scene& scene)
 
 void bb::MainMenuScene(Scene& scene)
 {
-    auto* fpsCounter = scene.AddGameObject("FPS_Counter", { -12, 12, 0 });
-    fpsCounter->AddComponent<TextRenderer>("0", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
-    fpsCounter->AddComponent<FpsCounter>();
+    // auto* fpsCounter = scene.AddGameObject("FPS_Counter", { -12, 12, 0 });
+    // fpsCounter->AddComponent<TextRenderer>("0", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f },
+    // true); fpsCounter->AddComponent<FpsCounter>();
 
-    auto* logo = scene.AddGameObject("Logo", { 0, 0, 0 });
+
+    ////////////////////
+    /// INTRO SCREEN ///
+    ////////////////////
+    auto* introScreen = scene.AddGameObject("Intro Screen");
+
+    auto* logo = scene.AddGameObject("Logo", { 0, 0, 0 }, introScreen);
     logo->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Logo"), 1);
 
-    auto* intoScreenInfo = scene.AddGameObject("Into Screen Info", { 0, 0, 0 });
+    auto* intoScreenInfo = scene.AddGameObject("Into Screen Info", { 0, 0, 0 }, introScreen);
     {
-        auto* julgenLogo = scene.AddGameObject("Julgen_Retro_Logo", { 0, -5, 0 });
+        auto* julgenLogo = scene.AddGameObject("Julgen_Retro_Logo", { 0, -5, 0 }, intoScreenInfo);
         julgenLogo->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Julgen_Retro_Logo"), 1);
-        julgenLogo->GetTransform().SetParent(&intoScreenInfo->GetTransform());
 
-        auto* introText = scene.AddGameObject("Main Menu Text", { 0, -8, 0 });
+        auto* introText = scene.AddGameObject("Main Menu Text", { 0, -8, 0 }, intoScreenInfo);
         introText->AddComponent<TextRenderer>(
             "Made With Julgen", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
-        introText->GetTransform().SetParent(&intoScreenInfo->GetTransform());
 
-        auto* nameText = scene.AddGameObject("Name Text", { 0, -10, 0 });
+        auto* nameText = scene.AddGameObject("Name Text", { 0, -10, 0 }, intoScreenInfo);
         nameText->AddComponent<TextRenderer>(
             "Created By Julian Rijken", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
-        nameText->GetTransform().SetParent(&intoScreenInfo->GetTransform());
     }
     intoScreenInfo->SetActive(false);
 
+
+    /////////////////////
+    /// SELECT SCREEN ///
+    /////////////////////
+    auto* selectScreen = scene.AddGameObject("Select Screen");
+    {
+        auto* selectBubble = scene.AddGameObject("Select Bugble", { -7, 8, 0 }, selectScreen);
+        selectBubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), 1);
+        selectBubble->AddComponent<Animator>(nullptr, "Idle");
+
+        auto* titleText = scene.AddGameObject("Text", { -5, 8, 0 }, selectScreen);
+        titleText->AddComponent<TextRenderer>(
+            "BUBBLE BOBBLE", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+
+        auto* p1Text = scene.AddGameObject("Text", { -5, 6, 0 }, selectScreen);
+        p1Text->AddComponent<TextRenderer>(
+            "1P START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+
+        auto* p2Text = scene.AddGameObject("Text", { -5, 4, 0 }, selectScreen);
+        p2Text->AddComponent<TextRenderer>(
+            "2P START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+    }
+    selectScreen->SetActive(false);
+
+
     auto* mainMenuGO = scene.AddGameObject("MainMenu");
-    mainMenuGO->AddComponent<MainMenu>(&logo->GetTransform(), intoScreenInfo);
+    mainMenuGO->AddComponent<MainMenu>(&logo->GetTransform(), intoScreenInfo, introScreen, selectScreen);
 }
 
 void bb::TestScene(Scene& scene)
