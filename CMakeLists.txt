@@ -33,6 +33,7 @@ set(BB_SOURCE_FILES
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
     src/Scenes.h src/Scenes.cpp
+    src/InputActions.h src/InputActions.cpp
 )
 
 # Include source directories

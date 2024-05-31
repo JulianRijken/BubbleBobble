@@ -10,11 +10,13 @@
 #include <PlayerHUD.h>
 #include <ResourceManager.h>
 #include <Rigidbody.h>
+#include <SceneManager.h>
 #include <SpriteRenderer.h>
 #include <TextRenderer.h>
 #include <TweenEngine.h>
 #include <ZenChan.h>
 
+#include "FpsCounter.h"
 #include "Game.h"
 
 void bb::MainScene(Scene& scene)
@@ -128,6 +130,10 @@ void bb::MainScene(Scene& scene)
 
 void bb::MainMenuScene(Scene& scene)
 {
+    auto* fpsCounter = scene.AddGameObject("FPS_Counter", { -12, 12, 0 });
+    fpsCounter->AddComponent<TextRenderer>("0", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+    fpsCounter->AddComponent<FpsCounter>();
+
     auto* logo = scene.AddGameObject("Logo", { 0, 0, 0 });
     logo->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Logo"), 1);
 
@@ -198,4 +204,10 @@ void bb::SceneGraphTestScene(Scene& scene)
 
         lastBubble = bubble;
     }
+}
+
+void bb::BindScenes()
+{
+    SceneManager::GetInstance().BindScene("Main", MainScene);
+    SceneManager::GetInstance().BindScene("MainMenu", MainMenuScene);
 }

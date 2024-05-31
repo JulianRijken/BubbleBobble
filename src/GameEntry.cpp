@@ -213,9 +213,9 @@ void jul::Julgen::PreInit()
     });
 
     Input::AddAction(InputBind::ToggleSound, { { SDL_SCANCODE_M }, {}, {} });
-    Input::AddAction(InputBind::ExitIntro,
+    Input::AddAction(InputBind::Select,
                      {
-                         { SDL_SCANCODE_ESCAPE, SDL_SCANCODE_KP_ENTER, SDL_SCANCODE_SPACE },
+                         { SDL_SCANCODE_E, SDL_SCANCODE_KP_ENTER, SDL_SCANCODE_SPACE },
                          {},
                          {}
     });
@@ -228,6 +228,7 @@ void jul::Julgen::GameStart()
 {
     LoadResources();
     Game::GetInstance().Initialize();
-    SceneManager::GetInstance().LoadScene("mainMenu", MainMenuScene);
+    BindScenes();
+    SceneManager::GetInstance().LoadScene("MainMenu");
     MessageQueue::Broadcast(MessageType::GameStart);
 }

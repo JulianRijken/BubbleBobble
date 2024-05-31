@@ -2,9 +2,11 @@
 
 #include <Animator.h>
 #include <AutoMove.h>
+#include <Command.h>
 #include <EaseFunction.h>
 #include <fmt/core.h>
 #include <GameObject.h>
+#include <Input.h>
 #include <MathExtensions.h>
 #include <ResourceManager.h>
 #include <SceneManager.h>
@@ -13,12 +15,17 @@
 #include <Tween.h>
 #include <TweenEngine.h>
 
+#include "Game.h"
+
 
 bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameObject* intoTextPtr) :
     Component(parentPtr, "Main Menu"),
     m_LogoTransformPtr(logoTransformPtr),
     m_IntoTextPtr(intoTextPtr)
 {
+
+    Input::Bind((int)InputBind::Select, 1, true, this, &bb::MainMenu::OnSelectButton);
+
 
     // Show main menu logo
     TweenEngine::Start({ .from = 20.0f,
@@ -50,6 +57,8 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
     }
 }
 
+void bb::MainMenu::OnSelectButton(const InputContext&) { SceneManager::GetInstance().LoadScene("Main"); }
+
 void bb::MainMenu::OnLogoLand()
 {
     for(auto&& bubble : m_Bubbles)
@@ -70,6 +79,4 @@ void bb::MainMenu::OnLogoLand()
             .onUpdate = [this](float value) { m_IntoTextPtr->GetTransform().SetWorldPosition(0, value, 0); },
         },
         GetGameObject());
-
-    // SceneManager::GetInstance().LoadScene("mainScene", MainScene);
 }

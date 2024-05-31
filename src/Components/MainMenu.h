@@ -5,6 +5,8 @@
 
 #include <vector>
 
+#include "InputContext.h"
+
 
 namespace bb
 {
@@ -15,6 +17,8 @@ namespace bb
     {
     public:
         MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameObject* intoTextPtr);
+
+        void OnSelectButton(const InputContext& context);
 
     private:
         void OnLogoLand();

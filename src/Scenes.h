@@ -6,6 +6,8 @@ namespace bb
 {
     using namespace jul;
 
+    void BindScenes();
+
     void MainScene(Scene& scene);
 
     void MainMenuScene(Scene& scene);

@@ -29,7 +29,7 @@ namespace bb
         MoveRight,
         MoveStick,
         Attack,
-        ExitIntro
+        Select
     };
 
     enum class Sounds
