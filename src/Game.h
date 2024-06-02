@@ -29,7 +29,9 @@ namespace bb
         MoveRight,
         MoveStick,
         Attack,
-        Select
+        UiSelect,
+        UiUp,
+        UiDown
     };
 
     enum class Sounds

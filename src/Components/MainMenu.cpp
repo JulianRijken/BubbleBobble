@@ -6,6 +6,7 @@
 #include <EaseFunction.h>
 #include <fmt/core.h>
 #include <GameObject.h>
+#include <GameTime.h>
 #include <Input.h>
 #include <MathExtensions.h>
 #include <ResourceManager.h>
@@ -18,15 +19,25 @@
 #include "Game.h"
 
 bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameObject* intoTextPtr,
-                       GameObject* introScreen, GameObject* selectScreen) :
+                       GameObject* introScreen, GameObject* selectScreen, Transform* selectBubble,
+                       std::vector<Transform*>&& options) :
     Component(parentPtr, "Main Menu"),
     m_LogoTransformPtr(logoTransformPtr),
+    m_SelectBubble(selectBubble),
     m_IntoTextPtr(intoTextPtr),
     m_IntroScreen(introScreen),
-    m_SelectScreen(selectScreen)
+    m_SelectScreen(selectScreen),
+    m_Options(std::move(options))
 {
 
-    Input::Bind((int)InputBind::Select, 1, true, this, &bb::MainMenu::OnSelectButton);
+    Input::Bind((int)InputBind::UiSelect, 1, true, this, &bb::MainMenu::OnSelectButton);
+    Input::Bind((int)InputBind::UiDown, 1, true, this, &bb::MainMenu::OnDownButton);
+    Input::Bind((int)InputBind::UiUp, 1, true, this, &bb::MainMenu::OnUpButton);
+
+    // Todo allow controller index -1 for all controllers
+    Input::Bind((int)InputBind::UiSelect, 0, false, this, &bb::MainMenu::OnSelectButton);
+    Input::Bind((int)InputBind::UiDown, 0, false, this, &bb::MainMenu::OnDownButton);
+    Input::Bind((int)InputBind::UiUp, 0, false, this, &bb::MainMenu::OnUpButton);
 
 
     // Show main menu logo
@@ -57,13 +68,90 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
             m_Bubbles.emplace_back(autoMove);
         }
     }
+
+    UpdateSelectBubblePosition();
 }
 
-void bb::MainMenu::OnSelectButton(const InputContext&)
+void bb::MainMenu::OnSelectButton(const InputContext& context)
 {
-    if(not m_IntroFinished)
+    if(context.state != jul::ButtonState::Down)
         return;
 
+
+    if(m_OpenedSelectScreen)
+    {
+        // Select item
+        SceneManager::GetInstance().LoadScene("Main");
+    }
+    else
+    {
+        // Show select screen
+
+        if(not m_IntroFinished)
+            return;
+
+        ShowSelectScreen();
+        m_OpenedSelectScreen = true;
+    }
+}
+
+void bb::MainMenu::OnUpButton(const InputContext& context)
+{
+    if(context.state != jul::ButtonState::Down)
+        return;
+
+    m_SelectedItem++;
+    if(m_SelectedItem > static_cast<int>(m_Options.size() - 1))
+        m_SelectedItem = 0;
+
+    UpdateSelectBubblePosition();
+}
+
+void bb::MainMenu::OnDownButton(const InputContext& context)
+{
+    if(context.state != jul::ButtonState::Down)
+        return;
+
+
+    m_SelectedItem--;
+    if(m_SelectedItem < 0)
+        m_SelectedItem = static_cast<int>(m_Options.size() - 1);
+
+    UpdateSelectBubblePosition();
+}
+
+void bb::MainMenu::Update()
+{
+    const glm::vec3 location = jul::math::LerpSmooth(
+        m_SelectBubble->LocalPosition(), m_SelectBubbleTargetLocation, 0.5f, GameTime::GetDeltaTime());
+
+    m_SelectBubble->SetLocalPosition(location);
+}
+
+
+void bb::MainMenu::OnLogoLand()
+{
+    for(auto&& bubble : m_Bubbles)
+    {
+        auto velocity = bubble->GetVelocity();
+        velocity.x = jul::math::RandomRange(-3.0f, 3.0f);
+        bubble->SetVelocity(velocity);
+    }
+
+    // Show credits text
+    TweenEngine::Start(
+        { .from = -15.0f,
+          .to = 0.0f,
+          .duration = 2.0f,
+          .easeFunction = EaseFunction::BounceOut,
+          .onStart = [this]() { m_IntoTextPtr->SetActive(true); },
+          .onUpdate = [this](float value) { m_IntoTextPtr->GetTransform().SetWorldPosition(0, value, 0); },
+          .onEnd = [this]() { m_IntroFinished = true; } },
+        GetGameObject());
+}
+
+void bb::MainMenu::ShowSelectScreen()
+{
     TweenEngine::TweenEngine::Start(
         {
             .from = 0,
@@ -108,23 +196,10 @@ void bb::MainMenu::OnSelectButton(const InputContext&)
         GetGameObject());
 }
 
-void bb::MainMenu::OnLogoLand()
+void bb::MainMenu::UpdateSelectBubblePosition()
 {
-    for(auto&& bubble : m_Bubbles)
-    {
-        auto velocity = bubble->GetVelocity();
-        velocity.x = jul::math::RandomRange(-3.0f, 3.0f);
-        bubble->SetVelocity(velocity);
-    }
-
-    // Show credits text
-    TweenEngine::Start(
-        { .from = -15.0f,
-          .to = 0.0f,
-          .duration = 2.0f,
-          .easeFunction = EaseFunction::BounceOut,
-          .onStart = [this]() { m_IntoTextPtr->SetActive(true); },
-          .onUpdate = [this](float value) { m_IntoTextPtr->GetTransform().SetWorldPosition(0, value, 0); },
-          .onEnd = [this]() { m_IntroFinished = true; } },
-        GetGameObject());
+    auto* selectedOption = m_Options[m_SelectedItem];
+    auto targetPosition = selectedOption->LocalPosition();
+    targetPosition.x -= 2;
+    m_SelectBubbleTargetLocation = targetPosition;
 }

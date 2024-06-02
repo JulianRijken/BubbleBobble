@@ -16,8 +16,11 @@
 #include <TweenEngine.h>
 #include <ZenChan.h>
 
+#include <vector>
+
 #include "FpsCounter.h"
 #include "Game.h"
+#include "Transform.h"
 
 void bb::MainScene(Scene& scene)
 {
@@ -47,7 +50,7 @@ void bb::MainScene(Scene& scene)
 
 
     auto* zenchanGO = scene.AddGameObject("ZenChan", { 3, 5, 0 });
-    zenchanGO->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    zenchanGO->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"),0);
     zenchanGO->AddComponent<Animator>();
     zenchanGO->AddComponent<Rigidbody>();
     zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
@@ -162,9 +165,12 @@ void bb::MainMenuScene(Scene& scene)
     /////////////////////
     /// SELECT SCREEN ///
     /////////////////////
+    GameObject* selectBubble;
+    GameObject* p1Text;
+    GameObject* p2Text;
     auto* selectScreen = scene.AddGameObject("Select Screen");
     {
-        auto* selectBubble = scene.AddGameObject("Select Bugble", { -7, 8, 0 }, selectScreen);
+        selectBubble = scene.AddGameObject("Select Bugble", { -7, 8, 0 }, selectScreen);
         selectBubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), 1);
         selectBubble->AddComponent<Animator>(nullptr, "Idle");
 
@@ -172,11 +178,11 @@ void bb::MainMenuScene(Scene& scene)
         titleText->AddComponent<TextRenderer>(
             "BUBBLE BOBBLE", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
 
-        auto* p1Text = scene.AddGameObject("Text", { -5, 6, 0 }, selectScreen);
+        p1Text = scene.AddGameObject("Text", { -5, 6, 0 }, selectScreen);
         p1Text->AddComponent<TextRenderer>(
             "1P START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
 
-        auto* p2Text = scene.AddGameObject("Text", { -5, 4, 0 }, selectScreen);
+        p2Text = scene.AddGameObject("Text", { -5, 4, 0 }, selectScreen);
         p2Text->AddComponent<TextRenderer>(
             "2P START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
     }
@@ -184,7 +190,12 @@ void bb::MainMenuScene(Scene& scene)
 
 
     auto* mainMenuGO = scene.AddGameObject("MainMenu");
-    mainMenuGO->AddComponent<MainMenu>(&logo->GetTransform(), intoScreenInfo, introScreen, selectScreen);
+    mainMenuGO->AddComponent<MainMenu>(&logo->GetTransform(),
+                                       intoScreenInfo,
+                                       introScreen,
+                                       selectScreen,
+                                       &selectBubble->GetTransform(),
+                                       std::vector<Transform*>{ &p1Text->GetTransform(), &p2Text->GetTransform() });
 }
 
 void bb::TestScene(Scene& scene)

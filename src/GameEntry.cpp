@@ -213,9 +213,21 @@ void jul::Julgen::PreInit()
     });
 
     Input::AddAction(InputBind::ToggleSound, { { SDL_SCANCODE_M }, {}, {} });
-    Input::AddAction(InputBind::Select,
+    Input::AddAction(InputBind::UiSelect,
                      {
                          { SDL_SCANCODE_E, SDL_SCANCODE_KP_ENTER, SDL_SCANCODE_SPACE },
+                         {},
+                         {}
+    });
+    Input::AddAction(InputBind::UiDown,
+                     {
+                         { SDL_SCANCODE_DOWN, SDL_SCANCODE_Z, SDL_SCANCODE_W },
+                         {},
+                         {}
+    });
+    Input::AddAction(InputBind::UiUp,
+                     {
+                         { SDL_SCANCODE_UP, SDL_SCANCODE_X, SDL_SCANCODE_S },
                          {},
                          {}
     });
