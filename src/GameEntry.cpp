@@ -180,12 +180,12 @@ void jul::Julgen::PreInit()
 
     // 32 by 28 tiles
     GameSettings::g_WindowTitle = "Bubble Bobble Made In Julgen";
-    GameSettings::g_RenderWidth = 32 * 8;
-    GameSettings::g_RenderHeight = 28 * 8;
+    GameSettings::g_RenderWidth = Game::GRID_SIZE_X * Game::PIXELS_PER_GRID_CELL;
+    GameSettings::g_RenderHeight = Game::GRID_SIZE_Y * Game::PIXELS_PER_GRID_CELL;
 
 
-    GameSettings::g_WindowWidth = 32 * 8 * 4;
-    GameSettings::g_WindowHeight = 28 * 8 * 4;
+    GameSettings::g_WindowWidth = Game::GRID_SIZE_X * Game::PIXELS_PER_GRID_CELL * 4;
+    GameSettings::g_WindowHeight = Game::GRID_SIZE_Y * Game::PIXELS_PER_GRID_CELL * 4;
     GameSettings::g_ShowConsole = true;
 
 
@@ -251,5 +251,6 @@ void jul::Julgen::GameStart()
     Game::GetInstance().Initialize();
     BindScenes();
     SceneManager::GetInstance().LoadScene("MainMenu");
+    // SceneManager::GetInstance().LoadScene("Main");
     MessageQueue::Broadcast(MessageType::GameStart);
 }

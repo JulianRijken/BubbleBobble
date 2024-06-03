@@ -17,25 +17,30 @@ void bb::AutoMove::Update()
 
     glm::vec3 currentPosition{GetTransform().GetWorldPosition()};
 
-    if(m_BoundingBox.x > 0 or m_BoundingBox.y > 0 or m_BoundingBox.z > 0)
+    if(m_UseBoundingBox)
     {
-        if (currentPosition.x > m_BoundingBox.x + m_BoundingBoxCenter.x)
-            currentPosition.x -= 2 * (m_BoundingBox.x + m_BoundingBoxCenter.x);
-        else if (currentPosition.x < -m_BoundingBox.x + m_BoundingBoxCenter.x)
-            currentPosition.x += 2 * (m_BoundingBox.x + m_BoundingBoxCenter.x);
+        if(m_BoundingBox.x > 0 or m_BoundingBox.y > 0 or m_BoundingBox.z > 0)
+        {
+            if(currentPosition.x > m_BoundingBox.x + m_BoundingBoxCenter.x)
+                currentPosition.x -= 2 * (m_BoundingBox.x + m_BoundingBoxCenter.x);
+            else if(currentPosition.x < -m_BoundingBox.x + m_BoundingBoxCenter.x)
+                currentPosition.x += 2 * (m_BoundingBox.x + m_BoundingBoxCenter.x);
 
-        if (currentPosition.y > m_BoundingBox.y + m_BoundingBoxCenter.y)
-            currentPosition.y -= 2 * (m_BoundingBox.y + m_BoundingBoxCenter.y);
-        else if (currentPosition.y < -m_BoundingBox.y + m_BoundingBoxCenter.y)
-            currentPosition.y += 2 * (m_BoundingBox.y + m_BoundingBoxCenter.y);
+            if(currentPosition.y > m_BoundingBox.y + m_BoundingBoxCenter.y)
+                currentPosition.y -= 2 * (m_BoundingBox.y + m_BoundingBoxCenter.y);
+            else if(currentPosition.y < -m_BoundingBox.y + m_BoundingBoxCenter.y)
+                currentPosition.y += 2 * (m_BoundingBox.y + m_BoundingBoxCenter.y);
 
-        if (currentPosition.z > m_BoundingBox.z + m_BoundingBoxCenter.z)
-            currentPosition.z -= 2 * (m_BoundingBox.z + m_BoundingBoxCenter.z);
-        else if (currentPosition.z < -m_BoundingBox.z + m_BoundingBoxCenter.z)
-            currentPosition.z += 2 * (m_BoundingBox.z + m_BoundingBoxCenter.z);
+            if(currentPosition.z > m_BoundingBox.z + m_BoundingBoxCenter.z)
+                currentPosition.z -= 2 * (m_BoundingBox.z + m_BoundingBoxCenter.z);
+            else if(currentPosition.z < -m_BoundingBox.z + m_BoundingBoxCenter.z)
+                currentPosition.z += 2 * (m_BoundingBox.z + m_BoundingBoxCenter.z);
+        }
     }
 
     GetTransform().SetWorldPosition(currentPosition);
 }
 
 void bb::AutoMove::SetVelocity(glm::vec3 velocity) { m_Velocity = velocity; }
+
+void bb::AutoMove::SetUseBoundingBox(bool use) { m_UseBoundingBox = use; }

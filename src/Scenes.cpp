@@ -6,6 +6,7 @@
 #include <Camera.h>
 #include <GameObject.h>
 #include <GameSettings.h>
+#include <GameTime.h>
 #include <MainMenu.h>
 #include <OneWayPlatform.h>
 #include <Player.h>
@@ -28,12 +29,12 @@ void bb::MainScene(Scene& scene)
 {
     auto* cameraGameObject = scene.AddGameObject("Camera");
     cameraGameObject->AddComponent<Camera>(14, GameSettings::GetAspectRatio());
-    cameraGameObject->GetTransform().SetWorldPosition({ 0, 2, 0 });
+    cameraGameObject->GetTransform().SetWorldPosition({ 0, Game::GRID_SIZE_Y, 0 });
 
-
+    // Move camera down
     TweenEngine::Start(
         {
-            .from = -26,
+            .from = cameraGameObject->GetTransform().GetWorldPosition().y,
             .to = 0,
             .duration = 2.0,
             .easeFunction = EaseFunction::SineOut,
@@ -42,43 +43,55 @@ void bb::MainScene(Scene& scene)
         },
         cameraGameObject);
 
+    // Move camera down again lol
+    TweenEngine::Start(
+        {
+            .delay = 6.0,
+            .from = 0,
+            .to = -Game::GRID_SIZE_Y,
+            .duration = 4.0,
+            .easeFunction = EaseFunction::SineOut,
+            .onUpdate = [cameraGameObject](double value)
+            { cameraGameObject->GetTransform().SetWorldPosition(0, value, 0); },
+        },
+        cameraGameObject);
 
-    auto* nameText = scene.AddGameObject("Name Text", { 0, 5, 0 });
-    nameText->AddComponent<TextRenderer>("Now it is the beginning of\
-A fantastic story! let us\
-make A journy to\
-the cave of monsters!\
-Good Luck!",
-                                         ResourceManager::GetFont("NES"),
-                                         100,
-                                         glm ::vec2{ 0.5f, 0.5f },
-                                         true);
+
+    auto* nameText = scene.AddGameObject("Name Text", { 0, 13, 0 });
+    nameText->AddComponent<TextRenderer>(
+        "Now it is the beginning of\nA fantastic story! let us\nmake A journy to\nthe cave of monsters!\nGood Luck!",
+        ResourceManager::GetFont("NES"),
+        100,
+        glm ::vec2{ 0.5f, 0.0f },
+        true);
 
 
     // Player 1
-    Game::SpawnPlayer(scene, 0, { 3, 10, 0 });
+    // Game::SpawnPlayer(scene, 0, { 3, 10, 0 });
 
     // Player 2
     auto* player2GameObject = Game::SpawnPlayer(scene, 1, { 3, 10, 0 });
 
-    TweenEngine::Start({ .delay = 2.0,
-                         .to = 6.28,
+    TweenEngine::Start({ .to = 6.28,
                          .duration = 6.0,
                          .easeFunction = EaseFunction::Linear,
                          .onUpdate =
-                             [player2GameObject](double value)
+                             [player2GameObject](double)
                          {
-                             const glm::vec2 position{ std::cos(value) * 10.0f, std::sin(value) * 10.0f };
-                             player2GameObject->GetTransform().SetWorldPosition(0, 0, 0);
+                             glm::vec2 circleOffset{ std::cos(GameTime::GetElapsedTime() * 3.0) * 5.0,
+                                                     std::sin(GameTime::GetElapsedTime() * 3.0) * 5.0 };
+
+                             circleOffset.y -= 5;
+                             player2GameObject->GetTransform().SetWorldPosition(circleOffset.x, circleOffset.y, 0);
                          },
                          .onEnd =
                              [player2GameObject]() {
-                                 player2GameObject->BubbleToPosition({ -12, -11, 0 }, 3.0f);
+                                 player2GameObject->BubbleToPosition({ -12, -11 - Game::GRID_SIZE_Y, 0 }, 4.0f);
                              } },
                        player2GameObject);
 
 
-    Game::SpawnLevel(scene, 1, { 0, -26, 0 });
+    Game::SpawnLevel(scene, 1, { 0, -Game::GRID_SIZE_Y, 0 });
 
 
     // auto* zenchanGO = scene.AddGameObject("ZenChan", { 3, 5, 0 });

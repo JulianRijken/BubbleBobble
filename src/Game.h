@@ -71,6 +71,9 @@ namespace bb
     public:
         inline const static std::string BUBBLE_SPRITE_NAME = "BubbleCharacter";
         inline const static std::string BOBBLE_SPRITE_NAME = "BobbleCharacter";
+        inline constexpr static int GRID_SIZE_X = 32;
+        inline constexpr static int GRID_SIZE_Y = 28;
+        inline constexpr static int PIXELS_PER_GRID_CELL = 8;
 
         void Initialize();
 

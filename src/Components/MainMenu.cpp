@@ -191,24 +191,22 @@ void bb::MainMenu::TransitionInToGame()
         GetGameObject());
 
 
+    // Disable bubble bounding box to stop them from re appearing on screen
+    for(auto&& bubble : m_Bubbles)
+    {
+        auto* autoMove = bubble->GetGameObject()->GetComponent<AutoMove>();
+        if(autoMove != nullptr)
+            autoMove->SetUseBoundingBox(false);
+    }
+
     // Move Bubbles
-    TweenEngine::Start({ .duration = 2.0,
+    TweenEngine::Start({ .duration = 4.0,
                          .easeFunction = EaseFunction::SineIn,
-                         .onStart =
-                             [this]()
-                         {
-                             for(auto&& bubble : m_Bubbles)
-                             {
-                                 auto* autoMove = bubble->GetGameObject()->GetComponent<AutoMove>();
-                                 if(autoMove != nullptr)
-                                     autoMove->Destroy();
-                             }
-                         },
                          .onUpdate =
-                             [this](double time)
+                             [this](double value)
                          {
                              for(auto&& bubble : m_Bubbles)
-                                 bubble->GetTransform().Translate(0, time, 0);
+                                 bubble->GetTransform().Translate(0, value * GameTime::GetDeltaTime() * 100, 0);
                          } },
 
                        GetGameObject());
@@ -253,7 +251,7 @@ void bb::MainMenu::ShowSelectScreen()
               {
                   m_Bubbles[bubbleIndex]->GetGameObject()->SetActive(bubbleIndex < activeBubbles);
                   m_Bubbles[bubbleIndex]->GetTransform().Translate(
-                      0, curvedSpeed * m_Bubbles[bubbleIndex]->GetVelocity().y, 0);
+                      0, curvedSpeed * m_Bubbles[bubbleIndex]->GetVelocity().y * GameTime::GetDeltaTime() * 100.0, 0);
               }
           },
           .onEnd = [this]() { m_IntroScreen->SetActive(false); } },
