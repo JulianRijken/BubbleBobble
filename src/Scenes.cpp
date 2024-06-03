@@ -86,7 +86,7 @@ void bb::MainScene(Scene& scene)
                          },
                          .onEnd =
                              [player2GameObject]() {
-                                 player2GameObject->BubbleToPosition({ -12, -11 - Game::GRID_SIZE_Y, 0 }, 4.0f);
+                                 player2GameObject->BubbleToPosition({ -12, -10 - Game::GRID_SIZE_Y, 0 }, 4.0f);
                              } },
                        player2GameObject);
 

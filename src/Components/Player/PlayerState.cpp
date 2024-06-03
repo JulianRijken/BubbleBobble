@@ -244,12 +244,11 @@ void bb::PlayerBubbleState::OnEnterState(Player& player)
 
 void bb::PlayerBubbleState::OnExitState(Player& player)
 {
-    player.m_BubbleAnimatorPtr->PlayAnimation("Pop");
     player.m_RigidbodyPtr->SetMode(Rigidbody::Mode::Dynamic);
 }
 
 void bb::PlayerBubbleState::Update(Player& player)
 {
-    if(not player.m_BubbleAnimatorPtr->IsPlaying())
+    if(not player.m_BubbleAnimatorPtr->IsPlaying() and player.m_BubbleAnimatorPtr->IsActiveAnimation("Spawn"))
         player.m_BubbleAnimatorPtr->PlayAnimation("Idle", true);
 }

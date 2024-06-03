@@ -43,8 +43,17 @@ void bb::Player::BubbleToPosition(const glm::vec3 position, double duration)
 
     TweenEngine::Start(
         {
-            .delay = duration,
+            .duration = duration,
+            .onUpdate =
+                [this](double value)
+            {
+                // Play pop animation close to the end
+                if(value > 0.70)
+                    if(m_BubbleAnimatorPtr->IsActiveAnimation("Idle"))
+                        m_BubbleAnimatorPtr->PlayAnimation("Pop");
+            },
             .onEnd = [this]() { SetMainState(m_WalkingState.get()); },
+
         },
         this);
 
