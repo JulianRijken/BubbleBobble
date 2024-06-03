@@ -6,7 +6,7 @@
 
 namespace bb
 {
-    class PlayerHUD : public Component, public EventListener
+    class PlayerHUD : public Component, public IEventListener
     {
     public:
         inline static constexpr int SCORE_CHANGE_PER_SECOND = 5000;

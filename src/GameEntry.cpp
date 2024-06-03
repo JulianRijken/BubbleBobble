@@ -70,61 +70,67 @@ void LoadResources()
 
     ResourceManager::LoadSprite("LevelTiles", "LevelTiles.png", 8, { 0.0f, 0.0f }, 25, 5);
 
-    // TODO: as you can see animations around bound to a sprite
-    //       in this senario you can see how that's not optimal
-    ResourceManager::LoadSprite("BubbleCharacter",
-                                "BubbleCharacter.png",
-                                8,
-                                {
-                                    0.5f, 0.5f
-    },
-                                4,
-                                6,
-                                { { "Idle", SpriteAnimation{ { { 0, 0 }, { 1, 0 } }, 7 } },
-                                  { "Walk", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 7 } },
-                                  { "Jump", SpriteAnimation{ { { 0, 1 }, { 1, 1 }, { 2, 1 }, { 3, 1 } }, 4 } },
-                                  { "Falling", SpriteAnimation{ { { 2, 1 }, { 3, 1 } }, 4 } },
-                                  { "Death",
-                                    SpriteAnimation{ { { 0, 3 },
-                                                       { 1, 3 },
-                                                       { 2, 3 },
-                                                       { 3, 3 },
-                                                       { 0, 3 },
-                                                       { 1, 3 },
-                                                       { 2, 3 },
-                                                       { 3, 3 },
-                                                       { 4, 3 },
-                                                       { 5, 3 },
-                                                       { 6, 3 } },
-                                                     10 } },
-                                  { "Attack", SpriteAnimation{ { { 0, 2 } }, 6 } } });
 
-    ResourceManager::LoadSprite("BobbleCharacter",
-                                "BobbleCharacter.png",
+    auto loadPLayerSprite = [](const std::string& spriteName, const std::string& fileName)
+    {
+        ResourceManager::LoadSprite(spriteName,
+                                    fileName,
+                                    8,
+                                    {
+                                        0.5f, 0.5f
+        },
+                                    4,
+                                    6,
+                                    { { "Idle", SpriteAnimation{ { { 0, 0 }, { 1, 0 } }, 7 } },
+                                      { "InBubble", SpriteAnimation{ { { 1, 2 }, { 2, 2 } }, 4 } },
+                                      { "Walk", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 7 } },
+                                      { "Jump", SpriteAnimation{ { { 0, 1 }, { 1, 1 }, { 2, 1 }, { 3, 1 } }, 4 } },
+                                      { "Falling", SpriteAnimation{ { { 2, 1 }, { 3, 1 } }, 4 } },
+                                      { "Death",
+                                        SpriteAnimation{ { { 0, 3 },
+                                                           { 1, 3 },
+                                                           { 2, 3 },
+                                                           { 3, 3 },
+                                                           { 0, 3 },
+                                                           { 1, 3 },
+                                                           { 2, 3 },
+                                                           { 3, 3 },
+                                                           { 4, 3 },
+                                                           { 5, 3 },
+                                                           { 6, 3 } },
+                                                         10 } },
+                                      { "Attack", SpriteAnimation{ { { 0, 2 } }, 6 } } });
+    };
+
+    loadPLayerSprite("BubbleCharacter", "BubbleCharacter.png");
+    loadPLayerSprite("BobbleCharacter", "BobbleCharacter.png");
+
+
+    ResourceManager::LoadSprite("BubbleLarge",
+                                "BubbleLarge.png",
                                 8,
                                 {
                                     0.5f, 0.5f
     },
-                                4,
-                                6,
-                                { { "Idle", SpriteAnimation{ { { 0, 0 }, { 1, 0 } }, 7 } },
-                                  { "Walk", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 7 } },
-                                  { "Jump", SpriteAnimation{ { { 0, 1 }, { 1, 1 }, { 2, 1 }, { 3, 1 } }, 4 } },
-                                  { "Falling", SpriteAnimation{ { { 2, 1 }, { 3, 1 } }, 4 } },
-                                  { "Death",
-                                    SpriteAnimation{ { { 0, 3 },
-                                                       { 1, 3 },
-                                                       { 2, 3 },
-                                                       { 3, 3 },
-                                                       { 0, 3 },
-                                                       { 1, 3 },
-                                                       { 2, 3 },
-                                                       { 3, 3 },
-                                                       { 4, 3 },
-                                                       { 5, 3 },
-                                                       { 6, 3 } },
-                                                     10 } },
-                                  { "Attack", SpriteAnimation{ { { 0, 2 } }, 6 } } });
+                                1,
+                                9,
+                                {
+                                    { "Hidden", SpriteAnimation{ { { 8, 0 } }, 4 } },
+                                    { "Spawn", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 } }, 4 } },
+                                    { "Idle", SpriteAnimation{ { { 3, 0 }, { 4, 0 } }, 4 } },
+                                    { "Pop",
+                                      SpriteAnimation{ { { 5, 0 },
+                                                         { 6, 0 },
+                                                         { 5, 0 },
+                                                         { 6, 0 },
+                                                         { 5, 0 },
+                                                         { 6, 0 },
+                                                         { 5, 0 },
+                                                         { 6, 0 },
+                                                         { 7, 0 },
+                                                         { 8, 0 } },
+                                                       12 } },
+                                });
 
 
     ResourceManager::LoadSprite("BubbleParticle",
@@ -165,7 +171,6 @@ void InitControls()
     Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveStick, 1, true, 1, &bb::Player::OnMoveStickInput);
     Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Attack, 1, true, 1, &bb::Player::OnAttackInput);
     Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Jump, 1, true, 1, &bb::Player::OnJumpInput);
-
 
     Input::RegisterCommand<MuteGameCommand>((int)InputBind::ToggleSound, 1, true);
 }
@@ -221,16 +226,20 @@ void jul::Julgen::PreInit()
     });
     Input::AddAction(InputBind::UiDown,
                      {
-                         { SDL_SCANCODE_DOWN, SDL_SCANCODE_Z, SDL_SCANCODE_W },
+                         { SDL_SCANCODE_DOWN, SDL_SCANCODE_Z, SDL_SCANCODE_S },
                          {},
                          {}
     });
     Input::AddAction(InputBind::UiUp,
                      {
-                         { SDL_SCANCODE_UP, SDL_SCANCODE_X, SDL_SCANCODE_S },
+                         { SDL_SCANCODE_UP, SDL_SCANCODE_X, SDL_SCANCODE_W },
                          {},
                          {}
     });
+    Input::AddAction(InputBind::DebugIncreaseTimeScale, { { SDL_SCANCODE_RIGHTBRACKET }, {}, {} });
+    Input::AddAction(InputBind::DebugDecreaseTimeScale, { { SDL_SCANCODE_LEFTBRACKET }, {}, {} });
+
+    Input::AddAction(InputBind::ForceReset, { { SDL_SCANCODE_ESCAPE }, {}, {} });
 
 
     InitControls();

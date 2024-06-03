@@ -2,6 +2,7 @@
 
 #include <Animator.h>
 #include <AutoMove.h>
+#include <Camera.h>
 #include <Command.h>
 #include <EaseFunction.h>
 #include <fmt/core.h>
@@ -30,6 +31,7 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
     m_Options(std::move(options))
 {
 
+    // TODO: THIS IS A MEMORY LEAK BECAUSE A NEW COMMAND AND EVENT IS CREATED EVERY SINGLE TIME
     Input::Bind((int)InputBind::UiSelect, 1, true, this, &bb::MainMenu::OnSelectButton);
     Input::Bind((int)InputBind::UiDown, 1, true, this, &bb::MainMenu::OnDownButton);
     Input::Bind((int)InputBind::UiUp, 1, true, this, &bb::MainMenu::OnUpButton);
@@ -77,11 +79,17 @@ void bb::MainMenu::OnSelectButton(const InputContext& context)
     if(context.state != jul::ButtonState::Down)
         return;
 
+    if(m_SelectedMode)
+        return;
+
+    if(TweenEngine::HasActiveTweens(GetGameObject()))
+        return;
+
 
     if(m_OpenedSelectScreen)
     {
-        // Select item
-        SceneManager::GetInstance().LoadScene("Main");
+        m_SelectedMode = true;
+        TransitionInToGame();
     }
     else
     {
@@ -100,9 +108,13 @@ void bb::MainMenu::OnUpButton(const InputContext& context)
     if(context.state != jul::ButtonState::Down)
         return;
 
-    m_SelectedItem++;
-    if(m_SelectedItem > static_cast<int>(m_Options.size() - 1))
-        m_SelectedItem = 0;
+    if(m_SelectedMode)
+        return;
+
+    m_SelectedItem--;
+    if(m_SelectedItem < 0)
+        m_SelectedItem = static_cast<int>(m_Options.size() - 1);
+
 
     UpdateSelectBubblePosition();
 }
@@ -112,20 +124,35 @@ void bb::MainMenu::OnDownButton(const InputContext& context)
     if(context.state != jul::ButtonState::Down)
         return;
 
+    if(m_SelectedMode)
+        return;
 
-    m_SelectedItem--;
-    if(m_SelectedItem < 0)
-        m_SelectedItem = static_cast<int>(m_Options.size() - 1);
+    m_SelectedItem++;
+    if(m_SelectedItem > static_cast<int>(m_Options.size() - 1))
+        m_SelectedItem = 0;
 
     UpdateSelectBubblePosition();
 }
 
 void bb::MainMenu::Update()
 {
-    const glm::vec3 location = jul::math::LerpSmooth(
-        m_SelectBubble->LocalPosition(), m_SelectBubbleTargetLocation, 0.5f, GameTime::GetDeltaTime());
+    const glm::vec3 location = jul::math::LerpSmooth(m_SelectBubble->GetLocalPosition(),
+                                                     m_SelectBubbleTargetLocation,
+                                                     SELECT_BUBBLE_LERP_DURATION,
+                                                     GameTime::GetDeltaTime());
 
     m_SelectBubble->SetLocalPosition(location);
+}
+
+void bb::MainMenu::LoadSelectedMode() const
+{
+    if(m_SelectedItem == 0)
+    {
+        SceneManager::LoadScene("Main");
+        return;
+    }
+
+    throw std::runtime_error(fmt::format("Game Mode Not Implemented. Index: {}", m_SelectedItem));
 }
 
 
@@ -140,19 +167,57 @@ void bb::MainMenu::OnLogoLand()
 
     // Show credits text
     TweenEngine::Start(
-        { .from = -15.0f,
-          .to = 0.0f,
-          .duration = 2.0f,
+        { .from = -15.0,
+          .to = 0.0,
+          .duration = 2.0,
           .easeFunction = EaseFunction::BounceOut,
           .onStart = [this]() { m_IntoTextPtr->SetActive(true); },
-          .onUpdate = [this](float value) { m_IntoTextPtr->GetTransform().SetWorldPosition(0, value, 0); },
+          .onUpdate = [this](double value) { m_IntoTextPtr->GetTransform().SetWorldPosition(0, value, 0); },
           .onEnd = [this]() { m_IntroFinished = true; } },
         GetGameObject());
 }
 
+void bb::MainMenu::TransitionInToGame()
+{
+    m_SelectScreen->SetActive(true);
+
+    // Move select screen
+    TweenEngine::Start(
+        { .to = 26,
+          .duration = 2.0,
+          .easeFunction = EaseFunction::SineIn,
+          .onUpdate = [this](float value) { m_SelectScreen->GetTransform().SetWorldPosition(0, value, 0); },
+          .onEnd = [this]() { LoadSelectedMode(); } },
+        GetGameObject());
+
+
+    // Move Bubbles
+    TweenEngine::Start({ .duration = 2.0,
+                         .easeFunction = EaseFunction::SineIn,
+                         .onStart =
+                             [this]()
+                         {
+                             for(auto&& bubble : m_Bubbles)
+                             {
+                                 auto* autoMove = bubble->GetGameObject()->GetComponent<AutoMove>();
+                                 if(autoMove != nullptr)
+                                     autoMove->Destroy();
+                             }
+                         },
+                         .onUpdate =
+                             [this](double time)
+                         {
+                             for(auto&& bubble : m_Bubbles)
+                                 bubble->GetTransform().Translate(0, time, 0);
+                         } },
+
+                       GetGameObject());
+}
+
+
 void bb::MainMenu::ShowSelectScreen()
 {
-    TweenEngine::TweenEngine::Start(
+    TweenEngine::Start(
         {
             .from = 0,
             .to = 50,
@@ -163,7 +228,7 @@ void bb::MainMenu::ShowSelectScreen()
         GetGameObject());
 
     m_SelectScreen->SetActive(true);
-    TweenEngine::TweenEngine::Start(
+    TweenEngine::Start(
         {
             .from = -50,
             .to = 0,
@@ -174,7 +239,7 @@ void bb::MainMenu::ShowSelectScreen()
         GetGameObject());
 
 
-    TweenEngine::TweenEngine::Start(
+    TweenEngine::Start(
         { .duration = 4.0,
           .onUpdate =
               [this](double time)
@@ -199,7 +264,7 @@ void bb::MainMenu::ShowSelectScreen()
 void bb::MainMenu::UpdateSelectBubblePosition()
 {
     auto* selectedOption = m_Options[m_SelectedItem];
-    auto targetPosition = selectedOption->LocalPosition();
-    targetPosition.x -= 2;
+    auto targetPosition = selectedOption->GetLocalPosition();
+    targetPosition.x += SELECT_BUBBLE_TEXT_OFFSET;
     m_SelectBubbleTargetLocation = targetPosition;
 }

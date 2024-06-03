@@ -41,7 +41,6 @@ namespace bb
         PlayerState& operator=(PlayerState&&) = delete;
         PlayerState& operator=(const PlayerState&) = delete;
 
-
         virtual void OnEnterState(Player& /*unused*/){};
 
         virtual void Update(Player& /*unused*/){};
@@ -137,7 +136,9 @@ namespace bb
 
     class PlayerBubbleState final : public PlayerState
     {
-        // TODO: Yet to implement bubble state
-        //       this is the state the player has when he is moving between levels
+    public:
+        void OnEnterState(Player& player) override;
+        void OnExitState(Player& player) override;
+        void Update(Player& player) override;
     };
 }  // namespace bb

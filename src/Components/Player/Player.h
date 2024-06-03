@@ -27,7 +27,8 @@ namespace bb
     public:
         static constexpr float GROUND_CHECK_DISTANCE{ 0.5f };
 
-        Player(GameObject* parentPtr, int playerIndex);
+        Player(GameObject* parentPtr, int playerIndex, SpriteRenderer* bodySpriteRenderer,
+               SpriteRenderer* bubbleSpriteRenderer, Animator* bodyAnimator, Animator* bubbleAnimator);
 
         ~Player() override;
 
@@ -41,6 +42,7 @@ namespace bb
         [[nodiscard]] Event<int>& GetOnScoreChangeEvent() { return m_OnScoreChangeEvent; }
 
         void AddScore();
+        void BubbleToPosition(const glm::vec3 position, double duration);
 
         void OnMoveLeftInput(const InputContext& context);
         void OnMoveRightInput(const InputContext& context);
@@ -70,7 +72,7 @@ namespace bb
         std::unique_ptr<PlayerDeathState> m_DeathState{ std::make_unique<PlayerDeathState>() };
         std::unique_ptr<PlayerBubbleState> m_BubbleState{ std::make_unique<PlayerBubbleState>() };
 
-        PlayerState* m_ActiveMainState{ m_WalkingState.get() };
+        PlayerState* m_ActiveMainState{ m_BubbleState.get() };
         PlayerState* m_ActiveAttackState{ m_NullState.get() };
 
         Event<int> m_OnDeathEvent{};
@@ -89,9 +91,11 @@ namespace bb
         std::string m_FallingAnimationName{ "Falling" };
         std::string m_AttackAnimationName{ "Attack" };
 
-        Animator* m_AnimatorPtr{ nullptr };
-        Rigidbody* m_Rigidbody{ nullptr };
-        SpriteRenderer* m_SpriteRenderer{ nullptr };
-        BoxCollider* m_Collider{ nullptr };
+        Animator* m_BodyAnimatorPtr{ nullptr };
+        Animator* m_BubbleAnimatorPtr{ nullptr };
+        Rigidbody* m_RigidbodyPtr{ nullptr };
+        SpriteRenderer* m_BodySpriteRendererPtr{ nullptr };
+        SpriteRenderer* m_BubbleSpriteRendererPtr{ nullptr };
+        BoxCollider* m_ColliderPtr{ nullptr };
     };
 }

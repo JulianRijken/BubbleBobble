@@ -79,7 +79,7 @@ void bb::AttackBubble::Update()
         if(not g_Bubbles.empty())
         {
             for(auto&& bubble : g_Bubbles)
-                m_BubbleCenter += glm::vec2(bubble->GetTransform().WorldPosition());
+                m_BubbleCenter += glm::vec2(bubble->GetTransform().GetWorldPosition());
 
             m_BubbleCenter /= g_Bubbles.size();
         }

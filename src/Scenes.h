@@ -10,6 +10,8 @@ namespace bb
 
     void MainScene(Scene& scene);
 
+    void Levels(Scene& scene);
+
     void MainMenuScene(Scene& scene);
 
     void TestScene(Scene& scene);

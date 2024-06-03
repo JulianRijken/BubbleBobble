@@ -3,7 +3,9 @@
 #include <Animator.h>
 #include <AutoRotateAround.h>
 #include <BoxCollider.h>
+#include <Camera.h>
 #include <GameObject.h>
+#include <GameSettings.h>
 #include <MainMenu.h>
 #include <OneWayPlatform.h>
 #include <Player.h>
@@ -24,118 +26,124 @@
 
 void bb::MainScene(Scene& scene)
 {
+    auto* cameraGameObject = scene.AddGameObject("Camera");
+    cameraGameObject->AddComponent<Camera>(14, GameSettings::GetAspectRatio());
+    cameraGameObject->GetTransform().SetWorldPosition({ 0, 2, 0 });
+
+
+    TweenEngine::Start(
+        {
+            .from = -26,
+            .to = 0,
+            .duration = 2.0,
+            .easeFunction = EaseFunction::SineOut,
+            .onUpdate = [cameraGameObject](double value)
+            { cameraGameObject->GetTransform().SetWorldPosition(0, value, 0); },
+        },
+        cameraGameObject);
+
+
+    auto* nameText = scene.AddGameObject("Name Text", { 0, 5, 0 });
+    nameText->AddComponent<TextRenderer>("Now it is the beginning of\
+A fantastic story! let us\
+make A journy to\
+the cave of monsters!\
+Good Luck!",
+                                         ResourceManager::GetFont("NES"),
+                                         100,
+                                         glm ::vec2{ 0.5f, 0.5f },
+                                         true);
+
+
     // Player 1
-    auto* player1GameObject = scene.AddGameObject("BubbleCharacter", { -3, 10, 0 });
-    player1GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
-    player1GameObject->AddComponent<Animator>();
-    player1GameObject->AddComponent<Rigidbody>();
-    player1GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 0.0f,
-        .restitution = 0.1f,
-        .size = {1.80f, 1.95f},
-    });
-    player1GameObject->AddComponent<Player>(0);
+    Game::SpawnPlayer(scene, 0, { 3, 10, 0 });
 
     // Player 2
-    auto* player2GameObject = scene.AddGameObject("BobbleCharacter", { 3, 10, 0 });
-    player2GameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BobbleCharacter"), 0);
-    player2GameObject->AddComponent<Animator>();
-    player2GameObject->AddComponent<Rigidbody>();
-    player2GameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 0.0f,
-        .restitution = 0.1f,
-        .size = {1.80f, 1.95f},
-    });
-    player2GameObject->AddComponent<Player>(1);
+    auto* player2GameObject = Game::SpawnPlayer(scene, 1, { 3, 10, 0 });
+
+    TweenEngine::Start({ .delay = 2.0,
+                         .to = 6.28,
+                         .duration = 6.0,
+                         .easeFunction = EaseFunction::Linear,
+                         .onUpdate =
+                             [player2GameObject](double value)
+                         {
+                             const glm::vec2 position{ std::cos(value) * 10.0f, std::sin(value) * 10.0f };
+                             player2GameObject->GetTransform().SetWorldPosition(0, 0, 0);
+                         },
+                         .onEnd =
+                             [player2GameObject]() {
+                                 player2GameObject->BubbleToPosition({ -12, -11, 0 }, 3.0f);
+                             } },
+                       player2GameObject);
 
 
-    auto* zenchanGO = scene.AddGameObject("ZenChan", { 3, 5, 0 });
-    zenchanGO->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"),0);
-    zenchanGO->AddComponent<Animator>();
-    zenchanGO->AddComponent<Rigidbody>();
-    zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 0.0f,
-        .restitution = 0.1f,
-        .size = {1.90f, 1.90f},
-    });
-    zenchanGO->AddComponent<ZenChan>();
-
-    GameObject* player1Hud = scene.AddGameObject("Player1HUD");
-    {
-        auto* livesGameObject = scene.AddGameObject("LivesText", { -15, -12, 0 });
-        auto* livesText = livesGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
-        livesGameObject->AddComponent<SpriteRenderer>(
-            ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
+    Game::SpawnLevel(scene, 1, { 0, -26, 0 });
 
 
-        auto* scoreGameObject = scene.AddGameObject("ScoreText", { -4, 13, 0 });
-        auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 1, 0 });
+    // auto* zenchanGO = scene.AddGameObject("ZenChan", { 3, 5, 0 });
+    // zenchanGO->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"),0);
+    // zenchanGO->AddComponent<Animator>();
+    // zenchanGO->AddComponent<Rigidbody>();
+    // zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
+    //     .friction = 0.0f,
+    //     .restitution = 0.1f,
+    //     .size = {1.90f, 1.90f},
+    // });
+    // zenchanGO->AddComponent<ZenChan>();
+
+    // GameObject* player1Hud = scene.AddGameObject("Player1HUD");
+    // {
+    //     auto* livesGameObject = scene.AddGameObject("LivesText", { -15, -12, 0 });
+    //     auto* livesText = livesGameObject->AddComponent<TextRenderer>(
+    //         "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
+    //     livesGameObject->AddComponent<SpriteRenderer>(
+    //         ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
 
 
-        livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-        scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-
-        player1Hud->AddComponent<PlayerHUD>(
-            Game::GetInstance().GetPlayer(0), scoreText, livesText, SDL_Color(255, 255, 255, 255));
-    }
-
-    GameObject* player2Hud = scene.AddGameObject("Player2HUD");
-    {
-        auto* livesGameObject = scene.AddGameObject("LivesText", { 14, -12, 0 });
-        auto* livesText = livesGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
-        livesGameObject->AddComponent<SpriteRenderer>(
-            ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
+    //     auto* scoreGameObject = scene.AddGameObject("ScoreText", { -4, 13, 0 });
+    //     auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
+    //         "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 1, 0 });
 
 
-        auto* scoreGameObject = scene.AddGameObject("ScoreText", { 4, 13, 0 });
-        auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0, 0 });
+    //     livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
+    //     scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
+
+    //     player1Hud->AddComponent<PlayerHUD>(
+    //         Game::GetInstance().GetPlayer(0), scoreText, livesText, SDL_Color(255, 255, 255, 255));
+    // }
+
+    // GameObject* player2Hud = scene.AddGameObject("Player2HUD");
+    // {
+    //     auto* livesGameObject = scene.AddGameObject("LivesText", { 14, -12, 0 });
+    //     auto* livesText = livesGameObject->AddComponent<TextRenderer>(
+    //         "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
+    //     livesGameObject->AddComponent<SpriteRenderer>(
+    //         ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
 
 
-        livesGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
-        scoreGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
-
-        player2Hud->AddComponent<PlayerHUD>(
-            Game::GetInstance().GetPlayer(1), scoreText, livesText, SDL_Color(255, 255, 255, 255));
-    }
+    //     auto* scoreGameObject = scene.AddGameObject("ScoreText", { 4, 13, 0 });
+    //     auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
+    //         "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0, 0 });
 
 
-    auto& maps = Game::GetInstance().GetMaps();
+    //     livesGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
+    //     scoreGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
 
-    for(auto&& block : maps[1].blocks)
-    {
-        auto* tile = scene.AddGameObject("LevelTile", { block.position.x, block.position.y, 0 });
-
-        if(block.solidity == BlockSolidity::Semi)
-        {
-            tile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 2, 0 });
-            tile->AddComponent<Rigidbody>(Rigidbody::Settings{ .mode = Rigidbody::Mode::Static });
-            tile->AddComponent<OneWayPlatform>();
-            tile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                .size{1.0f,  1.0f},
-                .center{0.5f, -0.5f}
-            });
-        }
-
-        if(block.solidity == BlockSolidity::Solid)
-        {
-            tile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 1, 2 });
-            tile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                .size{1.0f,  1.0f},
-                .center{0.5f, -0.5f}
-            });
-        }
-    }
+    //     player2Hud->AddComponent<PlayerHUD>(
+    //         Game::GetInstance().GetPlayer(1), scoreText, livesText, SDL_Color(255, 255, 255, 255));
+    // }
 }
+
+void bb::Levels(Scene&) {}
 
 void bb::MainMenuScene(Scene& scene)
 {
     // auto* fpsCounter = scene.AddGameObject("FPS_Counter", { -12, 12, 0 });
     // fpsCounter->AddComponent<TextRenderer>("0", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f },
     // true); fpsCounter->AddComponent<FpsCounter>();
+    auto* cameraGameObject = scene.AddGameObject("Camera");
+    cameraGameObject->AddComponent<Camera>(14, GameSettings::GetAspectRatio());
 
 
     ////////////////////
@@ -168,6 +176,7 @@ void bb::MainMenuScene(Scene& scene)
     GameObject* selectBubble;
     GameObject* p1Text;
     GameObject* p2Text;
+    GameObject* p3Text;
     auto* selectScreen = scene.AddGameObject("Select Screen");
     {
         selectBubble = scene.AddGameObject("Select Bugble", { -7, 8, 0 }, selectScreen);
@@ -185,27 +194,25 @@ void bb::MainMenuScene(Scene& scene)
         p2Text = scene.AddGameObject("Text", { -5, 4, 0 }, selectScreen);
         p2Text->AddComponent<TextRenderer>(
             "2P START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+
+        p3Text = scene.AddGameObject("Text", { -5, 2, 0 }, selectScreen);
+        p3Text->AddComponent<TextRenderer>(
+            "VERSUS", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
     }
     selectScreen->SetActive(false);
 
 
     auto* mainMenuGO = scene.AddGameObject("MainMenu");
-    mainMenuGO->AddComponent<MainMenu>(&logo->GetTransform(),
-                                       intoScreenInfo,
-                                       introScreen,
-                                       selectScreen,
-                                       &selectBubble->GetTransform(),
-                                       std::vector<Transform*>{ &p1Text->GetTransform(), &p2Text->GetTransform() });
+    mainMenuGO->AddComponent<MainMenu>(
+        &logo->GetTransform(),
+        intoScreenInfo,
+        introScreen,
+        selectScreen,
+        &selectBubble->GetTransform(),
+        std::vector<Transform*>{ &p1Text->GetTransform(), &p2Text->GetTransform(), &p3Text->GetTransform() });
 }
 
-void bb::TestScene(Scene& scene)
-{
-    auto* go = scene.AddGameObject("BubbleCharacter", { -2, 0, 0 });
-    go->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleCharacter"), 0);
-    go->AddComponent<Animator>();
-    go->AddComponent<Rigidbody>(Rigidbody::Settings{});
-    go->AddComponent<bb::Player>(1);
-}
+void bb::TestScene(Scene&) {}
 
 void bb::SceneGraphTestScene(Scene& scene)
 {

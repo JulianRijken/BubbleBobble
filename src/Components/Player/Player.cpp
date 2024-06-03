@@ -4,21 +4,25 @@
 #include <GameTime.h>
 #include <MessageQueue.h>
 #include <Physics.h>
+#include <TweenEngine.h>
 
 #include "AttackBubble.h"
 #include "Game.h"
 #include "GameObject.h"
 
-bb::Player::Player(GameObject* parentPtr, int playerIndex) :
+bb::Player::Player(GameObject* parentPtr, int playerIndex, SpriteRenderer* bodySpriteRenderer,
+                   SpriteRenderer* bubbleSpriteRenderer, Animator* bodyAnimator, Animator* bubbleAnimator) :
     Component(parentPtr, "PlayerController"),
     m_PlayerIndex(playerIndex),
-    m_AnimatorPtr(parentPtr->GetComponent<Animator>()),
-    m_Rigidbody(parentPtr->GetComponent<Rigidbody>()),
-    m_SpriteRenderer(parentPtr->GetComponent<SpriteRenderer>()),
-    m_Collider(parentPtr->GetComponent<BoxCollider>())
+    m_BodyAnimatorPtr(bodyAnimator),
+    m_BubbleAnimatorPtr(bubbleAnimator),
+    m_RigidbodyPtr(parentPtr->GetComponent<Rigidbody>()),
+    m_BodySpriteRendererPtr(bodySpriteRenderer),
+    m_BubbleSpriteRendererPtr(bubbleSpriteRenderer),
+    m_ColliderPtr(parentPtr->GetComponent<BoxCollider>())
 {
     Game::GetInstance().SetPlayer(playerIndex, this);
-    m_WalkingState->OnEnterState(*this);
+    m_ActiveMainState->OnEnterState(*this);
 }
 
 bb::Player::~Player() { Game::GetInstance().SetPlayer(m_PlayerIndex, nullptr); }
@@ -32,19 +36,62 @@ void bb::Player::AddScore()
     m_OnScoreChangeEvent.Invoke(m_Score);
 }
 
+void bb::Player::BubbleToPosition(const glm::vec3 position, double duration)
+{
+    if(m_ActiveMainState != m_BubbleState.get())
+        SetMainState(m_BubbleState.get());
+
+    TweenEngine::Start(
+        {
+            .delay = duration,
+            .onEnd = [this]() { SetMainState(m_WalkingState.get()); },
+        },
+        this);
+
+    TweenEngine::Start(
+        {
+            .from = GetTransform().GetWorldPosition().x,
+            .to = position.x,
+            .duration = duration,
+            .easeFunction = EaseFunction::SineInOut,
+            .onUpdate =
+                [this](double value)
+            {
+                const auto& currentPosition = GetTransform().GetWorldPosition();
+                GetTransform().SetWorldPosition(value, currentPosition.y, currentPosition.z);
+            },
+        },
+        this);
+
+    TweenEngine::Start(
+        {
+            .from = GetTransform().GetWorldPosition().y,
+            .to = position.y,
+            .duration = duration,
+            .easeFunction = EaseFunction::SineInOut,
+            .onUpdate =
+                [this](double value)
+            {
+                const auto& currentPosition = GetTransform().GetWorldPosition();
+                GetTransform().SetWorldPosition(currentPosition.x, value, currentPosition.z);
+            },
+        },
+        this);
+}
+
 
 void bb::Player::UpdateMoveInput(float input) { m_MovementInput = input; }
 
 bool bb::Player::IsGrounded() const
 {
     // If the player is moving up he is for sure not grounded :)
-    if(m_Rigidbody->Velocity().y > 0)
+    if(m_RigidbodyPtr->Velocity().y > 0)
         return false;
 
-    const b2Vec2& lowerBound = m_Rigidbody->GetBody()->GetFixtureList()[0].GetAABB(0).lowerBound;
-    const float center = m_Rigidbody->Position().x;
+    const b2Vec2& lowerBound = m_RigidbodyPtr->GetBody()->GetFixtureList()[0].GetAABB(0).lowerBound;
+    const float center = m_RigidbodyPtr->Position().x;
 
-    const glm::vec2 halfSize = m_Collider->GetSettings().size / 2.0f;
+    const glm::vec2 halfSize = m_ColliderPtr->GetSettings().size / 2.0f;
     const float castHeight = lowerBound.y + halfSize.y;
     const float castDistance = GROUND_CHECK_DISTANCE + halfSize.y;
     constexpr glm::vec2 castDirection = { 0, -1 };
@@ -77,9 +124,9 @@ void bb::Player::HandleFlip()
 {
     // Not just setting it with the if as 0 should not change
     if(m_MovementInput < 0)
-        m_SpriteRenderer->m_FlipX = true;
+        m_BodySpriteRendererPtr->m_FlipX = true;
     else if(m_MovementInput > 0)
-        m_SpriteRenderer->m_FlipX = false;
+        m_BodySpriteRendererPtr->m_FlipX = false;
 }
 
 
@@ -102,14 +149,20 @@ void bb::Player::OnMoveRightInput(const InputContext& context)
 
 void bb::Player::OnMoveStickInput(const InputContext& context) { UpdateMoveInput(std::get<float>(context.value.value())); }
 
-void bb::Player::OnJumpInput(const InputContext& /*unused*/)
+void bb::Player::OnJumpInput(const InputContext& context)
 {
+    if(context.state != ButtonState::Down)
+        return;
+
     m_ActiveMainState->OnJumpInput(*this);
     m_ActiveAttackState->OnJumpInput(*this);
 }
 
-void bb::Player::OnAttackInput(const InputContext& /*unused*/)
+void bb::Player::OnAttackInput(const InputContext& context)
 {
+    if(context.state != ButtonState::Down)
+        return;
+
     m_ActiveMainState->OnAttackInput(*this);
     m_ActiveAttackState->OnAttackInput(*this);
 }
