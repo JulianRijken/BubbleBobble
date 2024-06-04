@@ -1,19 +1,24 @@
 #include "Game.h"
 
+#include <Animator.h>
+#include <Camera.h>
 #include <fmt/core.h>
 #include <GameObject.h>
 #include <GameTime.h>
 #include <Input.h>
-#include <OneWayPlatform.h>
-#include <PlayerHUD.h>
 #include <ResourceManager.h>
 #include <SceneManager.h>
 #include <SDL_image.h>
+#include <SpriteRenderer.h>
 #include <TextRenderer.h>
-#include <ZenChan.h>
+#include <TweenEngine.h>
 
 #include <filesystem>
 #include <fstream>
+
+#include "OneWayPlatform.h"
+#include "Player.h"
+#include "ZenChan.h"
 
 void bb::Game::Initialize()
 {
@@ -31,14 +36,15 @@ void bb::Game::Initialize()
 
 bb::Player* bb::Game::GetPlayer(int playerIndex) const { return m_Players[playerIndex]; }
 
-
 void bb::Game::SetPlayer(int playerIndex, Player* player) { m_Players[playerIndex] = player; }
 
-jul::GameObject* bb::Game::SpawnLevel(Scene& scene, int levelIndex, glm::vec3 spawnLocation)
+void bb::Game::SetMainCamera(Camera* camera) { m_MainCamera = camera; }
+
+jul::GameObject* bb::Game::SpawnLevelTiles(Scene& scene, int levelIndex, glm::vec3 spawnLocation)
 {
     auto* levelParent = scene.AddGameObject(fmt::format("Level {}", levelIndex), spawnLocation);
 
-    auto& maps = Game::GetInstance().GetMaps();
+    auto& maps = GetMaps();
     for(auto&& block : maps[levelIndex].blocks)
     {
         auto* tile = scene.AddGameObject("LevelTile", { block.position.x, block.position.y, 0 }, levelParent, false);
@@ -69,6 +75,9 @@ jul::GameObject* bb::Game::SpawnLevel(Scene& scene, int levelIndex, glm::vec3 sp
 
 bb::Player* bb::Game::SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation)
 {
+    if(m_Players[playerIndex] != nullptr)
+        throw std::runtime_error(fmt::format("Player {} already exists", playerIndex));
+
     auto spriteName = playerIndex == 0 ? BUBBLE_SPRITE_NAME : BOBBLE_SPRITE_NAME;
 
     auto* playerGameObject = scene.AddGameObject("Player", spawnLocation);
@@ -84,6 +93,34 @@ bb::Player* bb::Game::SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawn
     });
 
     return playerGameObject->AddComponent<Player>(playerIndex, bodySprite, bubbleSprite, bodyAnimator, bubbleAnimator);
+}
+
+void bb::Game::TransitionLevel(bool resetPlayers)
+{
+    TweenEngine::Start(
+        {
+            .from = Game::GRID_SIZE_Y,
+            .to = 0,
+            .duration = LEVEL_TRANSITION_DURATION,
+            .easeFunction = EaseFunction::SineOut,
+            .onUpdate = [this](double value) { m_MainCamera->GetTransform().SetWorldPosition(0, value, 0); },
+        },
+        m_MainCamera);
+
+    if(resetPlayers)
+    {
+        if(m_Players[0])
+        {
+            m_Players[0]->GetTransform().Translate(0, Game::GRID_SIZE_Y, 0);
+            m_Players[0]->BubbleToPosition({ -12, -10, 0 }, LEVEL_TRANSITION_DURATION);
+        }
+
+        if(m_Players[1])
+        {
+            m_Players[1]->GetTransform().Translate(0, Game::GRID_SIZE_Y, 0);
+            m_Players[1]->BubbleToPosition({ 12, -10, 0 }, LEVEL_TRANSITION_DURATION);
+        }
+    }
 }
 
 void bb::Game::ForceResetGame(const InputContext& context)

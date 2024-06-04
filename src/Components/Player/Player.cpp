@@ -36,7 +36,7 @@ void bb::Player::AddScore()
     m_OnScoreChangeEvent.Invoke(m_Score);
 }
 
-void bb::Player::BubbleToPosition(const glm::vec3 position, double duration)
+void bb::Player::BubbleToPosition(const glm::vec3& position, double duration)
 {
     if(m_ActiveMainState != m_BubbleState.get())
         SetMainState(m_BubbleState.get());

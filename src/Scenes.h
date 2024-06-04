@@ -1,7 +1,6 @@
 #pragma once
 #include <Scene.h>
 
-// TODO: It would be amazing to replace this with secene serialization!
 namespace bb
 {
     using namespace jul;
@@ -20,6 +19,9 @@ namespace bb
     void BindScenes();
 
     void MainScene(Scene& scene);
+
+    void IntroLevel(Scene& scene);
+
 
     void MainMenuScene(Scene& scene);
 

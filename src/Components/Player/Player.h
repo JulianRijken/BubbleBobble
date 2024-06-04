@@ -1,16 +1,22 @@
 #pragma once
 
-#include <Animator.h>
-#include <BoxCollider.h>
-#include <Command.h>
 #include <Component.h>
 #include <Event.h>
 #include <IDamageable.h>
-#include <Rigidbody.h>
+#include <InputContext.h>
 
+#include <glm/vec3.hpp>
 #include <memory>
 
 #include "PlayerState.h"
+
+namespace jul
+{
+    class BoxCollider;
+    class SpriteRenderer;
+    class Rigidbody;
+    class Animator;
+}  // namespace jul
 
 namespace bb
 {
@@ -42,7 +48,7 @@ namespace bb
         [[nodiscard]] Event<int>& GetOnScoreChangeEvent() { return m_OnScoreChangeEvent; }
 
         void AddScore();
-        void BubbleToPosition(const glm::vec3 position, double duration);
+        void BubbleToPosition(const glm::vec3& position, double duration);
 
         void OnMoveLeftInput(const InputContext& context);
         void OnMoveRightInput(const InputContext& context);
