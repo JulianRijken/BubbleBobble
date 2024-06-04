@@ -24,6 +24,7 @@
 
 #include "FpsCounter.h"
 #include "Game.h"
+#include "Prefabs.h"
 #include "Transform.h"
 
 void bb::scenes::BindScenes()
@@ -279,21 +280,24 @@ void bb::scenes::Level1(Scene&)
 
 void bb::scenes::Level2(Scene&)
 {
-    TweenEngine::Start(
-        {
-            .delay = 4,
-            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-            .onEnd = []() { Game::GetInstance().TransitionToLevel(3); },
-        },
-        Game::GetInstance().GetPlayer(0));
+
+
+    // TweenEngine::Start(
+    //     {
+    //         .delay = 4,
+    //         .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
+    //         .onEnd = []() { Game::GetInstance().TransitionToLevel(3); },
+    //     },
+    //     Game::GetInstance().GetPlayer(0));
 }
 
 void bb::scenes::Level3(Scene&)
 {
+    prefabs::SpawnZenChan({ 0, 12, 0 });
 
     TweenEngine::Start(
         {
-            .delay = 4,
+            .delay = 30,
             .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
             .onEnd = []() { SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu); },
         },

@@ -111,6 +111,12 @@ jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
                 .center{0.5f, -0.5f}
             });
         }
+
+        if(block.solidity == BlockSolidity::None)
+        {
+            tile->AddComponent<SpriteRenderer>(
+                ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, levelIndex });
+        }
     }
 
     return levelParent;
@@ -146,6 +152,7 @@ void bb::Game::TransitionToLevel(int levelIndex, bool delayLoading, bool resetPl
     TweenEngine::Start(
         {
             .duration = delayLoading ? LEVEL_TRANSITION_DURATION : 0,
+            .invokeWhenDestroyed = true,
             .onEnd =
                 [levelIndex, this]()
             {
@@ -248,9 +255,7 @@ void bb::Game::ParseMaps(const std::string& fileName)
 
     const auto* pixels = static_cast<uint32_t*>(surface->pixels);
 
-    constexpr int levelCount = 2;
-    constexpr int levelWidth = 32;
-    constexpr int levelHeight = 28;
+    const int levelCount = (surface->h / GRID_SIZE_Y);
 
 
     m_Maps.clear();
@@ -260,11 +265,11 @@ void bb::Game::ParseMaps(const std::string& fileName)
     {
         Map map{};
 
-        for(int y = 0; y < levelHeight; ++y)
+        for(int y = 0; y < GRID_SIZE_Y; ++y)
         {
-            for(int x = 0; x < levelWidth; ++x)
+            for(int x = 0; x < GRID_SIZE_X; ++x)
             {
-                const uint32_t pixel = pixels[(y + levelIndex * levelHeight) * levelWidth + x];
+                const uint32_t pixel = pixels[(y + levelIndex * GRID_SIZE_Y) * GRID_SIZE_X + x];
                 const int red = static_cast<int>((pixel) & 0xFF);
                 const int green = static_cast<int>((pixel >> 8) & 0xFF);
                 const int blue = static_cast<int>((pixel >> 16) & 0xFF);
@@ -281,7 +286,7 @@ void bb::Game::ParseMaps(const std::string& fileName)
                     continue;
 
                 map.blocks.push_back({
-                    .position = {x - (levelWidth / 2), (levelHeight - y) - (levelHeight / 2)},
+                    .position = {x - (GRID_SIZE_X / 2), (GRID_SIZE_Y - y) - (GRID_SIZE_Y / 2)},
                     .solidity = static_cast<BlockSolidity>(solidity)
                 });
             }
