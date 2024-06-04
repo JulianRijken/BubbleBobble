@@ -8,6 +8,8 @@
 
 #include <array>
 
+#include "Scenes.h"
+
 struct SDL_Surface;
 
 namespace jul
@@ -81,30 +83,37 @@ namespace bb
         inline constexpr static int GRID_SIZE_X = 32;
         inline constexpr static int GRID_SIZE_Y = 28;
         inline constexpr static int PIXELS_PER_GRID_CELL = 8;
-        inline constexpr static double LEVEL_TRANSITION_DURATION = 5.0;
+        inline constexpr static double LEVEL_TRANSITION_DURATION = 4.0;
+        inline constexpr static std::array<scenes::Id, 4> LEVELS{
+            scenes::Id::IntroLevel, scenes::Id::Level1, scenes::Id::Level2, scenes::Id::Level3
+        };
 
         [[nodiscard]] Player* GetPlayer(int playerIndex) const;
 
         [[nodiscard]] std::vector<Map>& GetMaps() { return m_Maps; }
 
+        [[nodiscard]] Scene* GetActiveLevelScene();
+
         void Initialize();
 
-        void ForceResetGame(const InputContext& context);
-        void IncreaseTimeScale(const InputContext& context);
-        void DecreaseTimeScale(const InputContext& context);
-
-
+        void TransitionToLevel(int levelIndex, bool resetPlayers = true);
         void SetPlayer(int playerIndex, Player* player);
         void SetMainCamera(Camera* camera);
-        GameObject* SpawnLevelTiles(Scene& scene, int levelIndex, glm::vec3 spawnLocation = {});
+
         Player* SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation = {});
-        void TransitionLevel(bool resetPlayers = true);
+        GameObject* SpawnLevelTiles(Scene& scene, int levelIndex, glm::vec3 spawnLocation = {});
+
+        void OnForceResetGame(const InputContext& context);
+        void OnIncreaseTimeScale(const InputContext& context);
+        void OnDecreaseTimeScale(const InputContext& context);
 
 
     private:
         std::array<Player*, 2> m_Players{ nullptr, nullptr };
         std::vector<Map> m_Maps{};
-        Camera* m_MainCamera{};
+
+        int m_ActiveLevelIndex{ 0 };
+        Camera* m_MainCamera{ nullptr };
 
         void OnMessage(const Message& message);
         void ParseMaps(const std::string& fileName);

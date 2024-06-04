@@ -1,11 +1,11 @@
 #pragma once
 #include <Scene.h>
 
-namespace bb
+namespace bb::scenes
 {
     using namespace jul;
 
-    enum class SceneID
+    enum class Id
     {
         MainMenu,
         Main,
@@ -19,6 +19,9 @@ namespace bb
     void BindScenes();
 
     void MainScene(Scene& scene);
+    void Level1(Scene& scene);
+    void Level2(Scene& scene);
+    void Level3(Scene& scene);
 
     void IntroLevel(Scene& scene);
 

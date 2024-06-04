@@ -26,42 +26,27 @@
 #include "Game.h"
 #include "Transform.h"
 
-void bb::BindScenes()
+void bb::scenes::BindScenes()
 {
-    SceneManager::GetInstance().BindScene("Main", MainScene);
-    SceneManager::GetInstance().BindScene("MainMenu", MainMenuScene);
-    SceneManager::GetInstance().BindScene("IntroLevel", IntroLevel);
+    SceneManager::GetInstance().BindScene((int)Id::Main, MainScene);
+    SceneManager::GetInstance().BindScene((int)Id::MainMenu, MainMenuScene);
+    SceneManager::GetInstance().BindScene((int)Id::IntroLevel, IntroLevel);
+    SceneManager::GetInstance().BindScene((int)Id::Level1, Level1);
+    SceneManager::GetInstance().BindScene((int)Id::Level2, Level2);
+    SceneManager::GetInstance().BindScene((int)Id::Level3, Level3);
 }
 
-void bb::MainScene(Scene& scene)
+void bb::scenes::MainScene(Scene& scene)
 {
     auto* cameraGameObject = scene.AddGameObject("Camera");
     auto* cameraPtr = cameraGameObject->AddComponent<Camera>(14, GameSettings::GetAspectRatio());
     cameraGameObject->GetTransform().SetWorldPosition({ 0, 0, 0 });
     Game::GetInstance().SetMainCamera(cameraPtr);
 
-    Game::GetInstance().TransitionLevel(false);
-
-    jul::SceneManager::LoadScene("IntroLevel", jul::SceneLoadMode::Additive);
-
-
-    // Player 1
+    Game::GetInstance().TransitionToLevel(0, false);
     Game::GetInstance().SpawnPlayer(scene, 0, { -3, 0, 0 });
-
-    // Player 2
     Game::GetInstance().SpawnPlayer(scene, 1, { 3, 0, 0 });
 
-
-    // auto* zenchanGO = scene.AddGameObject("ZenChan", { 3, 5, 0 });
-    // zenchanGO->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"),0);
-    // zenchanGO->AddComponent<Animator>();
-    // zenchanGO->AddComponent<Rigidbody>();
-    // zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
-    //     .friction = 0.0f,
-    //     .restitution = 0.1f,
-    //     .size = {1.90f, 1.90f},
-    // });
-    // zenchanGO->AddComponent<ZenChan>();
 
     // GameObject* player1Hud = scene.AddGameObject("Player1HUD");
     // {
@@ -106,8 +91,7 @@ void bb::MainScene(Scene& scene)
     // }
 }
 
-
-void bb::MainMenuScene(Scene& scene)
+void bb::scenes::MainMenuScene(Scene& scene)
 {
     // auto* fpsCounter = scene.AddGameObject("FPS_Counter", { -12, 12, 0 });
     // fpsCounter->AddComponent<TextRenderer>("0", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f },
@@ -183,9 +167,9 @@ void bb::MainMenuScene(Scene& scene)
         std::vector<Transform*>{ &p1Text->GetTransform(), &p2Text->GetTransform(), &p3Text->GetTransform() });
 }
 
-void bb::TestScene(Scene&) {}
+void bb::scenes::TestScene(Scene&) {}
 
-void bb::SceneGraphTestScene(Scene& scene)
+void bb::scenes::SceneGraphTestScene(Scene& scene)
 {
     GameObject* bubbleBase = scene.AddGameObject("Bubble");
     bubbleBase->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Dot"), 1);
@@ -223,7 +207,7 @@ void bb::SceneGraphTestScene(Scene& scene)
     }
 }
 
-void bb::IntroLevel(Scene& scene)
+void bb::scenes::IntroLevel(Scene& scene)
 {
     auto* nameText = scene.AddGameObject("Name Text", { 0, 13, 0 });
     nameText->AddComponent<TextRenderer>(
@@ -277,7 +261,47 @@ void bb::IntroLevel(Scene& scene)
         {
             .delay = intoDuration,
             .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-            .onEnd = []() { Game::GetInstance().TransitionLevel(); },
+            .onEnd = []() { Game::GetInstance().TransitionToLevel(1); },
+        },
+        Game::GetInstance().GetPlayer(0));
+}
+
+void bb::scenes::Level1(Scene& scene)
+{
+    Game::GetInstance().SpawnLevelTiles(scene, 0);
+
+    TweenEngine::Start(
+        {
+            .delay = 4,
+            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
+            .onEnd = []() { Game::GetInstance().TransitionToLevel(2); },
+        },
+        Game::GetInstance().GetPlayer(0));
+}
+
+void bb::scenes::Level2(Scene& scene)
+{
+    Game::GetInstance().SpawnLevelTiles(scene, 1);
+
+    TweenEngine::Start(
+        {
+            .delay = 4,
+            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
+            .onEnd = []() { Game::GetInstance().TransitionToLevel(2); },
+        },
+        Game::GetInstance().GetPlayer(0));
+}
+
+void bb::scenes::Level3(Scene& scene)
+{
+
+    Game::GetInstance().SpawnLevelTiles(scene, 2);
+
+    TweenEngine::Start(
+        {
+            .delay = 4,
+            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
+            .onEnd = []() { Game::GetInstance().TransitionToLevel(3); },
         },
         Game::GetInstance().GetPlayer(0));
 }

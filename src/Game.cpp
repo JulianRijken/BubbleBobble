@@ -29,12 +29,18 @@ void bb::Game::Initialize()
 
     ParseMaps("Levels/Levels.jxl");
 
-    Input::Bind((int)InputBind::ForceReset, 0, true, this, &Game::ForceResetGame);
-    Input::Bind((int)InputBind::DebugIncreaseTimeScale, 0, true, this, &Game::IncreaseTimeScale);
-    Input::Bind((int)InputBind::DebugDecreaseTimeScale, 0, true, this, &Game::DecreaseTimeScale);
+    Input::Bind((int)InputBind::ForceReset, 0, true, this, &Game::OnForceResetGame);
+    Input::Bind((int)InputBind::DebugIncreaseTimeScale, 0, true, this, &Game::OnIncreaseTimeScale);
+    Input::Bind((int)InputBind::DebugDecreaseTimeScale, 0, true, this, &Game::OnDecreaseTimeScale);
 }
 
 bb::Player* bb::Game::GetPlayer(int playerIndex) const { return m_Players[playerIndex]; }
+
+jul::Scene* bb::Game::GetActiveLevelScene()
+{
+    const scenes::Id currentLevelId = LEVELS[m_ActiveLevelIndex];
+    return SceneManager::GetInstance().FindScene((int)currentLevelId);
+}
 
 void bb::Game::SetPlayer(int playerIndex, Player* player) { m_Players[playerIndex] = player; }
 
@@ -95,11 +101,28 @@ bb::Player* bb::Game::SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawn
     return playerGameObject->AddComponent<Player>(playerIndex, bodySprite, bubbleSprite, bodyAnimator, bubbleAnimator);
 }
 
-void bb::Game::TransitionLevel(bool resetPlayers)
+void bb::Game::TransitionToLevel(int levelIndex, bool resetPlayers)
 {
+    // Unload old level
+    if(auto* activeLevel = GetActiveLevelScene())
+        activeLevel->Unload();
+
+    // Load next level
+    const scenes::Id levelToLoad = LEVELS[levelIndex];
+    SceneManager::GetInstance().LoadScene((int)levelToLoad, SceneLoadMode::Additive);
+
+    m_ActiveLevelIndex = levelIndex;
+
+    // TweenEngine::Start(
+    //     {
+    //         .delay = LEVEL_TRANSITION_DURATION,
+    //         .onEnd = [this]() { m_MainCamera->GetTransform().SetWorldPosition(0, value, 0); },
+    //     },
+    //     m_MainCamera);
+
     TweenEngine::Start(
         {
-            .from = Game::GRID_SIZE_Y,
+            .from = GRID_SIZE_Y,
             .to = 0,
             .duration = LEVEL_TRANSITION_DURATION,
             .easeFunction = EaseFunction::SineOut,
@@ -111,27 +134,27 @@ void bb::Game::TransitionLevel(bool resetPlayers)
     {
         if(m_Players[0])
         {
-            m_Players[0]->GetTransform().Translate(0, Game::GRID_SIZE_Y, 0);
+            m_Players[0]->GetTransform().Translate(0, GRID_SIZE_Y, 0);
             m_Players[0]->BubbleToPosition({ -12, -10, 0 }, LEVEL_TRANSITION_DURATION);
         }
 
         if(m_Players[1])
         {
-            m_Players[1]->GetTransform().Translate(0, Game::GRID_SIZE_Y, 0);
+            m_Players[1]->GetTransform().Translate(0, GRID_SIZE_Y, 0);
             m_Players[1]->BubbleToPosition({ 12, -10, 0 }, LEVEL_TRANSITION_DURATION);
         }
     }
 }
 
-void bb::Game::ForceResetGame(const InputContext& context)
+void bb::Game::OnForceResetGame(const InputContext& context)
 {
     if(context.state != ButtonState::Down)
         return;
 
-    SceneManager::LoadScene("MainMenu");
+    SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu);
 }
 
-void bb::Game::IncreaseTimeScale(const InputContext& context)
+void bb::Game::OnIncreaseTimeScale(const InputContext& context)
 {
     if(context.state != ButtonState::Down)
         return;
@@ -145,7 +168,7 @@ void bb::Game::IncreaseTimeScale(const InputContext& context)
     fmt::println("Time Scale Changed: {}", GameTime::GetTimeScale());
 }
 
-void bb::Game::DecreaseTimeScale(const InputContext& context)
+void bb::Game::OnDecreaseTimeScale(const InputContext& context)
 {
     if(context.state != ButtonState::Down)
         return;
@@ -158,6 +181,7 @@ void bb::Game::DecreaseTimeScale(const InputContext& context)
 
     fmt::println("Time Scale Changed: {}", GameTime::GetTimeScale());
 }
+
 
 void bb::Game::OnMessage(const Message& message)
 {

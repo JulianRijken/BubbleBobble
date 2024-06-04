@@ -148,7 +148,8 @@ void bb::MainMenu::LoadSelectedMode() const
 {
     if(m_SelectedItem == 0)
     {
-        SceneManager::LoadScene("Main");
+        // TODO: Replace with even game listensts to
+        SceneManager::GetInstance().LoadScene((int)scenes::Id::Main);
         return;
     }
 

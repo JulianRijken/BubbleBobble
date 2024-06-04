@@ -13,6 +13,7 @@
 #include "AttackBubble.h"
 #include "Game.h"
 #include "Player.h"
+#include "Prefabs.h"
 
 /////////////////////
 /// WALKING STATE ///
@@ -189,20 +190,11 @@ void bb::PlayerAttackingState::OnEnterState(Player& player)
     player.m_OnScoreChangeEvent.Invoke(player.m_Score);
 
     glm::vec3 spawnPosition = player.GetTransform().GetWorldPosition();
-    const float direction = player.m_BodySpriteRendererPtr->m_FlipX ? -1.0f : 1.0f;
+    const int direction = player.m_BodySpriteRendererPtr->m_FlipX ? -1 : 1;
 
     spawnPosition.x += player.m_ColliderPtr->GetSettings().size.x * static_cast<float>(direction);
 
-    auto* bubble = SceneManager::GetInstance().AddGameObject("AttackBubble", spawnPosition);
-    bubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), 0);
-    bubble->AddComponent<Animator>();
-    bubble->AddComponent<Rigidbody>();
-    bubble->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 0.5f,
-        .restitution = 0.8f,
-        .size = {1.5, 1.5f},
-    });
-    bubble->AddComponent<AttackBubble>(glm::vec3{ direction * FIRE_POWER, 0, 0 });
+    prefabs::Spawnbubble(spawnPosition, FIRE_POWER, direction);
 }
 
 void bb::PlayerAttackingState::Update(Player& player)

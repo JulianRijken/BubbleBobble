@@ -34,6 +34,7 @@ add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
     src/Scenes.h src/Scenes.cpp
     src/InputActions.h src/InputActions.cpp
+    src/Prefabs.h src/Prefabs.cpp
 )
 
 # Include source directories
