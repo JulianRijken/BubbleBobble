@@ -34,6 +34,14 @@ void bb::Game::Initialize()
     Input::Bind((int)InputBind::DebugDecreaseTimeScale, 0, true, this, &Game::OnDecreaseTimeScale);
 }
 
+void bb::Game::StartGame(int)
+{
+    m_ActiveLevelIndex = 0;
+    m_ActiveLevelTilesPtr = nullptr;
+    SceneManager::GetInstance().LoadScene((int)scenes::Id::Main);
+    // Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
+}
+
 bb::Player* bb::Game::GetPlayer(int playerIndex) const { return m_Players[playerIndex]; }
 
 jul::Scene* bb::Game::GetActiveLevelScene()
@@ -44,40 +52,8 @@ jul::Scene* bb::Game::GetActiveLevelScene()
 
 void bb::Game::SetPlayer(int playerIndex, Player* player) { m_Players[playerIndex] = player; }
 
-void bb::Game::SetMainCamera(Camera* camera) { m_MainCamera = camera; }
+void bb::Game::SetMainCamera(Camera* camera) { m_MainCameraPtr = camera; }
 
-jul::GameObject* bb::Game::SpawnLevelTiles(Scene& scene, int levelIndex, glm::vec3 spawnLocation)
-{
-    auto* levelParent = scene.AddGameObject(fmt::format("Level {}", levelIndex), spawnLocation);
-
-    auto& maps = GetMaps();
-    for(auto&& block : maps[levelIndex].blocks)
-    {
-        auto* tile = scene.AddGameObject("LevelTile", { block.position.x, block.position.y, 0 }, levelParent, false);
-
-        if(block.solidity == BlockSolidity::Semi)
-        {
-            tile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 2, 0 });
-            tile->AddComponent<Rigidbody>(Rigidbody::Settings{ .mode = Rigidbody::Mode::Static });
-            tile->AddComponent<OneWayPlatform>();
-            tile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                .size{1.0f,  1.0f},
-                .center{0.5f, -0.5f}
-            });
-        }
-
-        if(block.solidity == BlockSolidity::Solid)
-        {
-            tile->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 1, 2 });
-            tile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                .size{1.0f,  1.0f},
-                .center{0.5f, -0.5f}
-            });
-        }
-    }
-
-    return levelParent;
-}
 
 bb::Player* bb::Game::SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation)
 {
@@ -101,24 +77,85 @@ bb::Player* bb::Game::SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawn
     return playerGameObject->AddComponent<Player>(playerIndex, bodySprite, bubbleSprite, bodyAnimator, bubbleAnimator);
 }
 
-void bb::Game::TransitionToLevel(int levelIndex, bool resetPlayers)
+jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
+{
+    if(levelIndex >= static_cast<int>(m_Maps.size()))
+        throw std::runtime_error(fmt::format("Map not loaded: {}", levelIndex));
+
+    auto* levelParent = SceneManager::GetInstance().AddGameObject(fmt::format("Level {}", levelIndex));
+
+    auto& maps = GetMaps();
+    for(auto&& block : maps[levelIndex].blocks)
+    {
+        auto* tile = SceneManager::GetInstance().AddGameObject(
+            "LevelTile", glm::vec3{ block.position.x, block.position.y, 0 }, levelParent, false);
+
+        if(block.solidity == BlockSolidity::Semi)
+        {
+            tile->AddComponent<SpriteRenderer>(
+                ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, levelIndex });
+            tile->AddComponent<Rigidbody>(Rigidbody::Settings{ .mode = Rigidbody::Mode::Static });
+            tile->AddComponent<OneWayPlatform>();
+            tile->AddComponent<BoxCollider>(BoxCollider::Settings{
+                .size{1.0f,  1.0f},
+                .center{0.5f, -0.5f}
+            });
+        }
+
+        if(block.solidity == BlockSolidity::Solid)
+        {
+            tile->AddComponent<SpriteRenderer>(
+                ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, levelIndex });
+            tile->AddComponent<BoxCollider>(BoxCollider::Settings{
+                .size{1.0f,  1.0f},
+                .center{0.5f, -0.5f}
+            });
+        }
+    }
+
+    return levelParent;
+}
+
+void bb::Game::TransitionToLevel(int levelIndex, bool delayLoading, bool resetPlayers)
 {
     // Unload old level
     if(auto* activeLevel = GetActiveLevelScene())
         activeLevel->Unload();
 
-    // Load next level
-    const scenes::Id levelToLoad = LEVELS[levelIndex];
-    SceneManager::GetInstance().LoadScene((int)levelToLoad, SceneLoadMode::Additive);
+    if(levelIndex > 0)
+    {
+        if(m_ActiveLevelTilesPtr != nullptr)
+        {
+            m_ActiveLevelTilesPtr->GetTransform().SetWorldPosition(0, GRID_SIZE_Y, 0);
+            auto* oldTiles = m_ActiveLevelTilesPtr;
+            TweenEngine::Start(
+                {
+                    .delay = LEVEL_TRANSITION_DURATION,
+                    .invokeWhenDestroyed = false,
+                    .onEnd = [oldTiles]() { oldTiles->Destroy(); },
+                },
+                m_MainCameraPtr);
+        }
 
-    m_ActiveLevelIndex = levelIndex;
+        m_ActiveLevelTilesPtr = SpawnLevelTiles(levelIndex - 1);
+    }
 
-    // TweenEngine::Start(
-    //     {
-    //         .delay = LEVEL_TRANSITION_DURATION,
-    //         .onEnd = [this]() { m_MainCamera->GetTransform().SetWorldPosition(0, value, 0); },
-    //     },
-    //     m_MainCamera);
+
+    m_MainCameraPtr->GetTransform().SetWorldPosition(0, GRID_SIZE_Y, 0);
+
+    TweenEngine::Start(
+        {
+            .duration = delayLoading ? LEVEL_TRANSITION_DURATION : 0,
+            .onEnd =
+                [levelIndex, this]()
+            {
+                // Load next level
+                const scenes::Id levelToLoad = LEVELS[levelIndex];
+                SceneManager::GetInstance().LoadScene((int)levelToLoad, SceneLoadMode::Additive);
+                m_ActiveLevelIndex = levelIndex;
+            },
+        },
+        m_MainCameraPtr);
 
     TweenEngine::Start(
         {
@@ -126,9 +163,9 @@ void bb::Game::TransitionToLevel(int levelIndex, bool resetPlayers)
             .to = 0,
             .duration = LEVEL_TRANSITION_DURATION,
             .easeFunction = EaseFunction::SineOut,
-            .onUpdate = [this](double value) { m_MainCamera->GetTransform().SetWorldPosition(0, value, 0); },
+            .onUpdate = [this](double value) { m_MainCameraPtr->GetTransform().SetWorldPosition(0, value, 0); },
         },
-        m_MainCamera);
+        m_MainCameraPtr);
 
     if(resetPlayers)
     {
@@ -188,7 +225,10 @@ void bb::Game::OnMessage(const Message& message)
     switch(static_cast<MessageType>(message.id))
     {
         case MessageType::GameStart:
-            // Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
+        {
+            int mode = std::any_cast<int>(message.arguments[0]);
+            StartGame(mode);
+        }
             break;
         case MessageType::PlayerDied:
             Locator::Get<Sound>().PlaySound((int)Sounds::Death);

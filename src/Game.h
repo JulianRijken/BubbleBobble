@@ -96,12 +96,15 @@ namespace bb
 
         void Initialize();
 
-        void TransitionToLevel(int levelIndex, bool resetPlayers = true);
+        // Starts the actual game with a mode
+        void StartGame(int mode);
+
+        void TransitionToLevel(int levelIndex, bool delayLoading = true, bool resetPlayers = true);
         void SetPlayer(int playerIndex, Player* player);
         void SetMainCamera(Camera* camera);
 
         Player* SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation = {});
-        GameObject* SpawnLevelTiles(Scene& scene, int levelIndex, glm::vec3 spawnLocation = {});
+        GameObject* SpawnLevelTiles(int levelIndex);
 
         void OnForceResetGame(const InputContext& context);
         void OnIncreaseTimeScale(const InputContext& context);
@@ -113,7 +116,9 @@ namespace bb
         std::vector<Map> m_Maps{};
 
         int m_ActiveLevelIndex{ 0 };
-        Camera* m_MainCamera{ nullptr };
+
+        Camera* m_MainCameraPtr{ nullptr };
+        GameObject* m_ActiveLevelTilesPtr{ nullptr };
 
         void OnMessage(const Message& message);
         void ParseMaps(const std::string& fileName);

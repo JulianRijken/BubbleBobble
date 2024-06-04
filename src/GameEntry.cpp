@@ -260,5 +260,4 @@ void jul::Julgen::GameStart()
     bb::scenes::BindScenes();
     // SceneManager::GetInstance().LoadScene("MainMenu");
     SceneManager::GetInstance().LoadScene((int)scenes::Id::Main);
-    MessageQueue::Broadcast(MessageType::GameStart);
 }

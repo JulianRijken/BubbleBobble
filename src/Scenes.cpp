@@ -43,7 +43,7 @@ void bb::scenes::MainScene(Scene& scene)
     cameraGameObject->GetTransform().SetWorldPosition({ 0, 0, 0 });
     Game::GetInstance().SetMainCamera(cameraPtr);
 
-    Game::GetInstance().TransitionToLevel(0, false);
+    Game::GetInstance().TransitionToLevel(0, false, false);
     Game::GetInstance().SpawnPlayer(scene, 0, { -3, 0, 0 });
     Game::GetInstance().SpawnPlayer(scene, 1, { 3, 0, 0 });
 
@@ -211,7 +211,7 @@ void bb::scenes::IntroLevel(Scene& scene)
 {
     auto* nameText = scene.AddGameObject("Name Text", { 0, 13, 0 });
     nameText->AddComponent<TextRenderer>(
-        "Now it is the beginning of\nA fantastic story! let us\nmake A journy to\nthe cave of monsters!\nGood Luck!",
+        "Now it is the beginning of\nA fantastic story! let us\nmake A journy to\nthe cave of monsters!\n \nGood Luck!",
         ResourceManager::GetFont("NES"),
         100,
         glm ::vec2{ 0.5f, 0.0f },
@@ -259,17 +259,15 @@ void bb::scenes::IntroLevel(Scene& scene)
 
     TweenEngine::Start(
         {
-            .delay = intoDuration,
+            .duration = intoDuration,
             .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
             .onEnd = []() { Game::GetInstance().TransitionToLevel(1); },
         },
         Game::GetInstance().GetPlayer(0));
 }
 
-void bb::scenes::Level1(Scene& scene)
+void bb::scenes::Level1(Scene&)
 {
-    Game::GetInstance().SpawnLevelTiles(scene, 0);
-
     TweenEngine::Start(
         {
             .delay = 4,
@@ -279,29 +277,25 @@ void bb::scenes::Level1(Scene& scene)
         Game::GetInstance().GetPlayer(0));
 }
 
-void bb::scenes::Level2(Scene& scene)
+void bb::scenes::Level2(Scene&)
 {
-    Game::GetInstance().SpawnLevelTiles(scene, 1);
-
-    TweenEngine::Start(
-        {
-            .delay = 4,
-            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-            .onEnd = []() { Game::GetInstance().TransitionToLevel(2); },
-        },
-        Game::GetInstance().GetPlayer(0));
-}
-
-void bb::scenes::Level3(Scene& scene)
-{
-
-    Game::GetInstance().SpawnLevelTiles(scene, 2);
-
     TweenEngine::Start(
         {
             .delay = 4,
             .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
             .onEnd = []() { Game::GetInstance().TransitionToLevel(3); },
+        },
+        Game::GetInstance().GetPlayer(0));
+}
+
+void bb::scenes::Level3(Scene&)
+{
+
+    TweenEngine::Start(
+        {
+            .delay = 4,
+            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
+            .onEnd = []() { SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu); },
         },
         Game::GetInstance().GetPlayer(0));
 }

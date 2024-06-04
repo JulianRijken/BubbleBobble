@@ -43,11 +43,11 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
 
 
     // Show main menu logo
-    TweenEngine::Start({ .from = 20.0f,
-                         .to = 4.0f,
-                         .duration = 2.0f,
+    TweenEngine::Start({ .from = 20.0,
+                         .to = 4.0,
+                         .duration = 2.0,
                          .easeFunction = EaseFunction::SineOut,
-                         .onUpdate = [this](float value) { m_LogoTransformPtr->SetWorldPosition(0, value, 0); },
+                         .onUpdate = [this](double value) { m_LogoTransformPtr->SetWorldPosition(0, value, 0); },
                          .onEnd = [this]() { OnLogoLand(); } },
                        GetGameObject());
 
@@ -148,8 +148,7 @@ void bb::MainMenu::LoadSelectedMode() const
 {
     if(m_SelectedItem == 0)
     {
-        // TODO: Replace with even game listensts to
-        SceneManager::GetInstance().LoadScene((int)scenes::Id::Main);
+        MessageQueue::Broadcast(MessageType::GameStart, { 0 });
         return;
     }
 
