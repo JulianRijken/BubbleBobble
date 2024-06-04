@@ -25,6 +25,13 @@
 #include "Game.h"
 #include "Transform.h"
 
+void bb::BindScenes()
+{
+    SceneManager::GetInstance().BindScene("Main", MainScene);
+    SceneManager::GetInstance().BindScene("MainMenu", MainMenuScene);
+}
+
+
 void bb::MainScene(Scene& scene)
 {
     auto* cameraGameObject = scene.AddGameObject("Camera");
@@ -155,6 +162,7 @@ void bb::MainMenuScene(Scene& scene)
     // auto* fpsCounter = scene.AddGameObject("FPS_Counter", { -12, 12, 0 });
     // fpsCounter->AddComponent<TextRenderer>("0", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f },
     // true); fpsCounter->AddComponent<FpsCounter>();
+
     auto* cameraGameObject = scene.AddGameObject("Camera");
     cameraGameObject->AddComponent<Camera>(14, GameSettings::GetAspectRatio());
 
@@ -265,8 +273,3 @@ void bb::SceneGraphTestScene(Scene& scene)
     }
 }
 
-void bb::BindScenes()
-{
-    SceneManager::GetInstance().BindScene("Main", MainScene);
-    SceneManager::GetInstance().BindScene("MainMenu", MainMenuScene);
-}
