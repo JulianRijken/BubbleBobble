@@ -37,8 +37,7 @@ namespace bb
         void OnCollisionBegin(const Collision& collision) override;
 
         Transform* GetCaptureTransform() override;
-        void OnCapture() override;
-        void OnRelease() override;
+        void SpawnDeadVersion() override;
 
         std::string GetSpriteName() override { return "Enemys"; }
 

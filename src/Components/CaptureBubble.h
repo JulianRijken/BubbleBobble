@@ -38,6 +38,8 @@ namespace bb
         void StartPop();
 
         void Capture(IBubbleable* target);
+
+        void KillCapturedTarget();
         void ReleaseCapturedTarget();
 
         void OnCollisionPreSolve(const Collision& collision, const b2Manifold*) override;

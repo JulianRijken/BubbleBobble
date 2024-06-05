@@ -153,18 +153,20 @@ void LoadResources()
                                     { "Twinkle", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 4 } },
                                 });
 
-    ResourceManager::LoadSprite("Enemys",
-                                "Enemys.png",
-                                8,
-                                {
-                                    0.5f, 0.5f
+    ResourceManager::LoadSprite(
+        "Enemys",
+        "Enemys.png",
+        8,
+        {
+            0.5f, 0.5f
     },
-                                12,
-                                16,
-                                {
-                                    { "zenchan_normal", SpriteAnimation{ { { 0, 0 }, { 1, 0 } }, 4 } },
-                                    { "zenchan_bubble", SpriteAnimation{ { { 6, 0 }, { 7, 0 } }, 4 } },
-                                });
+        12,
+        16,
+        {
+            { "zenchan_normal", SpriteAnimation{ { { 0, 0 }, { 1, 0 } }, 4 } },
+            { "zenchan_bubble", SpriteAnimation{ { { 6, 0 }, { 7, 0 } }, 4 } },
+            { "zenchan_dead", SpriteAnimation{ { { 12, 0 }, { 13, 0 }, { 14, 0 }, { 15, 0 } }, 4 } },
+        });
 }
 
 void InitControls()

@@ -4,6 +4,7 @@
 #include <BoxCollider.h>
 #include <Camera.h>
 #include <CaptureBubble.h>
+#include <DeadEnemy.h>
 #include <fmt/core.h>
 #include <GameSettings.h>
 #include <ResourceManager.h>
@@ -15,6 +16,7 @@
 #include <ZenChan.h>
 
 #include "Game.h"
+#include "MathExtensions.h"
 #include "Player.h"
 #include "PlayerHUD.h"
 
@@ -55,6 +57,31 @@ void bb::prefabs::SpawnZenChan(const glm::vec3& spawnPosition)
     });
     zenchanGO->AddComponent<ZenChan>();
 }
+
+void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
+{
+    Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
+    if(activeScene == nullptr)
+        throw std::runtime_error("Spawning Dead ZenChen with no active level scene");
+
+    auto* zenchanGO = activeScene->AddGameObject("Dead ZenChen", spawnPosition);
+    auto* spriteRenderer = zenchanGO->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    zenchanGO->AddComponent<Animator>(spriteRenderer, "zenchan_dead");
+    auto* rigidbody = zenchanGO->AddComponent<Rigidbody>();
+    zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 1.0f,
+        .restitution = 1.2f,
+        .size = {1.90f, 1.90f},
+    });
+    zenchanGO->AddComponent<DeadEnemy>(FruitType::Watermelon);
+
+    const double angle = glm::radians(jul::math::RandomValue() > 0.5 ? jul::math::RandomRange(50.0, 70.0) + 90.0
+                                                                     : jul::math::RandomRange(50.0, 70.0));
+    const glm::vec2 flyDirection{ std::cos(angle), std::sin(angle) };
+    const glm::vec2 velocity = flyDirection * jul::math::RandomRange(15.0f, 20.0f);
+    rigidbody->AddForce(glm::vec3{ velocity.x, velocity.y, 0 }, jul::Rigidbody::ForceMode::Impulse);
+}
+
 
 bb::Player* bb::prefabs::SpawnPlayer(jul::Scene& scene, int playerIndex, glm::vec3 spawnLocation)
 {
@@ -109,3 +136,5 @@ void bb::prefabs::SpawnMainCamera(jul::Scene& scene)
     cameraGameObject->GetTransform().SetWorldPosition({ 0, 0, 0 });
     Game::GetInstance().SetMainCamera(cameraPtr);
 }
+
+void bb::prefabs::SpawnFruit(FruitType) { fmt::println("SpawnFruit"); }

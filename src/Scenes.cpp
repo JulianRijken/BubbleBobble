@@ -102,10 +102,10 @@ void bb::scenes::MainMenuScene(Scene& scene)
     /////////////////////
     /// SELECT SCREEN ///
     /////////////////////
-    GameObject* selectBubble;
-    GameObject* p1Text;
-    GameObject* p2Text;
-    GameObject* p3Text;
+    GameObject* selectBubble{ nullptr };
+    GameObject* p1Text{ nullptr };
+    GameObject* p2Text{ nullptr };
+    GameObject* p3Text{ nullptr };
     auto* selectScreen = scene.AddGameObject("Select Screen");
     {
         selectBubble = scene.AddGameObject("Select Bugble", { -7, 8, 0 }, selectScreen);
@@ -272,7 +272,7 @@ void bb::scenes::Level1Scene(Scene& scene)
 {
     auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 
-    for(int i{}; i < 1; ++i)
+    for(int i{}; i < 6; ++i)
     {
         TweenEngine::Start(
             {

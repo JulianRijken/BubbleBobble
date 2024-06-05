@@ -62,6 +62,12 @@ namespace bb
         Solid
     };
 
+    enum class FruitType
+    {
+        Fries,
+        Watermelon
+    };
+
     struct Block
     {
         glm::vec2 position;

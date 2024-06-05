@@ -51,6 +51,17 @@ void bb::CaptureBubble::Capture(IBubbleable* target)
     target->OnCapture();
 }
 
+void bb::CaptureBubble::KillCapturedTarget()
+{
+    auto* targetTransform = m_CapturedTarget->GetCaptureTransform();
+
+    targetTransform->SetWorldPosition(GetTransform().GetWorldPosition());
+    m_CapturedTarget->SpawnDeadVersion();
+
+    m_CapturedTarget->m_IsBubbleabled = false;
+    targetTransform->GetGameObject()->Destroy();
+}
+
 void bb::CaptureBubble::ReleaseCapturedTarget()
 {
     auto* targetTransform = m_CapturedTarget->GetCaptureTransform();
@@ -107,8 +118,11 @@ void bb::CaptureBubble::Update()
 
         if(not m_BubbleAnimator->IsPlaying())
         {
+            // if(m_CapturedTarget != nullptr)
+            //     ReleaseCapturedTarget();
+
             if(m_CapturedTarget != nullptr)
-                ReleaseCapturedTarget();
+                KillCapturedTarget();
 
             GetGameObject()->Destroy();
         }

@@ -1,15 +1,16 @@
 #include "ZenChan.h"
 
 #include <Animator.h>
+#include <BoxCollider.h>
+#include <fmt/core.h>
 #include <GameObject.h>
 #include <GameTime.h>
 #include <Physics.h>
 #include <Rigidbody.h>
-#include <BoxCollider.h>
-
-#include <fmt/core.h>
 
 #include "IDamageable.h"
+#include "Prefabs.h"
+
 
 bb::ZenChan::ZenChan(GameObject* parent) :
     Component(parent),
@@ -98,11 +99,7 @@ void bb::ZenChan::OnCollisionBegin(const Collision& collision)
 
 jul::Transform* bb::ZenChan::GetCaptureTransform() { return &GetTransform(); }
 
-void bb::ZenChan::OnCapture() {}
-
-void bb::ZenChan::OnRelease() {}
-
-void bb::ZenChan::SpawnDeadVersion() {}
+void bb::ZenChan::SpawnDeadVersion() { prefabs::SpawnZenChanDead(GetTransform().GetWorldPosition()); }
 
 void bb::ZenChan::Update()
 {
