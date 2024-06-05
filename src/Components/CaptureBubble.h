@@ -36,6 +36,7 @@ namespace bb
 
     private:
         void StartPop();
+
         void Capture(IBubbleable* target);
         void ReleaseCapturedTarget();
 
@@ -47,7 +48,12 @@ namespace bb
         glm::vec2 m_BubbleCenter{};
 
         IBubbleable* m_CapturedTarget{ nullptr };
-        Animator* m_Animator{ nullptr };
+        SpriteRenderer* m_BubbleSpriteRenderer{ nullptr };
+        Animator* m_BubbleAnimator{ nullptr };
+
+        SpriteRenderer* m_CapturedSpriteRenderer{ nullptr };
+        Animator* m_CapturedAnimator{ nullptr };
+
         Rigidbody* m_Rigidbody{ nullptr };
 
         float m_FloatingDuration{};

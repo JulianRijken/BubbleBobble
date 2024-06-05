@@ -40,6 +40,10 @@ namespace bb
         void OnCapture() override;
         void OnRelease() override;
 
+        std::string GetSpriteName() override { return "Enemys"; }
+
+        std::string GetSpriteAnimationName() override { return "zenchan_bubble"; }
+
         Animator* m_Animator{ nullptr };
         Rigidbody* m_Rigidbody{ nullptr };
         SpriteRenderer* m_SpriteRenderer{ nullptr };

@@ -63,7 +63,7 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
 
             auto* bubbleParticle = scene.AddGameObject("Bubble Particle", { x, y, 0 });
             bubbleParticle->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleParticle"), -90);
-            bubbleParticle->AddComponent<Animator>()->PlayAnimation("Twinkle", true, jul::math::RandomValue<float>());
+            bubbleParticle->AddComponent<Animator>()->Play("Twinkle", true, jul::math::RandomValue<float>());
             auto* autoMove = bubbleParticle->AddComponent<AutoMove>(
                 glm::vec3{ 0, jul::math::RandomRange(1.5f, 4.0f), 0 }, glm::vec3{ 16, 15, 1 });
 

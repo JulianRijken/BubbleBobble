@@ -19,7 +19,7 @@ bb::ZenChan::ZenChan(GameObject* parent) :
     m_Collider(parent->GetComponent<BoxCollider>())
 {
     m_Rigidbody->SetGravityScale(0.0f);
-    m_Animator->PlayAnimation("zenchan_normal", true);
+    m_Animator->Play("zenchan_normal", true);
 }
 
 void bb::ZenChan::FixedUpdate()
@@ -101,6 +101,8 @@ jul::Transform* bb::ZenChan::GetCaptureTransform() { return &GetTransform(); }
 void bb::ZenChan::OnCapture() {}
 
 void bb::ZenChan::OnRelease() {}
+
+void bb::ZenChan::SpawnDeadVersion() {}
 
 void bb::ZenChan::Update()
 {

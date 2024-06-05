@@ -163,6 +163,7 @@ void LoadResources()
                                 16,
                                 {
                                     { "zenchan_normal", SpriteAnimation{ { { 0, 0 }, { 1, 0 } }, 4 } },
+                                    { "zenchan_bubble", SpriteAnimation{ { { 6, 0 }, { 7, 0 } }, 4 } },
                                 });
 }
 

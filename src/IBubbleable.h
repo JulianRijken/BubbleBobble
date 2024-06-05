@@ -17,7 +17,16 @@ namespace bb
 
         virtual void OnRelease() {}
 
-        virtual jul::Transform* GetCaptureTransform() = 0;
+        virtual void SpawnDeadVersion() = 0;
+
+        [[nodiscard]] virtual std::string GetSpriteName() = 0;
+
+        [[nodiscard]] virtual std::string GetSpriteAnimationName() = 0;
+
+        [[nodiscard]] virtual jul::Transform* GetCaptureTransform() = 0;
+
+        // (Is Captured) :P
+        bool m_IsBubbleabled{ false };  // NOLINT - C.131: Avoid trivial getters and setters
 
     protected:
         IBubbleable() = default;

@@ -6,18 +6,22 @@
 #include <GameObject.h>
 #include <GameTime.h>
 #include <MathExtensions.h>
+#include <ResourceManager.h>
 
 #include "IBubbleable.h"
 #include "IDamageable.h"
 
 bb::CaptureBubble::CaptureBubble(GameObject* parent, glm::vec3 fireVelocity) :
     Component(parent),
-    m_Animator(parent->GetComponent<Animator>()),
+    m_BubbleSpriteRenderer(parent->GetComponent<SpriteRenderer>()),
+    m_BubbleAnimator(parent->GetComponent<Animator>()),
+    m_CapturedSpriteRenderer(parent->AddComponent<SpriteRenderer>()),
+    m_CapturedAnimator(parent->AddComponent<Animator>(m_CapturedSpriteRenderer)),
     m_Rigidbody(parent->GetComponent<Rigidbody>())
 {
     g_Bubbles.insert(this);
 
-    m_Animator->PlayAnimation("Spawn");
+    m_BubbleAnimator->Play("Spawn");
     m_Rigidbody->AddForce(fireVelocity, Rigidbody::ForceMode::VelocityChange);
 
     m_Rigidbody->SetGravityScale(0.0f);
@@ -27,14 +31,23 @@ bb::CaptureBubble::~CaptureBubble() { g_Bubbles.erase(this); }
 
 void bb::CaptureBubble::StartPop()
 {
-    m_Animator->PlayAnimation("Pop");
+    m_BubbleAnimator->Play("Pop");
     m_GettingPopped = true;
+
+    m_CapturedAnimator->Stop();
+    m_CapturedSpriteRenderer->SetSprite(nullptr);
+    m_BubbleSpriteRenderer->SetEnabled(true);
 }
 
 void bb::CaptureBubble::Capture(IBubbleable* target)
 {
     m_CapturedTarget = target;
     target->GetCaptureTransform()->GetGameObject()->SetActive(false);
+    m_CapturedSpriteRenderer->SetSprite(ResourceManager::GetSprite(target->GetSpriteName()));
+    m_CapturedAnimator->Play(target->GetSpriteAnimationName(), true);
+    m_BubbleSpriteRenderer->SetEnabled(false);
+
+    m_CapturedTarget->m_IsBubbleabled = true;
     target->OnCapture();
 }
 
@@ -43,6 +56,8 @@ void bb::CaptureBubble::ReleaseCapturedTarget()
     auto* targetTransform = m_CapturedTarget->GetCaptureTransform();
     targetTransform->SetWorldPosition(GetTransform().GetWorldPosition());
     targetTransform->GetGameObject()->SetActive(true);
+
+    m_CapturedTarget->m_IsBubbleabled = false;
     m_CapturedTarget->OnRelease();
 }
 
@@ -59,6 +74,9 @@ void bb::CaptureBubble::OnCollisionPreSolve(const Collision& collision, const b2
         const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
         if(auto* bubbleable = collider->GetGameObject()->GetComponent<IBubbleable>())
         {
+            if(bubbleable->m_IsBubbleabled)
+                return;
+
             Capture(bubbleable);
             return;
         }
@@ -87,7 +105,7 @@ void bb::CaptureBubble::Update()
     {
         m_Rigidbody->AddForce({}, jul::Rigidbody::ForceMode::VelocityChange);
 
-        if(not m_Animator->IsPlaying())
+        if(not m_BubbleAnimator->IsPlaying())
         {
             if(m_CapturedTarget != nullptr)
                 ReleaseCapturedTarget();
@@ -97,8 +115,8 @@ void bb::CaptureBubble::Update()
     }
     else
     {
-        if(not m_Animator->IsPlaying())
-            m_Animator->PlayAnimation("Idle");
+        if(not m_BubbleAnimator->IsPlaying())
+            m_BubbleAnimator->Play("Idle");
 
         m_FloatingDuration += GameTime::GetDeltaTime<float>();
 
