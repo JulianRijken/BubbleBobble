@@ -146,9 +146,9 @@ void bb::MainMenu::Update()
 
 void bb::MainMenu::LoadSelectedMode() const
 {
-    if(m_SelectedItem == 0)
+    if(m_SelectedItem == 0 or m_SelectedItem == 1 or m_SelectedItem == 2)
     {
-        MessageQueue::Broadcast(MessageType::GameStart, { 0 });
+        MessageQueue::Broadcast(MessageType::GameStart, { m_SelectedItem });
         return;
     }
 

@@ -8,7 +8,9 @@ namespace bb::scenes
     enum class Id
     {
         MainMenu,
-        Main,
+        OnePlayerMode,
+        TwoPlayerMode,
+        VersusMode,
         IntroLevel,
         Level1,
         Level2,
@@ -18,13 +20,15 @@ namespace bb::scenes
 
     void BindScenes();
 
-    void MainScene(Scene& scene);
-    void Level1(Scene& scene);
-    void Level2(Scene& scene);
-    void Level3(Scene& scene);
+    void OnePlayerModeScene(Scene& scene);
+    void TwoPlayerModeScene(Scene& scene);
+    void VersusModeScene(Scene& scene);
 
-    void IntroLevel(Scene& scene);
+    void Level1Scene(Scene& scene);
+    void Level2Scene(Scene& scene);
+    void Level3Scene(Scene& scene);
 
+    void IntroLevelScene(Scene& scene);
 
     void MainMenuScene(Scene& scene);
 
@@ -32,9 +36,7 @@ namespace bb::scenes
     ///////////////////
     /// TEST SCENES ///
     //////////////////
-
     void TestScene(Scene& scene);
-
     void SceneGraphTestScene(Scene& scene);
 
 }  // namespace bb

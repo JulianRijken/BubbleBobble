@@ -194,7 +194,7 @@ void bb::PlayerAttackingState::OnEnterState(Player& player)
 
     spawnPosition.x += player.m_ColliderPtr->GetSettings().size.x * static_cast<float>(direction);
 
-    prefabs::Spawnbubble(spawnPosition, FIRE_POWER, direction);
+    prefabs::SpawnBubble(spawnPosition, FIRE_POWER, direction);
 }
 
 void bb::PlayerAttackingState::Update(Player& player)

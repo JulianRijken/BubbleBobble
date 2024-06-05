@@ -47,6 +47,8 @@ namespace bb
 
         [[nodiscard]] Event<int>& GetOnScoreChangeEvent() { return m_OnScoreChangeEvent; }
 
+        [[nodiscard]] int GetLives() const { return m_Lives; }
+
         void AddScore();
         void BubbleToPosition(const glm::vec3& position, double duration);
 

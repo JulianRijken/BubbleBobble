@@ -18,6 +18,7 @@ namespace bb
         void Update() override;
         void UpdateScore(int score);
         void UpdateLives(int lives);
+        void OnLevelTransitionChange(bool inTransition, int levelIndex);
 
         int m_Score{};
 
@@ -28,6 +29,6 @@ namespace bb
         TextRenderer* m_ScoreText{ nullptr };
         TextRenderer* m_LivesText{ nullptr };
 
-        Player* m_Player{ nullptr };
+        Player* m_PlayerPtr{ nullptr };
     };
 }

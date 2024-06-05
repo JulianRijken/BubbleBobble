@@ -29,68 +29,40 @@
 
 void bb::scenes::BindScenes()
 {
-    SceneManager::GetInstance().BindScene((int)Id::Main, MainScene);
     SceneManager::GetInstance().BindScene((int)Id::MainMenu, MainMenuScene);
-    SceneManager::GetInstance().BindScene((int)Id::IntroLevel, IntroLevel);
-    SceneManager::GetInstance().BindScene((int)Id::Level1, Level1);
-    SceneManager::GetInstance().BindScene((int)Id::Level2, Level2);
-    SceneManager::GetInstance().BindScene((int)Id::Level3, Level3);
+
+    SceneManager::GetInstance().BindScene((int)Id::OnePlayerMode, OnePlayerModeScene);
+    SceneManager::GetInstance().BindScene((int)Id::TwoPlayerMode, TwoPlayerModeScene);
+    SceneManager::GetInstance().BindScene((int)Id::VersusMode, VersusModeScene);
+
+    SceneManager::GetInstance().BindScene((int)Id::IntroLevel, IntroLevelScene);
+    SceneManager::GetInstance().BindScene((int)Id::Level1, Level1Scene);
+    SceneManager::GetInstance().BindScene((int)Id::Level2, Level2Scene);
+    SceneManager::GetInstance().BindScene((int)Id::Level3, Level3Scene);
 }
 
-void bb::scenes::MainScene(Scene& scene)
+void bb::scenes::OnePlayerModeScene(Scene& scene)
 {
-    auto* cameraGameObject = scene.AddGameObject("Camera");
-    auto* cameraPtr = cameraGameObject->AddComponent<Camera>(14, GameSettings::GetAspectRatio());
-    cameraGameObject->GetTransform().SetWorldPosition({ 0, 0, 0 });
-    Game::GetInstance().SetMainCamera(cameraPtr);
+    prefabs::SpawnMainCamera(scene);
+    prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
+    prefabs::SpawnPlayerHUD(scene, 0);
+    prefabs::SpawnPlayerHUD(scene, 1);
 
     Game::GetInstance().TransitionToLevel(0, false, false);
-    Game::GetInstance().SpawnPlayer(scene, 0, { -3, 0, 0 });
-    Game::GetInstance().SpawnPlayer(scene, 1, { 3, 0, 0 });
-
-
-    // GameObject* player1Hud = scene.AddGameObject("Player1HUD");
-    // {
-    //     auto* livesGameObject = scene.AddGameObject("LivesText", { -15, -12, 0 });
-    //     auto* livesText = livesGameObject->AddComponent<TextRenderer>(
-    //         "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
-    //     livesGameObject->AddComponent<SpriteRenderer>(
-    //         ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
-
-
-    //     auto* scoreGameObject = scene.AddGameObject("ScoreText", { -4, 13, 0 });
-    //     auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
-    //         "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 1, 0 });
-
-
-    //     livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-    //     scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
-
-    //     player1Hud->AddComponent<PlayerHUD>(
-    //         Game::GetInstance().GetPlayer(0), scoreText, livesText, SDL_Color(255, 255, 255, 255));
-    // }
-
-    // GameObject* player2Hud = scene.AddGameObject("Player2HUD");
-    // {
-    //     auto* livesGameObject = scene.AddGameObject("LivesText", { 14, -12, 0 });
-    //     auto* livesText = livesGameObject->AddComponent<TextRenderer>(
-    //         "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
-    //     livesGameObject->AddComponent<SpriteRenderer>(
-    //         ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
-
-
-    //     auto* scoreGameObject = scene.AddGameObject("ScoreText", { 4, 13, 0 });
-    //     auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
-    //         "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0, 0 });
-
-
-    //     livesGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
-    //     scoreGameObject->GetTransform().SetParent(&player2Hud->GetTransform(), false);
-
-    //     player2Hud->AddComponent<PlayerHUD>(
-    //         Game::GetInstance().GetPlayer(1), scoreText, livesText, SDL_Color(255, 255, 255, 255));
-    // }
 }
+
+void bb::scenes::TwoPlayerModeScene(Scene& scene)
+{
+    prefabs::SpawnMainCamera(scene);
+    prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
+    prefabs::SpawnPlayer(scene, 1, { 3, 0, 0 });
+    prefabs::SpawnPlayerHUD(scene, 0);
+    prefabs::SpawnPlayerHUD(scene, 1);
+
+    Game::GetInstance().TransitionToLevel(0, false, false);
+}
+
+void bb::scenes::VersusModeScene(Scene&) { throw std::runtime_error("Not Implemented Versus Scene"); }
 
 void bb::scenes::MainMenuScene(Scene& scene)
 {
@@ -153,7 +125,7 @@ void bb::scenes::MainMenuScene(Scene& scene)
 
         p3Text = scene.AddGameObject("Text", { -5, 2, 0 }, selectScreen);
         p3Text->AddComponent<TextRenderer>(
-            "VERSUS", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+            "VS START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
     }
     selectScreen->SetActive(false);
 
@@ -167,6 +139,7 @@ void bb::scenes::MainMenuScene(Scene& scene)
         &selectBubble->GetTransform(),
         std::vector<Transform*>{ &p1Text->GetTransform(), &p2Text->GetTransform(), &p3Text->GetTransform() });
 }
+
 
 void bb::scenes::TestScene(Scene&) {}
 
@@ -208,98 +181,120 @@ void bb::scenes::SceneGraphTestScene(Scene& scene)
     }
 }
 
-void bb::scenes::IntroLevel(Scene& scene)
+void bb::scenes::IntroLevelScene(Scene&)
 {
-    auto* nameText = scene.AddGameObject("Name Text", { 0, 13, 0 });
-    nameText->AddComponent<TextRenderer>(
-        "Now it is the beginning of\nA fantastic story! let us\nmake A journy to\nthe cave of monsters!\n \nGood Luck!",
-        ResourceManager::GetFont("NES"),
-        100,
-        glm ::vec2{ 0.5f, 0.0f },
-        true);
-
     constexpr double rotateDistance = 3.5;
     constexpr double rotateSpeed = 3.0;
     constexpr double heightOffset = -3.0;
     constexpr double sidewaysOffset = 6.0;
     constexpr double intoDuration = 6.0;
 
-    TweenEngine::Start(
-        {
-            .duration = intoDuration,
-            .onUpdate =
-                [](double)
+    auto* nameText = SceneManager::GetPrimaryScene().AddGameObject("Name Text", glm::vec3{ 0, 13, 0 });
+    nameText->AddComponent<TextRenderer>("Now it is the beginning of\n"
+                                         "A fantastic story! let us\n"
+                                         "make A journey to\n"
+                                         "the cave of monsters!\n \n"
+                                         "Good Luck!",
+                                         ResourceManager::GetFont("NES"),
+                                         100,
+                                         glm ::vec2{ 0.5f, 0.0f },
+                                         true);
+
+    TweenEngine::Start({ .delay = intoDuration,
+                         .duration = Game::LEVEL_TRANSITION_DURATION,
+                         .invokeWhenDestroyed = false,
+                         .onStart = [nameText]() { nameText->GetTransform().Translate(0, Game::GRID_SIZE_Y, 0); },
+                         .onEnd = [nameText]() { nameText->Destroy(); } },
+                       nameText);
+
+    if(Game::GetInstance().GetPlayer(0) != nullptr)
+    {
+        TweenEngine::Start(
             {
-                glm::vec2 circleOffset{ std::cos(GameTime::GetElapsedTime() * rotateSpeed) * rotateDistance,
-                                        std::sin(GameTime::GetElapsedTime() * rotateSpeed) * rotateDistance };
+                .duration = intoDuration,
+                .onUpdate =
+                    [](double)
+                {
+                    glm::vec2 circleOffset{ std::cos(GameTime::GetElapsedTime() * rotateSpeed) * rotateDistance,
+                                            std::sin(GameTime::GetElapsedTime() * rotateSpeed) * rotateDistance };
 
-                circleOffset.y += heightOffset;
-                circleOffset.x -= sidewaysOffset;
-                Game::GetInstance().GetPlayer(0)->GetTransform().SetWorldPosition(circleOffset.x, circleOffset.y, 0);
+                    circleOffset.y += heightOffset;
+                    circleOffset.x -= sidewaysOffset;
+                    Game::GetInstance().GetPlayer(0)->GetTransform().SetWorldPosition(
+                        circleOffset.x, circleOffset.y, 0);
+                },
             },
-        },
-        Game::GetInstance().GetPlayer(0));
+            Game::GetInstance().GetPlayer(0));
+    }
 
-    TweenEngine::Start(
-        {
-            .duration = intoDuration,
-            .onUpdate =
-                [](double)
+    if(Game::GetInstance().GetPlayer(1) != nullptr)
+    {
+        TweenEngine::Start(
             {
-                glm::vec2 circleOffset{
-                    std::cos(GameTime::GetElapsedTime() * rotateSpeed + std::numbers::pi) * rotateDistance,
-                    std::sin(GameTime::GetElapsedTime() * rotateSpeed + std::numbers::pi) * rotateDistance
-                };
+                .duration = intoDuration,
+                .onUpdate =
+                    [](double)
+                {
+                    glm::vec2 circleOffset{
+                        std::cos(GameTime::GetElapsedTime() * rotateSpeed + std::numbers::pi) * rotateDistance,
+                        std::sin(GameTime::GetElapsedTime() * rotateSpeed + std::numbers::pi) * rotateDistance
+                    };
 
-                circleOffset.y += heightOffset;
-                circleOffset.x += sidewaysOffset;
-                Game::GetInstance().GetPlayer(1)->GetTransform().SetWorldPosition(circleOffset.x, circleOffset.y, 0);
+                    circleOffset.y += heightOffset;
+                    circleOffset.x += sidewaysOffset;
+                    Game::GetInstance().GetPlayer(1)->GetTransform().SetWorldPosition(
+                        circleOffset.x, circleOffset.y, 0);
+                },
             },
-        },
-        Game::GetInstance().GetPlayer(1));
+            Game::GetInstance().GetPlayer(1));
+    }
 
     TweenEngine::Start(
         {
             .duration = intoDuration,
-            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
+            .invokeWhenDestroyed = false,
             .onEnd = []() { Game::GetInstance().TransitionToLevel(1); },
         },
-        Game::GetInstance().GetPlayer(0));
+        nameText);
 }
 
-void bb::scenes::Level1(Scene&)
+void bb::scenes::Level1Scene(Scene& scene)
 {
+    auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
+
     TweenEngine::Start(
         {
             .delay = 4,
             .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
             .onEnd = []() { Game::GetInstance().TransitionToLevel(2); },
         },
-        Game::GetInstance().GetPlayer(0));
+        sceneLifeTimeObject);
 }
 
-void bb::scenes::Level2(Scene&)
+void bb::scenes::Level2Scene(Scene& scene)
 {
 
-
-    // TweenEngine::Start(
-    //     {
-    //         .delay = 4,
-    //         .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-    //         .onEnd = []() { Game::GetInstance().TransitionToLevel(3); },
-    //     },
-    //     Game::GetInstance().GetPlayer(0));
-}
-
-void bb::scenes::Level3(Scene&)
-{
-    prefabs::SpawnZenChan({ 0, 12, 0 });
+    auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 
     TweenEngine::Start(
         {
             .delay = 30,
             .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-            .onEnd = []() { SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu); },
+            .onEnd = []() { Game::GetInstance().TransitionToLevel(3); },
         },
-        Game::GetInstance().GetPlayer(0));
+        sceneLifeTimeObject);
+}
+
+void bb::scenes::Level3Scene(Scene&)
+{
+    prefabs::SpawnZenChan({ 0, 12, 0 });
+    // auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
+
+    // TweenEngine::Start(
+    //     {
+    //         .delay = 30,
+    //         .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
+    //         .onEnd = []() { SceneManager::GetInstance().LoadScene((int)scenes::Id::TwoPlayerMode); },
+    //     },
+    //     sceneLifeTimeObject);
 }

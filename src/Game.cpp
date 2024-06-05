@@ -34,17 +34,32 @@ void bb::Game::Initialize()
     Input::Bind((int)InputBind::DebugDecreaseTimeScale, 0, true, this, &Game::OnDecreaseTimeScale);
 }
 
-void bb::Game::StartGame(int)
+void bb::Game::StartGame(int mode)
 {
     m_ActiveLevelIndex = 0;
     m_ActiveLevelTilesPtr = nullptr;
-    SceneManager::GetInstance().LoadScene((int)scenes::Id::Main);
+    m_MainCameraPtr = nullptr;
+
+    switch(mode)
+    {
+        case 0:
+            SceneManager::GetInstance().LoadScene((int)scenes::Id::OnePlayerMode);
+            break;
+        case 1:
+            SceneManager::GetInstance().LoadScene((int)scenes::Id::TwoPlayerMode);
+            break;
+        case 2:
+            SceneManager::GetInstance().LoadScene((int)scenes::Id::VersusMode);
+            break;
+    }
+
     // Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
 }
 
+
 bb::Player* bb::Game::GetPlayer(int playerIndex) const { return m_Players[playerIndex]; }
 
-jul::Scene* bb::Game::GetActiveLevelScene()
+jul::Scene* bb::Game::GetActiveLevelScene() const
 {
     const scenes::Id currentLevelId = LEVELS[m_ActiveLevelIndex];
     return SceneManager::GetInstance().FindScene((int)currentLevelId);
@@ -55,39 +70,17 @@ void bb::Game::SetPlayer(int playerIndex, Player* player) { m_Players[playerInde
 void bb::Game::SetMainCamera(Camera* camera) { m_MainCameraPtr = camera; }
 
 
-bb::Player* bb::Game::SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation)
-{
-    if(m_Players[playerIndex] != nullptr)
-        throw std::runtime_error(fmt::format("Player {} already exists", playerIndex));
-
-    auto spriteName = playerIndex == 0 ? BUBBLE_SPRITE_NAME : BOBBLE_SPRITE_NAME;
-
-    auto* playerGameObject = scene.AddGameObject("Player", spawnLocation);
-    auto* bodySprite = playerGameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite(spriteName), 0);
-    auto* bubbleSprite = playerGameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleLarge"), 0);
-    auto* bodyAnimator = playerGameObject->AddComponent<Animator>(bodySprite);
-    auto* bubbleAnimator = playerGameObject->AddComponent<Animator>(bubbleSprite);
-    playerGameObject->AddComponent<Rigidbody>();
-    playerGameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 0.0f,
-        .restitution = 0.1f,
-        .size = {1.80f, 1.95f},
-    });
-
-    return playerGameObject->AddComponent<Player>(playerIndex, bodySprite, bubbleSprite, bodyAnimator, bubbleAnimator);
-}
-
 jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
 {
     if(levelIndex >= static_cast<int>(m_Maps.size()))
         throw std::runtime_error(fmt::format("Map not loaded: {}", levelIndex));
 
-    auto* levelParent = SceneManager::GetInstance().AddGameObject(fmt::format("Level {}", levelIndex));
+    auto* levelParent = SceneManager::GetPrimaryScene().AddGameObject(fmt::format("Level {}", levelIndex));
 
     auto& maps = GetMaps();
     for(auto&& block : maps[levelIndex].blocks)
     {
-        auto* tile = SceneManager::GetInstance().AddGameObject(
+        auto* tile = SceneManager::GetPrimaryScene().AddGameObject(
             "LevelTile", glm::vec3{ block.position.x, block.position.y, 0 }, levelParent, false);
 
         if(block.solidity == BlockSolidity::Semi)
@@ -124,6 +117,8 @@ jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
 
 void bb::Game::TransitionToLevel(int levelIndex, bool delayLoading, bool resetPlayers)
 {
+    m_LevelTransitionChangeEvent.Invoke(true, levelIndex);
+
     // Unload old level
     if(auto* activeLevel = GetActiveLevelScene())
         activeLevel->Unload();
@@ -133,14 +128,15 @@ void bb::Game::TransitionToLevel(int levelIndex, bool delayLoading, bool resetPl
         if(m_ActiveLevelTilesPtr != nullptr)
         {
             m_ActiveLevelTilesPtr->GetTransform().SetWorldPosition(0, GRID_SIZE_Y, 0);
-            auto* oldTiles = m_ActiveLevelTilesPtr;
+
+            auto* oldLevelTiles = m_ActiveLevelTilesPtr;
             TweenEngine::Start(
                 {
                     .delay = LEVEL_TRANSITION_DURATION,
                     .invokeWhenDestroyed = false,
-                    .onEnd = [oldTiles]() { oldTiles->Destroy(); },
+                    .onEnd = [oldLevelTiles]() { oldLevelTiles->Destroy(); },
                 },
-                m_MainCameraPtr);
+                oldLevelTiles);
         }
 
         m_ActiveLevelTilesPtr = SpawnLevelTiles(levelIndex - 1);
@@ -149,21 +145,26 @@ void bb::Game::TransitionToLevel(int levelIndex, bool delayLoading, bool resetPl
 
     m_MainCameraPtr->GetTransform().SetWorldPosition(0, GRID_SIZE_Y, 0);
 
+    // Load next level after delay
     TweenEngine::Start(
         {
-            .duration = delayLoading ? LEVEL_TRANSITION_DURATION : 0,
+            .delay = delayLoading ? LEVEL_TRANSITION_DURATION : 0,
+            .duration = 0,
             .invokeWhenDestroyed = true,
             .onEnd =
                 [levelIndex, this]()
             {
                 // Load next level
-                const scenes::Id levelToLoad = LEVELS[levelIndex];
-                SceneManager::GetInstance().LoadScene((int)levelToLoad, SceneLoadMode::Additive);
                 m_ActiveLevelIndex = levelIndex;
+
+                const scenes::Id levelToLoad = LEVELS[m_ActiveLevelIndex];
+                SceneManager::GetInstance().LoadScene((int)levelToLoad, SceneLoadMode::Additive);
+                m_LevelTransitionChangeEvent.Invoke(false, m_ActiveLevelIndex);
             },
         },
         m_MainCameraPtr);
 
+    // Move camera
     TweenEngine::Start(
         {
             .from = GRID_SIZE_Y,

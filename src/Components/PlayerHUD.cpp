@@ -2,6 +2,7 @@
 
 #include <fmt/format.h>
 
+#include "Game.h"
 #include "GameObject.h"
 #include "GameTime.h"
 #include "MathExtensions.h"
@@ -11,7 +12,7 @@ bb::PlayerHUD::PlayerHUD(GameObject* parentPtr, Player* player, TextRenderer* sc
     Component(parentPtr, "ScoreDisplay"),
     m_ScoreText(scoreText),
     m_LivesText(livesText),
-    m_Player(player)
+    m_PlayerPtr(player)
 {
     assert(m_ScoreText);
     assert(m_LivesText);
@@ -19,11 +20,24 @@ bb::PlayerHUD::PlayerHUD(GameObject* parentPtr, Player* player, TextRenderer* sc
     m_ScoreText->SetColor(color);
     m_LivesText->SetColor(color);
 
-    m_Player->GetOnScoreChangeEvent().AddListener(this, &PlayerHUD::UpdateScore);
-    m_Player->GetOnDeathEvent().AddListener(this, &PlayerHUD::UpdateLives);
+    Game::GetInstance().GetLevelTransitionChangeEvent().AddListener(this, &PlayerHUD::OnLevelTransitionChange);
 
-    UpdateScore(1000);
-    UpdateLives(3);  // TODO lives hardcoded should ideally be changed
+    if(m_PlayerPtr != nullptr)
+    {
+        m_PlayerPtr->GetOnScoreChangeEvent().AddListener(this, &PlayerHUD::UpdateScore);
+        m_PlayerPtr->GetOnDeathEvent().AddListener(this, &PlayerHUD::UpdateLives);
+
+        UpdateScore(1000);
+        UpdateLives(m_PlayerPtr->GetLives());
+    }
+    else
+    {
+        UpdateScore(0);
+        UpdateLives(0);
+    }
+
+    // Force jump visual at start
+    m_VisualScore = m_Score;
 }
 
 
@@ -41,4 +55,9 @@ void bb::PlayerHUD::UpdateLives(int lives)
 {
     // Lives are actaully displayed in hex values haha
     m_LivesText->SetText(fmt::format("{:X}", lives));
+}
+
+void bb::PlayerHUD::OnLevelTransitionChange(bool inTransition, int levelIndex)
+{
+    GetGameObject()->SetActive(not inTransition and levelIndex > 0);
 }

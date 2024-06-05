@@ -92,7 +92,9 @@ namespace bb
 
         [[nodiscard]] std::vector<Map>& GetMaps() { return m_Maps; }
 
-        [[nodiscard]] Scene* GetActiveLevelScene();
+        [[nodiscard]] Scene* GetActiveLevelScene() const;
+
+        [[nodiscard]] Event<bool, int>& GetLevelTransitionChangeEvent() { return m_LevelTransitionChangeEvent; }
 
         void Initialize();
 
@@ -103,15 +105,19 @@ namespace bb
         void SetPlayer(int playerIndex, Player* player);
         void SetMainCamera(Camera* camera);
 
-        Player* SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation = {});
         GameObject* SpawnLevelTiles(int levelIndex);
 
         void OnForceResetGame(const InputContext& context);
         void OnIncreaseTimeScale(const InputContext& context);
         void OnDecreaseTimeScale(const InputContext& context);
 
-
     private:
+        void OnMessage(const Message& message);
+        void ParseMaps(const std::string& fileName);
+
+        static SDL_Surface* JxlToSurface(const std::string& fileName);
+
+
         std::array<Player*, 2> m_Players{ nullptr, nullptr };
         std::vector<Map> m_Maps{};
 
@@ -120,10 +126,7 @@ namespace bb
         Camera* m_MainCameraPtr{ nullptr };
         GameObject* m_ActiveLevelTilesPtr{ nullptr };
 
-        void OnMessage(const Message& message);
-        void ParseMaps(const std::string& fileName);
-
-        static SDL_Surface* JxlToSurface(const std::string& fileName);
+        Event<bool, int> m_LevelTransitionChangeEvent{};
     };
 
 }  // namespace bb
