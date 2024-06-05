@@ -22,6 +22,7 @@
 #include <numbers>
 #include <vector>
 
+#include "BubbleSpiral.h"
 #include "FpsCounter.h"
 #include "Game.h"
 #include "Prefabs.h"
@@ -181,13 +182,13 @@ void bb::scenes::SceneGraphTestScene(Scene& scene)
     }
 }
 
-void bb::scenes::IntroLevelScene(Scene&)
+void bb::scenes::IntroLevelScene(Scene& scene)
 {
     constexpr double rotateDistance = 3.5;
     constexpr double rotateSpeed = 3.0;
     constexpr double heightOffset = -3.0;
     constexpr double sidewaysOffset = 6.0;
-    constexpr double intoDuration = 6.0;
+    constexpr double intoDuration = 7.0;
 
     auto* nameText = SceneManager::GetPrimaryScene().AddGameObject("Name Text", glm::vec3{ 0, 13, 0 });
     nameText->AddComponent<TextRenderer>("Now it is the beginning of\n"
@@ -199,6 +200,15 @@ void bb::scenes::IntroLevelScene(Scene&)
                                          100,
                                          glm ::vec2{ 0.5f, 0.0f },
                                          true);
+
+    auto* bubbleSpiral = scene.AddGameObject("Bubble Spiral");
+    bubbleSpiral->AddComponent<BubbleSpiral>();
+    // Auto destroy bubble spiral
+    TweenEngine::Start({ .delay = intoDuration * 0.6,
+                         .invokeWhenDestroyed = false,
+                         .onEnd = [bubbleSpiral]() { bubbleSpiral->Destroy(); } },
+                       bubbleSpiral);
+
 
     TweenEngine::Start({ .delay = intoDuration,
                          .duration = Game::LEVEL_TRANSITION_DURATION,
@@ -262,13 +272,19 @@ void bb::scenes::Level1Scene(Scene& scene)
 {
     auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 
-    TweenEngine::Start(
-        {
-            .delay = 4,
-            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-            .onEnd = []() { Game::GetInstance().TransitionToLevel(2); },
-        },
-        sceneLifeTimeObject);
+    for(int i{}; i < 10; ++i)
+    {
+        TweenEngine::Start(
+            {
+                .delay = static_cast<double>(i) * 0.5f,
+                .duration = 0,
+                .onEnd =
+                    []() {
+                        prefabs::SpawnZenChan({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
+                    },
+            },
+            sceneLifeTimeObject);
+    }
 }
 
 void bb::scenes::Level2Scene(Scene& scene)

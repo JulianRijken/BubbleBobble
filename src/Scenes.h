@@ -24,11 +24,11 @@ namespace bb::scenes
     void TwoPlayerModeScene(Scene& scene);
     void VersusModeScene(Scene& scene);
 
+    void IntroLevelScene(Scene& scene);
     void Level1Scene(Scene& scene);
     void Level2Scene(Scene& scene);
     void Level3Scene(Scene& scene);
 
-    void IntroLevelScene(Scene& scene);
 
     void MainMenuScene(Scene& scene);
 

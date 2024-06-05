@@ -117,60 +117,62 @@ jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
 
 void bb::Game::TransitionToLevel(int levelIndex, bool delayLoading, bool resetPlayers)
 {
-    m_LevelTransitionChangeEvent.Invoke(true, levelIndex);
 
     // Unload old level
     if(auto* activeLevel = GetActiveLevelScene())
         activeLevel->Unload();
 
-    if(levelIndex > 0)
-    {
-        if(m_ActiveLevelTilesPtr != nullptr)
-        {
-            m_ActiveLevelTilesPtr->GetTransform().SetWorldPosition(0, GRID_SIZE_Y, 0);
-
-            auto* oldLevelTiles = m_ActiveLevelTilesPtr;
-            TweenEngine::Start(
-                {
-                    .delay = LEVEL_TRANSITION_DURATION,
-                    .invokeWhenDestroyed = false,
-                    .onEnd = [oldLevelTiles]() { oldLevelTiles->Destroy(); },
-                },
-                oldLevelTiles);
-        }
-
-        m_ActiveLevelTilesPtr = SpawnLevelTiles(levelIndex - 1);
-    }
-
-
-    m_MainCameraPtr->GetTransform().SetWorldPosition(0, GRID_SIZE_Y, 0);
-
-    // Load next level after delay
-    TweenEngine::Start(
-        {
-            .delay = delayLoading ? LEVEL_TRANSITION_DURATION : 0,
-            .duration = 0,
-            .invokeWhenDestroyed = true,
-            .onEnd =
-                [levelIndex, this]()
-            {
-                // Load next level
-                m_ActiveLevelIndex = levelIndex;
-
-                const scenes::Id levelToLoad = LEVELS[m_ActiveLevelIndex];
-                SceneManager::GetInstance().LoadScene((int)levelToLoad, SceneLoadMode::Additive);
-                m_LevelTransitionChangeEvent.Invoke(false, m_ActiveLevelIndex);
-            },
-        },
-        m_MainCameraPtr);
-
-    // Move camera
+    // Transition tween
     TweenEngine::Start(
         {
             .from = GRID_SIZE_Y,
             .to = 0,
             .duration = LEVEL_TRANSITION_DURATION,
             .easeFunction = EaseFunction::SineOut,
+            .onStart =
+                [this, levelIndex, delayLoading]()
+            {
+                m_LevelTransitionChangeEvent.Invoke(true, levelIndex);
+
+                if(levelIndex > 0)
+                {
+                    if(m_ActiveLevelTilesPtr != nullptr)
+                    {
+                        m_ActiveLevelTilesPtr->GetTransform().SetWorldPosition(0, GRID_SIZE_Y, 0);
+
+                        auto* oldLevelTiles = m_ActiveLevelTilesPtr;
+                        TweenEngine::Start(
+                            {
+                                .delay = LEVEL_TRANSITION_DURATION,
+                                .invokeWhenDestroyed = false,
+                                .onEnd = [oldLevelTiles]() { oldLevelTiles->Destroy(); },
+                            },
+                            oldLevelTiles);
+                    }
+
+                    m_ActiveLevelTilesPtr = SpawnLevelTiles(levelIndex - 1);
+                }
+
+                m_MainCameraPtr->GetTransform().SetWorldPosition(0, GRID_SIZE_Y, 0);
+
+                // Load next level after delay
+                TweenEngine::Start(
+                    {
+                        .delay = delayLoading ? LEVEL_TRANSITION_DURATION : 0,
+                        .duration = 0,
+                        .onEnd =
+                            [levelIndex, this]()
+                        {
+                            // Load next level
+                            m_ActiveLevelIndex = levelIndex;
+
+                            const scenes::Id levelToLoad = LEVELS[m_ActiveLevelIndex];
+                            SceneManager::GetInstance().LoadScene((int)levelToLoad, SceneLoadMode::Additive);
+                            m_LevelTransitionChangeEvent.Invoke(false, m_ActiveLevelIndex);
+                        },
+                    },
+                    m_MainCameraPtr);
+            },
             .onUpdate = [this](double value) { m_MainCameraPtr->GetTransform().SetWorldPosition(0, value, 0); },
         },
         m_MainCameraPtr);
@@ -196,7 +198,11 @@ void bb::Game::OnForceResetGame(const InputContext& context)
     if(context.state != ButtonState::Down)
         return;
 
-    SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu);
+    // Pff ye this is really annoying but it can happend
+    // that the game resets and the tiles do not get set to null
+    m_ActiveLevelTilesPtr = nullptr;
+
+    SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu, SceneLoadMode::OverrideForce);
 }
 
 void bb::Game::OnIncreaseTimeScale(const InputContext& context)

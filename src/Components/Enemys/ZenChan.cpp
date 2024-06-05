@@ -88,12 +88,12 @@ void bb::ZenChan::HandleTurning()
     }
 }
 
-void bb::ZenChan::OnCollisionBegin(const Collision& collision)
+void bb::ZenChan::OnCollisionBegin(const Collision&)
 {
-    const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
+    // const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
 
-    if(auto* damageable = collider->GetGameObject()->GetComponent<IDamageable>())
-        damageable->OnDamage(this);
+    // if(auto* damageable = collider->GetGameObject()->GetComponent<IDamageable>())
+    //     damageable->OnDamage(this);
 }
 
 void bb::ZenChan::OnDamage(jul::Component* /*instigator*/) { GetGameObject()->Destroy(); }

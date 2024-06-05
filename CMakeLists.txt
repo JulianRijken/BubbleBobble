@@ -12,6 +12,8 @@ set(BB_SOURCE_FILES
     ${SOURCE_DIR}/GameEntry.cpp
     ${SOURCE_DIR}/Game.cpp                          ${SOURCE_DIR}/Game.h
     ${SOURCE_DIR}/IDamageable.h
+    ${SOURCE_DIR}/Scenes.h                          ${SOURCE_DIR}/Scenes.cpp
+    ${SOURCE_DIR}/Prefabs.h                         ${SOURCE_DIR}/Prefabs.cpp
 
     ${SOURCE_DIR}/Components/AttackBubble.h         ${SOURCE_DIR}/Components/AttackBubble.cpp
 
@@ -20,6 +22,7 @@ set(BB_SOURCE_FILES
 
     ${SOURCE_DIR}/Components/Enemys/ZenChan.h       ${SOURCE_DIR}/Components/Enemys/ZenChan.cpp
 
+    ${SOURCE_DIR}/Components/BubbleSpiral.h         ${SOURCE_DIR}/Components/BubbleSpiral.cpp
     ${SOURCE_DIR}/Components/OneWayPlatform.h       ${SOURCE_DIR}/Components/OneWayPlatform.cpp
     ${SOURCE_DIR}/Components/AutoMove.h             ${SOURCE_DIR}/Components/AutoMove.cpp
     ${SOURCE_DIR}/Components/AutoRotateAround.h     ${SOURCE_DIR}/Components/AutoRotateAround.cpp
@@ -32,9 +35,6 @@ set(BB_SOURCE_FILES
 # Adds the source files to the executible
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
-    src/Scenes.h src/Scenes.cpp
-    src/InputActions.h src/InputActions.cpp
-    src/Prefabs.h src/Prefabs.cpp
 )
 
 # Include source directories
