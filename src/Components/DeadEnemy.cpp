@@ -6,10 +6,9 @@
 #include "GameObject.h"
 #include "prefabs.h"
 
-
-bb::DeadEnemy::DeadEnemy(GameObject* parentPtr, FruitType fruitType) :
+bb::DeadEnemy::DeadEnemy(GameObject* parentPtr, PickupType fruitType) :
     Component(parentPtr),
-    m_FruitType(fruitType)
+    m_PickupType(fruitType)
 {
 }
 
@@ -34,7 +33,7 @@ void bb::DeadEnemy::OnCollisionBegin(const Collision&)
 
     if(m_BouncedTimes > MAX_BOUNCES)
     {
-        prefabs::SpawnFruit(m_FruitType);
+        prefabs::SpawnPickup(m_PickupType, GetTransform().GetWorldPosition());
         GetGameObject()->Destroy();
     }
 }

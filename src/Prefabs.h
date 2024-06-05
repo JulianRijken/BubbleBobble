@@ -22,6 +22,6 @@ namespace bb
         Player* SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation = {});
         void SpawnPlayerHUD(Scene& scene, int playerIndex);
         void SpawnMainCamera(Scene& scene);
-        void SpawnFruit(FruitType fruitType);
+        void SpawnPickup(PickupType fruitType, const glm::vec3& spawnPosition);
     }  // namespace prefabs
 }  // namespace bb

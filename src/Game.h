@@ -62,7 +62,7 @@ namespace bb
         Solid
     };
 
-    enum class FruitType
+    enum class PickupType
     {
         Fries,
         Watermelon

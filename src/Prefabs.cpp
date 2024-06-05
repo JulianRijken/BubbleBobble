@@ -17,6 +17,7 @@
 
 #include "Game.h"
 #include "MathExtensions.h"
+#include "Pickup.h"
 #include "Player.h"
 #include "PlayerHUD.h"
 
@@ -73,7 +74,7 @@ void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
         .restitution = 1.2f,
         .size = {1.90f, 1.90f},
     });
-    zenchanGO->AddComponent<DeadEnemy>(FruitType::Watermelon);
+    zenchanGO->AddComponent<DeadEnemy>(PickupType::Watermelon);
 
     const double angle = glm::radians(jul::math::RandomValue() > 0.5 ? jul::math::RandomRange(50.0, 70.0) + 90.0
                                                                      : jul::math::RandomRange(50.0, 70.0));
@@ -137,4 +138,18 @@ void bb::prefabs::SpawnMainCamera(jul::Scene& scene)
     Game::GetInstance().SetMainCamera(cameraPtr);
 }
 
-void bb::prefabs::SpawnFruit(FruitType) { fmt::println("SpawnFruit"); }
+void bb::prefabs::SpawnPickup(PickupType pickup, const glm::vec3& spawnPosition)
+{
+    Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
+    if(activeScene == nullptr)
+        throw std::runtime_error("Spawning ZenChen with no active level scene");
+
+    auto* fruit = activeScene->AddGameObject("Fruit", spawnPosition);
+    fruit->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    fruit->AddComponent<Rigidbody>(jul::Rigidbody::Settings{ .mode = jul::Rigidbody::Mode::Static });
+    fruit->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f, .restitution = 0.1f, .size = {1.90f, 1.90f},
+                .isSensor = true
+    });
+    fruit->AddComponent<Pickup>(pickup);
+}

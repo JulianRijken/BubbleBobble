@@ -4,7 +4,6 @@
 #include "Component.h"
 #include "Game.h"
 
-
 namespace bb
 {
     using namespace jul;
@@ -15,7 +14,7 @@ namespace bb
         inline static constexpr int MAX_BOUNCES{ 3 };
         inline static constexpr double TIME_BETWEEN_BOUNCES{ 0.5 };
 
-        DeadEnemy(GameObject* parentPtr, FruitType fruitType);
+        DeadEnemy(GameObject* parentPtr, PickupType fruitType);
 
         DeadEnemy(DeadEnemy&&) = delete;
         DeadEnemy(const DeadEnemy&) = delete;
@@ -28,7 +27,7 @@ namespace bb
 
         void Update() override;
 
-        FruitType m_FruitType;
+        PickupType m_PickupType;
 
         int m_BouncedTimes{};
         double m_TimeSinceLastBounce{};
