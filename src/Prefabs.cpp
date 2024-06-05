@@ -1,9 +1,9 @@
 #include "Prefabs.h"
 
 #include <Animator.h>
-#include <AttackBubble.h>
 #include <BoxCollider.h>
 #include <Camera.h>
+#include <CaptureBubble.h>
 #include <fmt/core.h>
 #include <GameSettings.h>
 #include <ResourceManager.h>
@@ -18,12 +18,7 @@
 #include "Player.h"
 #include "PlayerHUD.h"
 
-void bb::prefabs::SpawnBubble(const glm::vec3& spawnPosition, float firePower, int direction)
-{
-    SpawnBubble(spawnPosition, firePower, { direction, 0 });
-}
-
-void bb::prefabs::SpawnBubble(const glm::vec3& spawnPosition, float firePower, glm::vec2 direction)
+void bb::prefabs::SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 velocity)
 {
     Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
     if(activeScene == nullptr)
@@ -39,9 +34,7 @@ void bb::prefabs::SpawnBubble(const glm::vec3& spawnPosition, float firePower, g
         .size = {1.5, 1.5f},
     });
 
-    direction = glm::normalize(direction);
-    const glm::vec2 velocity = direction * firePower;
-    bubble->AddComponent<AttackBubble>(glm::vec3{ velocity.x, velocity.y, 0 });
+    bubble->AddComponent<CaptureBubble>(glm::vec3{ velocity.x, velocity.y, 0 });
 }
 
 

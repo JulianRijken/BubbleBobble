@@ -1,5 +1,6 @@
 #pragma once
 #include <Component.h>
+#include <IBubbleable.h>
 #include <ICollisionListener.h>
 
 #include "IDamageable.h"
@@ -17,7 +18,7 @@ namespace bb
 {
     using namespace jul;
 
-    class ZenChan final : public Component, public ICollisionListener, public IDamageable
+    class ZenChan final : public Component, public ICollisionListener, public IBubbleable
     {
     public:
         static constexpr float MOVE_SPEED{ 8.0f };
@@ -35,7 +36,9 @@ namespace bb
         void HandleTurning();
         void OnCollisionBegin(const Collision& collision) override;
 
-        void OnDamage(jul::Component* instigator) override;
+        Transform* GetCaptureTransform() override;
+        void OnCapture() override;
+        void OnRelease() override;
 
         Animator* m_Animator{ nullptr };
         Rigidbody* m_Rigidbody{ nullptr };

@@ -11,11 +11,12 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(BB_SOURCE_FILES
     ${SOURCE_DIR}/GameEntry.cpp
     ${SOURCE_DIR}/Game.cpp                          ${SOURCE_DIR}/Game.h
-    ${SOURCE_DIR}/IDamageable.h
     ${SOURCE_DIR}/Scenes.h                          ${SOURCE_DIR}/Scenes.cpp
     ${SOURCE_DIR}/Prefabs.h                         ${SOURCE_DIR}/Prefabs.cpp
+    ${SOURCE_DIR}/IDamageable.h
+    ${SOURCE_DIR}/IBubbleable.h
 
-    ${SOURCE_DIR}/Components/AttackBubble.h         ${SOURCE_DIR}/Components/AttackBubble.cpp
+    ${SOURCE_DIR}/Components/CaptureBubble.h         ${SOURCE_DIR}/Components/CaptureBubble.cpp
 
     ${SOURCE_DIR}/Components/Player/Player.h        ${SOURCE_DIR}/Components/Player/Player.cpp
     ${SOURCE_DIR}/Components/Player/PlayerState.h   ${SOURCE_DIR}/Components/Player/PlayerState.cpp

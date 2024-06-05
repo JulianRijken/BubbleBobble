@@ -15,8 +15,7 @@ namespace bb
     {
         using namespace jul;
 
-        void SpawnBubble(const glm::vec3& spawnPosition, float firePower, int direction);
-        void SpawnBubble(const glm::vec3& spawnPosition, float firePower, glm::vec2 direction);
+        void SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 velocity);
         void SpawnZenChan(const glm::vec3& spawnPosition);
         Player* SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation = {});
         void SpawnPlayerHUD(Scene& scene, int playerIndex);

@@ -6,7 +6,7 @@
 #include <Physics.h>
 #include <TweenEngine.h>
 
-#include "AttackBubble.h"
+#include "CaptureBubble.h"
 #include "Game.h"
 #include "GameObject.h"
 
@@ -191,7 +191,7 @@ void bb::Player::FixedUpdate()
 void bb::Player::OnDamage(Component* instigator)
 {
     // TODO: Maybe avoid a dynamic cast
-    if(dynamic_cast<AttackBubble*>(instigator))
+    if(dynamic_cast<CaptureBubble*>(instigator))
         return;
 
     m_ActiveAttackState->OnPlayerDamage(*this);

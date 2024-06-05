@@ -10,7 +10,7 @@
 #include <SpriteRenderer.h>
 #include <TweenEngine.h>
 
-#include "AttackBubble.h"
+#include "CaptureBubble.h"
 #include "Game.h"
 #include "Player.h"
 #include "Prefabs.h"
@@ -194,7 +194,7 @@ void bb::PlayerAttackingState::OnEnterState(Player& player)
 
     spawnPosition.x += player.m_ColliderPtr->GetSettings().size.x * static_cast<float>(direction);
 
-    prefabs::SpawnBubble(spawnPosition, FIRE_POWER, direction);
+    prefabs::SpawnCaptureBubble(spawnPosition, { direction * FIRE_POWER, 0 });
 }
 
 void bb::PlayerAttackingState::Update(Player& player)

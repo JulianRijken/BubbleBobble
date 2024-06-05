@@ -88,15 +88,19 @@ void bb::ZenChan::HandleTurning()
     }
 }
 
-void bb::ZenChan::OnCollisionBegin(const Collision&)
+void bb::ZenChan::OnCollisionBegin(const Collision& collision)
 {
-    // const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
-
-    // if(auto* damageable = collider->GetGameObject()->GetComponent<IDamageable>())
-    //     damageable->OnDamage(this);
+    // Allows ZenChan to damage player
+    const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
+    if(auto* damageable = collider->GetGameObject()->GetComponent<IDamageable>())
+        damageable->OnDamage(this);
 }
 
-void bb::ZenChan::OnDamage(jul::Component* /*instigator*/) { GetGameObject()->Destroy(); }
+jul::Transform* bb::ZenChan::GetCaptureTransform() { return &GetTransform(); }
+
+void bb::ZenChan::OnCapture() {}
+
+void bb::ZenChan::OnRelease() {}
 
 void bb::ZenChan::Update()
 {

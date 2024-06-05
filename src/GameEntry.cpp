@@ -258,6 +258,6 @@ void jul::Julgen::GameStart()
     LoadResources();
     Game::GetInstance().Initialize();
     bb::scenes::BindScenes();
-    SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu);
+    SceneManager::GetInstance().LoadScene((int)scenes::Id::TwoPlayerMode);
     SDL_SetRelativeMouseMode(SDL_TRUE);
 }
