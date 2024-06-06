@@ -75,7 +75,10 @@ void bb::CaptureBubble::ReleaseCapturedTarget()
 void bb::CaptureBubble::OnCollisionPreSolve(const Collision& collision, const b2Manifold*)
 {
     if(m_GettingPopped)
+    {
+        collision.contact->SetEnabled(false);
         return;
+    }
 
     if(not collision.contact->IsEnabled())
         return;

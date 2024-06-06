@@ -2,12 +2,14 @@
 
 #include <Component.h>
 #include <Event.h>
+#include <ICollisionListener.h>
 #include <IDamageable.h>
 #include <InputContext.h>
 
 #include <glm/vec3.hpp>
 #include <memory>
 
+#include "Game.h"
 #include "PlayerState.h"
 
 namespace jul
@@ -22,7 +24,7 @@ namespace bb
 {
     using namespace jul;
 
-    class Player final : public Component, public IDamageable
+    class Player final : public Component, public IDamageable, public ICollisionListener
     {
         friend class PlayerWalkingState;
         friend class PlayerJumpingState;
@@ -60,18 +62,21 @@ namespace bb
         void OnAttackInput(const InputContext& context);
 
     private:
+        [[nodiscard]] bool IsGrounded() const;
+
         void Update() override;
         void FixedUpdate() override;
         void UpdateMoveInput(float input);
-
-        [[nodiscard]] bool IsGrounded() const;
 
         void SetMainState(PlayerState* nextState);
         void SetAttackState(PlayerState* nextState);
 
         void HandleFlip();
 
+        void ObtainPickup(PickupType pickupType);
+
         void OnDamage(jul::Component* instigator) override;
+        void OnCollisionPreSolve(const Collision& collision, const b2Manifold*) override;
 
         std::unique_ptr<PlayerWalkingState> m_WalkingState{ std::make_unique<PlayerWalkingState>() };
         std::unique_ptr<PlayerJumpingState> m_JumpingState{ std::make_unique<PlayerJumpingState>() };

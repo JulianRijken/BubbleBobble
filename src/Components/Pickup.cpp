@@ -19,7 +19,7 @@ bb::Pickup::Pickup(GameObject* parentPtr, PickupType pickupType) :
 
 bb::PickupType bb::Pickup::Pick()
 {
-    throw std::runtime_error("Not implemented pick");
+    GetGameObject()->Destroy();
     return m_PickupType;
 }
 

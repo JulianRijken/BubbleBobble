@@ -3,6 +3,11 @@
 #include "Component.h"
 #include "Game.h"
 
+namespace jul
+{
+    class Rigidbody;
+}
+
 namespace bb
 {
     using namespace jul;

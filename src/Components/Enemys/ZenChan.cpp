@@ -26,21 +26,12 @@ bb::ZenChan::ZenChan(GameObject* parent) :
 void bb::ZenChan::FixedUpdate()
 {
     if(IsGrounded())
-        m_Rigidbody->AddForce({ static_cast<float>(m_WalkingDirection) * MOVE_SPEED, 0 }, Rigidbody::ForceMode::VelocityChange);
+        m_Rigidbody->AddForce({ static_cast<float>(m_WalkingDirection) * MOVE_SPEED, 0 },
+                              Rigidbody::ForceMode::VelocityChange);
     else
-        m_Rigidbody->AddForce({ 0, -FALL_SPEED }, Rigidbody::ForceMode::VelocityChange);
+        m_Rigidbody->AddForce({ 0, -FALL_SPEED }, Rigidbody::ForceMode::Force);
 
     HandleTurning();
-
-    // {
-    //     glm::vec2 from = m_Rigidbody->Positon();
-    //     from.x += m_Collider->GetSettings().size.x / 2.0f + 1.0f;
-
-    //     const float distance = m_Collider->GetSettings().size.y / 2.0f + 0.1f;
-    //     RayCastResult result;
-    //     if(Physics::RayCast(from, { 0, -1 }, distance, result))
-    //         fmt::println("Jump");
-    // }
 }
 
 bool bb::ZenChan::IsGrounded() const
@@ -89,8 +80,12 @@ void bb::ZenChan::HandleTurning()
     }
 }
 
+
 void bb::ZenChan::OnCollisionBegin(const Collision& collision)
 {
+    if(not collision.contact->IsEnabled())
+        return;
+
     // Allows ZenChan to damage player
     const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
     if(auto* damageable = collider->GetGameObject()->GetComponent<IDamageable>())

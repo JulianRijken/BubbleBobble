@@ -12,7 +12,6 @@ bb::OneWayPlatform::OneWayPlatform(GameObject* parentPtr) :
 
 void bb::OneWayPlatform::OnCollisionPreSolve(const Collision& collision, const b2Manifold*)
 {
-
     if(collision.otherFixture->GetBody()->GetType() != b2_dynamicBody)
         return;
 

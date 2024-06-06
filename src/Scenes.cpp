@@ -48,6 +48,7 @@ void bb::scenes::OnePlayerModeScene(Scene& scene)
     prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
     prefabs::SpawnPlayerHUD(scene, 0);
     prefabs::SpawnPlayerHUD(scene, 1);
+    prefabs::SpawnSideWalls(scene);
 
     Game::GetInstance().TransitionToLevel(0, false, false);
 }
@@ -59,6 +60,7 @@ void bb::scenes::TwoPlayerModeScene(Scene& scene)
     prefabs::SpawnPlayer(scene, 1, { 3, 0, 0 });
     prefabs::SpawnPlayerHUD(scene, 0);
     prefabs::SpawnPlayerHUD(scene, 1);
+    prefabs::SpawnSideWalls(scene);
 
     Game::GetInstance().TransitionToLevel(0, false, false);
 }

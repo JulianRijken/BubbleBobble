@@ -23,5 +23,6 @@ namespace bb
         void SpawnPlayerHUD(Scene& scene, int playerIndex);
         void SpawnMainCamera(Scene& scene);
         void SpawnPickup(PickupType fruitType, const glm::vec3& spawnPosition);
+        void SpawnSideWalls(Scene& scene);
     }  // namespace prefabs
 }  // namespace bb

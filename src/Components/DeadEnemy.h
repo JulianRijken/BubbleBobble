@@ -29,9 +29,9 @@ namespace bb
 
         PickupType m_PickupType;
 
-        int m_BouncedTimes{};
-        bool m_ShouldGetDestroyed;
-        double m_TimeSinceLastBounce{};
+        int m_BouncedTimes{ 0 };
+        bool m_ShouldGetDestroyed{ false };
+        double m_TimeSinceLastBounce{ 0 };
     };
 
 }  // namespace bb
