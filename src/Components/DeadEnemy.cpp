@@ -21,6 +21,9 @@ void bb::DeadEnemy::OnCollisionPreSolve(const Collision&, const b2Manifold*)
 
 void bb::DeadEnemy::OnCollisionBegin(const Collision&)
 {
+    if(m_ShouldGetDestroyed)
+        return;
+
     if(GetGameObject()->IsBeingDestroyed())
         return;
 
@@ -31,11 +34,19 @@ void bb::DeadEnemy::OnCollisionBegin(const Collision&)
 
     m_BouncedTimes++;
 
+
     if(m_BouncedTimes > MAX_BOUNCES)
+        m_ShouldGetDestroyed = true;
+}
+
+void bb::DeadEnemy::Update()
+{
+    if(m_ShouldGetDestroyed)
     {
         prefabs::SpawnPickup(m_PickupType, GetTransform().GetWorldPosition());
         GetGameObject()->Destroy();
+        return;
     }
-}
 
-void bb::DeadEnemy::Update() { m_TimeSinceLastBounce += GameTime::GetDeltaTime(); }
+    m_TimeSinceLastBounce += GameTime::GetDeltaTime();
+}

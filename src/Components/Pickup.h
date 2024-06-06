@@ -10,6 +10,8 @@ namespace bb
     class Pickup : public Component
     {
     public:
+        inline static constexpr double LIFE_TIME{ 10 };
+
         Pickup(GameObject* parentPtr, PickupType pickupType);
 
         Pickup(Pickup&&) = delete;
@@ -20,6 +22,10 @@ namespace bb
         PickupType Pick();
 
     private:
+        void FixedUpdate() override;
+
         PickupType m_PickupType{};
+
+        Rigidbody* m_Rigidbody{ nullptr };
     };
 }  // namespace bb

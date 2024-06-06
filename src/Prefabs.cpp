@@ -145,11 +145,11 @@ void bb::prefabs::SpawnPickup(PickupType pickup, const glm::vec3& spawnPosition)
         throw std::runtime_error("Spawning ZenChen with no active level scene");
 
     auto* fruit = activeScene->AddGameObject("Fruit", spawnPosition);
-    fruit->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
-    fruit->AddComponent<Rigidbody>(jul::Rigidbody::Settings{ .mode = jul::Rigidbody::Mode::Static });
+    fruit->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Items"), 0, glm::ivec2{ 25, 0 });
+    fruit->AddComponent<Rigidbody>(jul::Rigidbody::Settings{ .mode = jul::Rigidbody::Mode::Dynamic });
     fruit->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 0.0f, .restitution = 0.1f, .size = {1.90f, 1.90f},
-                .isSensor = true
+        .friction = 1.0f, .restitution = 0.0f, .size = {1.90f, 1.90f},
+                .isSensor = false
     });
     fruit->AddComponent<Pickup>(pickup);
 }

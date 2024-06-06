@@ -272,7 +272,7 @@ void bb::scenes::Level1Scene(Scene& scene)
 {
     auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 
-    for(int i{}; i < 6; ++i)
+    for(int i{}; i < 4; ++i)
     {
         TweenEngine::Start(
             {

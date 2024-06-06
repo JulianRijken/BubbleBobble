@@ -30,6 +30,7 @@ namespace bb
         PickupType m_PickupType;
 
         int m_BouncedTimes{};
+        bool m_ShouldGetDestroyed;
         double m_TimeSinceLastBounce{};
     };
 
