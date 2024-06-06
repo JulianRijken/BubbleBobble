@@ -97,7 +97,6 @@ void bb::Player::OnJumpInput()
 
 void bb::Player::OnAttackInput()
 {
-
     m_ActiveMainState->OnAttackInput(*this);
     m_ActiveAttackState->OnAttackInput(*this);
 }

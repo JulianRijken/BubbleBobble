@@ -42,7 +42,7 @@ void bb::PlayerWalkingState::Update(Player& player)
         player.m_BodyAnimatorPtr->Play(player.m_IdleAnimationName, true);
 
 
-    if(std::abs(player.m_RigidbodyPtr->Velocity().x) > 0.0f)
+    if(std::abs(player.m_RigidbodyPtr->GetVelocity().x) > 0.0f)
     {
         if(player.m_BodyAnimatorPtr->IsActiveAnimation(player.m_IdleAnimationName))
             player.m_BodyAnimatorPtr->Play(player.m_WalkAnimationName, true);
@@ -56,7 +56,7 @@ void bb::PlayerWalkingState::Update(Player& player)
 
 void bb::PlayerWalkingState::FixedUpdate(Player& player)
 {
-    player.m_RigidbodyPtr->AddForce({ player.GetMoveInput().x * MOVE_SPEED, player.m_RigidbodyPtr->Velocity().y },
+    player.m_RigidbodyPtr->AddForce({ player.GetMoveInput().x * MOVE_SPEED, player.m_RigidbodyPtr->GetVelocity().y },
                                     Rigidbody::ForceMode::VelocityChange);
 }
 
@@ -66,7 +66,7 @@ void bb::PlayerWalkingState::OnJumpInput(Player& player)
            player.m_RigidbodyPtr, player.m_ColliderPtr, player.GROUND_CHECK_DISTANCE, player.GROUND_CHECK_LAYERS))
     {
         MessageQueue::Broadcast(MessageType::PlayerJump);
-        player.m_RigidbodyPtr->AddForce({ player.m_RigidbodyPtr->Velocity().x, PlayerJumpingState::JUMP_FORCE },
+        player.m_RigidbodyPtr->AddForce({ player.m_RigidbodyPtr->GetVelocity().x, PlayerJumpingState::JUMP_FORCE },
                                         Rigidbody::ForceMode::VelocityChange);
         player.SetMainState(player.m_JumpingState.get());
         return;
@@ -95,7 +95,7 @@ void bb::PlayerJumpingState::OnEnterState(Player& player)
     m_Falling = true;
     m_HasManualControl = false;
 
-    if(player.m_RigidbodyPtr->Velocity().y > 0)
+    if(player.m_RigidbodyPtr->GetVelocity().y > 0)
     {
         m_Falling = false;
         player.m_BodyAnimatorPtr->Play(player.m_JumpAnimationName);
@@ -131,7 +131,7 @@ void bb::PlayerJumpingState::Update(Player& player)
 
 void bb::PlayerJumpingState::FixedUpdate(Player& player)
 {
-    const glm::vec2 currentVelocity = player.m_RigidbodyPtr->Velocity();
+    const glm::vec2 currentVelocity = player.m_RigidbodyPtr->GetVelocity();
 
     if(m_Falling)
     {

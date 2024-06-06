@@ -302,7 +302,7 @@ void bb::scenes::Level1Scene(Scene& scene)
     }
     else
     {
-        for(int i{}; i < 4; ++i)
+        for(int i{}; i < 5; ++i)
         {
             TweenEngine::Start(
                 {
@@ -316,11 +316,33 @@ void bb::scenes::Level1Scene(Scene& scene)
                 sceneLifeTimeObject);
         }
     }
+
+    TweenEngine::Start(
+        {
+            .delay = 30,
+            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
+            .onEnd = []() { Game::GetInstance().TransitionToLevel(2); },
+        },
+        sceneLifeTimeObject);
 }
 
 void bb::scenes::Level2Scene(Scene& scene)
 {
     auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
+
+    for(int i{}; i < 5; ++i)
+    {
+        TweenEngine::Start(
+            {
+                .delay = static_cast<double>(i) * 0.5f,
+                .duration = 0,
+                .onEnd =
+                    []() {
+                        prefabs::SpawnZenChanWithBehaviour({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
+                    },
+            },
+            sceneLifeTimeObject);
+    }
 
     TweenEngine::Start(
         {
@@ -331,8 +353,25 @@ void bb::scenes::Level2Scene(Scene& scene)
         sceneLifeTimeObject);
 }
 
-void bb::scenes::Level3Scene(Scene&)
+void bb::scenes::Level3Scene(Scene& scene)
 {
+    auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
+
+
+    for(int i{}; i < 5; ++i)
+    {
+        TweenEngine::Start(
+            {
+                .delay = static_cast<double>(i) * 0.5f,
+                .duration = 0,
+                .onEnd =
+                    []() {
+                        prefabs::SpawnZenChanWithBehaviour({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
+                    },
+            },
+            sceneLifeTimeObject);
+    }
+
     prefabs::SpawnZenChanWithBehaviour({ 0, 12, 0 });
     // auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 

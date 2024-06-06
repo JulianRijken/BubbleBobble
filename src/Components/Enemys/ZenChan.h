@@ -19,14 +19,28 @@ namespace bb
     {
     public:
         static constexpr float MOVE_SPEED{ 8.0f };
-        static constexpr float GROUND_CHECK_DISTANCE{ 0.1f };
         static constexpr float FALL_SPEED{ 5.0f };
+        static constexpr float CLIMB_SPEED{ 10.0f };
+        static constexpr float CLIMB_HEIGHT{ 5.0f };
+        static constexpr float CLIMB_MOMENTEM_KEEP{ 0.2f };
+
+        enum class State
+        {
+            Walking,
+            Falling,
+            Jumping
+        };
 
         ZenChan(GameObject* parent);
 
         [[nodiscard]] Rigidbody* GetRigidbody() { return m_Rigidbody; }
 
         [[nodiscard]] BoxCollider* GetBoxCollider() { return m_BoxCollider; }
+
+        [[nodiscard]] State GetState() { return m_State; }
+
+        void OnJumpInput() override;
+        void OnAttackInput() override;
 
     private:
         [[nodiscard]] std::string GetSpriteName() override { return "Enemys"; }
@@ -36,14 +50,14 @@ namespace bb
         [[nodiscard]] Transform* GetCaptureTransform() override;
 
 
-        void OnJumpInput() override;
-        void OnAttackInput() override;
-
         void FixedUpdate() override;
         void Update() override;
+
+        void Jump();
         void OnCollisionBegin(const Collision& collision) override;
         void SpawnDeadVersion() override;
 
+        State m_State{};
 
         Animator* m_Animator{ nullptr };
         Rigidbody* m_Rigidbody{ nullptr };

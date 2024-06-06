@@ -168,7 +168,7 @@ void bb::CaptureBubble::FixedUpdate()
 
 
     // Adds drag
-    m_Rigidbody->AddForce(-m_Rigidbody->Velocity(), Rigidbody::ForceMode::Force);
+    m_Rigidbody->AddForce(-m_Rigidbody->GetVelocity(), Rigidbody::ForceMode::Force);
 
     if(m_FloatingDuration > DURATION_BEFORE_FLOATING)
     {

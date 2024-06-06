@@ -16,7 +16,7 @@ bool bb::Character::IsGrounded(Rigidbody* rigidbodyPtr, BoxCollider* boxCollider
                                uint16_t checkLayers) const
 {
     // If the player is moving up he is for sure not grounded :)
-    if(rigidbodyPtr->Velocity().y > 0)
+    if(rigidbodyPtr->GetVelocity().y > 0)
         return false;
 
     const b2Vec2& lowerBound = rigidbodyPtr->GetBody()->GetFixtureList()[0].GetAABB(0).lowerBound;

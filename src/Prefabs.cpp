@@ -63,7 +63,7 @@ bb::ZenChan* bb::prefabs::SpawnZenChan(const glm::vec3& spawnPosition)
     zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
         .restitution = 0.1f,
-        .size = {                   1.90f,                   1.90f                                          },
+        .size = {                   1.80f,                   1.90f                                          },
         .mask = {.category = layer::ENEMY,
                  .collideWith = layer::PLAYER | layer::TILE | layer::TILE_SEMI_SOLID | layer::CAPTURE_BUBBLE}
     });
@@ -111,7 +111,7 @@ bb::Player* bb::prefabs::SpawnPlayer(jul::Scene& scene, int playerIndex, glm::ve
     playerGameObject->AddComponent<Rigidbody>();
     playerGameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
-        .restitution = 0.2f,
+        .restitution = 0.15f,
         .size = {                    1.80f,                                     1.95f},
         .mask = {.category = layer::PLAYER, .collideWith = layer::ALL ^ layer::PLAYER}
     });

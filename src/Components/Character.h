@@ -33,7 +33,7 @@ namespace bb
         virtual void OnAttackInput() = 0;
         void OnMoveInput(glm::vec2 input);
 
-        [[nodiscard]] bool IsGrounded(Rigidbody* rigidbodyPtr, BoxCollider* boxColliderPtr, float distance = 0.1f,
+        [[nodiscard]] bool IsGrounded(Rigidbody* rigidbodyPtr, BoxCollider* boxColliderPtr, float distance = 0.15f,
                                       uint16_t checkLayers = layer::ALL_TILES) const;
 
     private:

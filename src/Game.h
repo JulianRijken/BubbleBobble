@@ -37,6 +37,7 @@ namespace bb
     enum class InputBind
     {
         ForceReset,
+        ForceTransition,
         TestLivesButton,
         ToggleSound,
         Jump,
@@ -146,6 +147,7 @@ namespace bb
         GameObject* SpawnLevelTiles(int levelIndex);
 
         void OnForceResetGame(const InputContext& context);
+        void OnForceTransitionGame(const InputContext& context);
         void OnIncreaseTimeScale(const InputContext& context);
         void OnDecreaseTimeScale(const InputContext& context);
 

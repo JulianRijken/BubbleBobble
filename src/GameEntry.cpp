@@ -225,6 +225,7 @@ void jul::Julgen::PreInit()
             { SDL_CONTROLLER_BUTTON_START, SDL_CONTROLLER_BUTTON_LEFTSTICK },
             {}
     });
+    Input::AddAction(InputBind::ForceTransition, { { SDL_SCANCODE_P }, { SDL_CONTROLLER_BUTTON_BACK }, {} });
 
 
     InitControls();
@@ -235,6 +236,6 @@ void jul::Julgen::GameStart()
     LoadResources();
     Game::GetInstance().Initialize();
     bb::scenes::BindScenes();
-    SceneManager::GetInstance().LoadScene((int)scenes::Id::TwoPlayerMode);
+    SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu);
     SDL_SetRelativeMouseMode(SDL_TRUE);
 }
