@@ -29,9 +29,13 @@ void bb::Game::Initialize()
 
     ParseMaps("Levels/Levels.jxl");
 
-    Input::Bind((int)InputBind::ForceReset, 0, true, this, &Game::OnForceResetGame);
-    Input::Bind((int)InputBind::DebugIncreaseTimeScale, 0, true, this, &Game::OnIncreaseTimeScale);
-    Input::Bind((int)InputBind::DebugDecreaseTimeScale, 0, true, this, &Game::OnDecreaseTimeScale);
+    Input::Bind((int)InputBind::ForceReset, 0, false, this, &Game::OnForceResetGame);
+    Input::Bind((int)InputBind::DebugIncreaseTimeScale, 0, false, this, &Game::OnIncreaseTimeScale);
+    Input::Bind((int)InputBind::DebugDecreaseTimeScale, 0, false, this, &Game::OnDecreaseTimeScale);
+
+    Input::Bind((int)InputBind::ForceReset, 1, true, this, &Game::OnForceResetGame);
+    Input::Bind((int)InputBind::DebugIncreaseTimeScale, 1, true, this, &Game::OnIncreaseTimeScale);
+    Input::Bind((int)InputBind::DebugDecreaseTimeScale, 1, true, this, &Game::OnDecreaseTimeScale);
 }
 
 void bb::Game::StartGame(int mode)

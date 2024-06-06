@@ -3,6 +3,7 @@
 
 namespace bb
 {
+
     class IBubbleable
     {
     public:
@@ -31,4 +32,5 @@ namespace bb
     protected:
         IBubbleable() = default;
     };
+
 }  // namespace bb

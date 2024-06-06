@@ -28,7 +28,7 @@ void bb::ZenChan::FixedUpdate()
 {
     HandleTurning();
 
-    bool grounded = IsGrounded();
+    const bool grounded = IsGrounded();
 
     if(grounded)
         m_Rigidbody->AddForce({ static_cast<float>(m_WalkingDirection) * MOVE_SPEED, 0 },

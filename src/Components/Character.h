@@ -2,6 +2,8 @@
 
 #include <Component.h>
 
+#include <glm/vec2.hpp>
+
 namespace bb
 {
     class Character : public jul::Component
@@ -9,6 +11,8 @@ namespace bb
     public:
         Character(jul::GameObject* parentPtr);
 
-        // TODO: Character not in use, implemented for later use
+        virtual void OnMoveInput(glm::vec2 direction) = 0;
+        virtual void OnJumpInput() = 0;
+        virtual void OnAttackInput() = 0;
     };
 }

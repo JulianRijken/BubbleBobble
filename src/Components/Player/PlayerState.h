@@ -48,7 +48,6 @@ namespace bb
 
         virtual void OnAttackInput(Player& /*unused*/){};
         virtual void OnJumpInput(Player& /*unused*/){};
-        virtual void OnMoveInput(Player& /*unused*/){};
 
         virtual void OnPlayerDamage(Player& /*unused*/){};
 

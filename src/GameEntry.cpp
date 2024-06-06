@@ -203,12 +203,17 @@ void jul::Julgen::PreInit()
 
 
     Input::AddAction(InputBind::TestLivesButton, { { SDL_SCANCODE_X }, { SDL_CONTROLLER_BUTTON_B }, {} });
-    Input::AddAction(
-        InputBind::Jump,
-        {
-            { SDL_SCANCODE_SPACE, SDL_SCANCODE_W, SDL_SCANCODE_X, SDL_SCANCODE_UP },
-            { SDL_CONTROLLER_BUTTON_B },
-            {}
+    Input::AddAction(InputBind::Jump,
+                     {
+                         { SDL_SCANCODE_SPACE, SDL_SCANCODE_W, SDL_SCANCODE_X, SDL_SCANCODE_UP },
+                         { SDL_CONTROLLER_BUTTON_B, SDL_CONTROLLER_BUTTON_DPAD_UP },
+                         {}
+    });
+    Input::AddAction(InputBind::Attack,
+                     {
+                         { SDL_SCANCODE_E, SDL_SCANCODE_Z },
+                         { SDL_CONTROLLER_BUTTON_A },
+                         {},
     });
     Input::AddAction(InputBind::MoveLeft,
                      {
@@ -223,36 +228,40 @@ void jul::Julgen::PreInit()
                          {}
     });
     Input::AddAction(InputBind::MoveStick, { {}, {}, { SDL_CONTROLLER_AXIS_LEFTX } });
-    Input::AddAction(InputBind::Attack,
-                     {
-                         { SDL_SCANCODE_E, SDL_SCANCODE_Z },
-                         { SDL_CONTROLLER_BUTTON_A },
-                         {},
-    });
+
 
     Input::AddAction(InputBind::ToggleSound, { { SDL_SCANCODE_M }, {}, {} });
-    Input::AddAction(InputBind::UiSelect,
-                     {
-                         { SDL_SCANCODE_E, SDL_SCANCODE_KP_ENTER, SDL_SCANCODE_SPACE },
-                         {},
-                         {}
+    Input::AddAction(
+        InputBind::UiSelect,
+        {
+            { SDL_SCANCODE_E, SDL_SCANCODE_KP_ENTER, SDL_SCANCODE_SPACE },
+            { SDL_CONTROLLER_BUTTON_A },
+            {}
     });
-    Input::AddAction(InputBind::UiDown,
-                     {
-                         { SDL_SCANCODE_DOWN, SDL_SCANCODE_Z, SDL_SCANCODE_S },
-                         {},
-                         {}
+    Input::AddAction(
+        InputBind::UiDown,
+        {
+            { SDL_SCANCODE_DOWN, SDL_SCANCODE_Z, SDL_SCANCODE_S },
+            { SDL_CONTROLLER_BUTTON_DPAD_UP },
+            {}
     });
-    Input::AddAction(InputBind::UiUp,
-                     {
-                         { SDL_SCANCODE_UP, SDL_SCANCODE_X, SDL_SCANCODE_W },
-                         {},
-                         {}
+    Input::AddAction(
+        InputBind::UiUp,
+        {
+            { SDL_SCANCODE_UP, SDL_SCANCODE_X, SDL_SCANCODE_W },
+            { SDL_CONTROLLER_BUTTON_DPAD_DOWN },
+            {}
     });
     Input::AddAction(InputBind::DebugIncreaseTimeScale, { { SDL_SCANCODE_RIGHTBRACKET }, {}, {} });
     Input::AddAction(InputBind::DebugDecreaseTimeScale, { { SDL_SCANCODE_LEFTBRACKET }, {}, {} });
 
-    Input::AddAction(InputBind::ForceReset, { { SDL_SCANCODE_ESCAPE }, {}, {} });
+    Input::AddAction(
+        InputBind::ForceReset,
+        {
+            { SDL_SCANCODE_ESCAPE },
+            { SDL_CONTROLLER_BUTTON_START, SDL_CONTROLLER_BUTTON_LEFTSTICK },
+            {}
+    });
 
 
     InitControls();

@@ -29,22 +29,21 @@ namespace bb
         ZenChan(GameObject* parent);
 
     private:
+        [[nodiscard]] bool IsGrounded() const;
+
+        [[nodiscard]] std::string GetSpriteName() override { return "Enemys"; }
+
+        [[nodiscard]] std::string GetSpriteAnimationName() override { return "zenchan_bubble"; }
+
+        [[nodiscard]] Transform* GetCaptureTransform() override;
+
         void FixedUpdate() override;
         void Update() override;
-
-        bool IsGrounded() const;
-
-        void HandleTurning();
         void OnCollisionBegin(const Collision& collision) override;
-
-        Transform* GetCaptureTransform() override;
         void SpawnDeadVersion() override;
 
+        void HandleTurning();
         void Jump();
-
-        std::string GetSpriteName() override { return "Enemys"; }
-
-        std::string GetSpriteAnimationName() override { return "zenchan_bubble"; }
 
         Animator* m_Animator{ nullptr };
         Rigidbody* m_Rigidbody{ nullptr };

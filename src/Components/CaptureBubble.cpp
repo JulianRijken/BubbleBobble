@@ -8,6 +8,7 @@
 #include <MathExtensions.h>
 #include <ResourceManager.h>
 
+#include "Game.h"
 #include "IBubbleable.h"
 #include "IDamageable.h"
 
@@ -79,6 +80,12 @@ void bb::CaptureBubble::OnCollisionPreSolve(const Collision& collision, const b2
         collision.contact->SetEnabled(false);
         return;
     }
+
+    // Force enemys to igunore bubble when captured
+    if(m_CapturedTarget != nullptr)
+        if(collision.otherFixture->GetFilterData().categoryBits & layer::ENEMY)
+            collision.contact->SetEnabled(false);
+
 
     if(not collision.contact->IsEnabled())
         return;

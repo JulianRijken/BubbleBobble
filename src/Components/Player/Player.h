@@ -54,10 +54,10 @@ namespace bb
         void AddScore();
         void BubbleToPosition(const glm::vec3& position, double duration);
 
+
         void OnMoveLeftInput(const InputContext& context);
         void OnMoveRightInput(const InputContext& context);
         void OnMoveStickInput(const InputContext& context);
-
         void OnJumpInput(const InputContext& context);
         void OnAttackInput(const InputContext& context);
 
