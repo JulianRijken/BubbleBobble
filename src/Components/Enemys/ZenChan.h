@@ -31,6 +31,7 @@ namespace bb
     private:
         void FixedUpdate() override;
         void Update() override;
+
         bool IsGrounded() const;
 
         void HandleTurning();
@@ -38,6 +39,8 @@ namespace bb
 
         Transform* GetCaptureTransform() override;
         void SpawnDeadVersion() override;
+
+        void Jump();
 
         std::string GetSpriteName() override { return "Enemys"; }
 
@@ -48,6 +51,7 @@ namespace bb
         SpriteRenderer* m_SpriteRenderer{ nullptr };
         BoxCollider* m_Collider{ nullptr };
 
+        glm::vec2 m_TargetDirection{};
         int m_WalkingDirection{ 1 };
         float m_TimeSinceLastTurn{};
     };

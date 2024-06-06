@@ -85,6 +85,7 @@ namespace bb
         constexpr uint16_t TILE = Index(6);
         constexpr uint16_t TILE_SEMI_SOLID = Index(7);
         constexpr uint16_t INVIS_WALLS = Index(8);
+        constexpr uint16_t ALL_TILES = TILE | TILE_SEMI_SOLID;
     }  // namespace layer
 
 

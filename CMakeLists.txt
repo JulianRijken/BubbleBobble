@@ -16,7 +16,9 @@ set(BB_SOURCE_FILES
     ${SOURCE_DIR}/IDamageable.h
     ${SOURCE_DIR}/IBubbleable.h
 
-    ${SOURCE_DIR}/Components/CaptureBubble.h         ${SOURCE_DIR}/Components/CaptureBubble.cpp
+    ${SOURCE_DIR}/Components/DeadEnemy.h            ${SOURCE_DIR}/Components/DeadEnemy.cpp
+    ${SOURCE_DIR}/Components/Pickup.h               ${SOURCE_DIR}/Components/Pickup.cpp
+    ${SOURCE_DIR}/Components/CaptureBubble.h        ${SOURCE_DIR}/Components/CaptureBubble.cpp
 
     ${SOURCE_DIR}/Components/Player/Player.h        ${SOURCE_DIR}/Components/Player/Player.cpp
     ${SOURCE_DIR}/Components/Player/PlayerState.h   ${SOURCE_DIR}/Components/Player/PlayerState.cpp
@@ -36,8 +38,6 @@ set(BB_SOURCE_FILES
 # Adds the source files to the executible
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
-    src/Components/DeadEnemy.h src/Components/DeadEnemy.cpp
-    src/Components/Pickup.h src/Components/Pickup.cpp
 )
 
 # Include source directories

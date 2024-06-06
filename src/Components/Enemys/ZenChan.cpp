@@ -9,6 +9,7 @@
 #include <Rigidbody.h>
 
 #include "IDamageable.h"
+#include "Player.h"
 #include "Prefabs.h"
 
 
@@ -25,13 +26,15 @@ bb::ZenChan::ZenChan(GameObject* parent) :
 
 void bb::ZenChan::FixedUpdate()
 {
-    if(IsGrounded())
+    HandleTurning();
+
+    bool grounded = IsGrounded();
+
+    if(grounded)
         m_Rigidbody->AddForce({ static_cast<float>(m_WalkingDirection) * MOVE_SPEED, 0 },
                               Rigidbody::ForceMode::VelocityChange);
     else
-        m_Rigidbody->AddForce({ 0, -FALL_SPEED }, Rigidbody::ForceMode::Force);
-
-    HandleTurning();
+        m_Rigidbody->AddForce({ 0, -FALL_SPEED }, Rigidbody::ForceMode::VelocityChange);
 }
 
 bool bb::ZenChan::IsGrounded() const
@@ -48,11 +51,11 @@ bool bb::ZenChan::IsGrounded() const
     const float castDistance = GROUND_CHECK_DISTANCE + halfSize.y;
     constexpr glm::vec2 castDirection = { 0, -1 };
 
-    if(Physics::RayCast({ center - (halfSize.x), castHeight }, castDirection, castDistance))
+    if(Physics::RayCast({ center - (halfSize.x), castHeight }, castDirection, castDistance, layer::ALL_TILES))
         return true;
-    if(Physics::RayCast({ center, castHeight }, castDirection, castDistance))
+    if(Physics::RayCast({ center, castHeight }, castDirection, castDistance, layer::ALL_TILES))
         return true;
-    if(Physics::RayCast({ center + (halfSize.x), castHeight }, castDirection, castDistance))
+    if(Physics::RayCast({ center + (halfSize.x), castHeight }, castDirection, castDistance, layer::ALL_TILES))
         return true;
 
     return false;
@@ -67,25 +70,15 @@ void bb::ZenChan::HandleTurning()
     const glm::vec2 direction = { static_cast<float>(m_WalkingDirection), 0 };
     const float distance = m_Collider->GetSettings().size.x / 2.0f + 0.1f;
 
-    RayCastResult result;
-    if(Physics::RayCast(from, direction, distance, result))
+    if(Physics::RayCast(from, direction, distance, layer::ALL_TILES))
     {
-        // TODO: Welp I could have implemented layers or tags
-        //       But noooo Julian wanted to get component every physics tick!@
-        if(result.hitCollider->GetGameObject()->GetComponent<IDamageable>())
-            return;
-
         m_WalkingDirection *= -1;
         m_TimeSinceLastTurn = 0.0f;
     }
 }
 
-
 void bb::ZenChan::OnCollisionBegin(const Collision& collision)
 {
-    if(not collision.contact->IsEnabled())
-        return;
-
     // Allows ZenChan to damage player
     const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
     if(auto* damageable = collider->GetGameObject()->GetComponent<IDamageable>())
@@ -96,8 +89,41 @@ jul::Transform* bb::ZenChan::GetCaptureTransform() { return &GetTransform(); }
 
 void bb::ZenChan::SpawnDeadVersion() { prefabs::SpawnZenChanDead(GetTransform().GetWorldPosition()); }
 
+void bb::ZenChan::Jump() {}
+
 void bb::ZenChan::Update()
 {
+    Player* player1 = Game::GetInstance().GetPlayer(0);
+    Player* player2 = Game::GetInstance().GetPlayer(0);
+
+    glm::vec3 targetPosition{};
+    const glm::vec3 currentPositon{ GetTransform().GetWorldPosition() };
+
+    if(player1 != nullptr and player2 != nullptr)
+    {
+        if(glm::distance(player1->GetTransform().GetWorldPosition(), currentPositon) <
+           glm::distance(player2->GetTransform().GetWorldPosition(), currentPositon))
+        {
+            targetPosition = player1->GetTransform().GetWorldPosition();
+        }
+        else
+        {
+            targetPosition = player2->GetTransform().GetWorldPosition();
+        }
+    }
+    else if(player1 != nullptr)
+    {
+        targetPosition = player1->GetTransform().GetWorldPosition();
+    }
+
+    else if(player2 != nullptr)
+    {
+        targetPosition = player2->GetTransform().GetWorldPosition();
+    }
+
+    m_TargetDirection = targetPosition - currentPositon;
+
+
     m_TimeSinceLastTurn += GameTime::GetDeltaTime<float>();
     m_SpriteRenderer->m_FlipX = m_WalkingDirection > 0;
 }

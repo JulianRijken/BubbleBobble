@@ -15,9 +15,6 @@
 #include <TextRenderer.h>
 #include <ZenChan.h>
 
-#include <type_traits>
-#include <utility>
-
 #include "Game.h"
 #include "MathExtensions.h"
 #include "Pickup.h"
@@ -72,18 +69,18 @@ void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
     if(activeScene == nullptr)
         throw std::runtime_error("Spawning Dead ZenChen with no active level scene");
 
-    auto* zenchanGO = activeScene->AddGameObject("Dead ZenChen", spawnPosition);
-    auto* spriteRenderer = zenchanGO->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
-    zenchanGO->AddComponent<Animator>(spriteRenderer, "zenchan_dead");
-    auto* rigidbody = zenchanGO->AddComponent<Rigidbody>();
-    zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
+    auto* deadZenChen = activeScene->AddGameObject("Dead ZenChen", spawnPosition);
+    auto* spriteRenderer = deadZenChen->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    deadZenChen->AddComponent<Animator>(spriteRenderer, "zenchan_dead");
+    auto* rigidbody = deadZenChen->AddComponent<Rigidbody>();
+    deadZenChen->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
         .restitution = 1.0f,
         .size = {                        1.90f,1.90f                                               },
         .mask = {.category = layer::ENEMY_DEAD,
                  .collideWith = layer::TILE | layer::TILE_SEMI_SOLID | layer::INVIS_WALLS}
     });
-    zenchanGO->AddComponent<DeadEnemy>(PickupType::Watermelon);
+    deadZenChen->AddComponent<DeadEnemy>(PickupType::Watermelon);
 
     const double angle = glm::radians(jul::math::RandomValue() > 0.5 ? jul::math::RandomRange(50.0, 70.0) + 90.0
                                                                      : jul::math::RandomRange(50.0, 70.0));
