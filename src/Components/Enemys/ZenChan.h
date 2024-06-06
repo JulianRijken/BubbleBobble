@@ -1,10 +1,7 @@
 #pragma once
-#include <Component.h>
+#include <Character.h>
 #include <IBubbleable.h>
 #include <ICollisionListener.h>
-
-#include "IDamageable.h"
-
 
 namespace jul
 {
@@ -18,15 +15,18 @@ namespace bb
 {
     using namespace jul;
 
-    class ZenChan final : public Component, public ICollisionListener, public IBubbleable
+    class ZenChan final : public Character, public ICollisionListener, public IBubbleable
     {
     public:
         static constexpr float MOVE_SPEED{ 8.0f };
         static constexpr float GROUND_CHECK_DISTANCE{ 0.1f };
         static constexpr float FALL_SPEED{ 5.0f };
-        static constexpr float MIN_TIME_BETWEEN_TURN{ 1.0f };
 
         ZenChan(GameObject* parent);
+
+        [[nodiscard]] Rigidbody* GetRigidbody() { return m_Rigidbody; }
+
+        [[nodiscard]] BoxCollider* GetBoxCollider() { return m_BoxCollider; }
 
     private:
         [[nodiscard]] bool IsGrounded() const;
@@ -37,21 +37,20 @@ namespace bb
 
         [[nodiscard]] Transform* GetCaptureTransform() override;
 
+
+        void OnJumpInput() override;
+        void OnAttackInput() override;
+
         void FixedUpdate() override;
         void Update() override;
         void OnCollisionBegin(const Collision& collision) override;
         void SpawnDeadVersion() override;
 
-        void HandleTurning();
 
         Animator* m_Animator{ nullptr };
         Rigidbody* m_Rigidbody{ nullptr };
         SpriteRenderer* m_SpriteRenderer{ nullptr };
-        BoxCollider* m_Collider{ nullptr };
-
-        glm::vec2 m_TargetDirection{};
-        int m_WalkingDirection{ 1 };
-        float m_TimeSinceLastTurn{};
+        BoxCollider* m_BoxCollider{ nullptr };
     };
 }  // namespace bb
 

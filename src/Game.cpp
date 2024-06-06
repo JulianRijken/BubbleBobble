@@ -38,21 +38,22 @@ void bb::Game::Initialize()
     Input::Bind((int)InputBind::DebugDecreaseTimeScale, 1, true, this, &Game::OnDecreaseTimeScale);
 }
 
-void bb::Game::StartGame(int mode)
+void bb::Game::StartGame(GameMode mode)
 {
+    m_ActiveGameMode = mode;
     m_ActiveLevelIndex = 0;
     m_ActiveLevelTilesPtr = nullptr;
     m_MainCameraPtr = nullptr;
 
     switch(mode)
     {
-        case 0:
+        case GameMode::P1:
             SceneManager::GetInstance().LoadScene((int)scenes::Id::OnePlayerMode);
             break;
-        case 1:
+        case GameMode::P2:
             SceneManager::GetInstance().LoadScene((int)scenes::Id::TwoPlayerMode);
             break;
-        case 2:
+        case GameMode::VS:
             SceneManager::GetInstance().LoadScene((int)scenes::Id::VersusMode);
             break;
     }
@@ -246,7 +247,7 @@ void bb::Game::OnMessage(const Message& message)
     {
         case MessageType::GameStart:
         {
-            int mode = std::any_cast<int>(message.arguments[0]);
+            GameMode mode = std::any_cast<GameMode>(message.arguments[0]);
             StartGame(mode);
         }
             break;

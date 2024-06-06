@@ -76,7 +76,6 @@ void bb::scenes::TwoPlayerModeScene(Scene& scene)
 
 void bb::scenes::VersusModeScene(Scene& scene)
 {
-
     prefabs::SpawnMainCamera(scene);
 
     auto* player = prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
@@ -296,24 +295,31 @@ void bb::scenes::Level1Scene(Scene& scene)
 {
     auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 
-    for(int i{}; i < 4; ++i)
+    if(Game::GetInstance().GetActiveGameMode() == GameMode::VS)
     {
-        TweenEngine::Start(
-            {
-                .delay = static_cast<double>(i) * 0.5f,
-                .duration = 0,
-                .onEnd =
-                    []() {
-                        prefabs::SpawnZenChan({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
-                    },
-            },
-            sceneLifeTimeObject);
+        auto* zenChan = prefabs::SpawnZenChan({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
+        zenChan->GetGameObject()->AddComponent<CharacterInput>(false, 1);
+    }
+    else
+    {
+        for(int i{}; i < 4; ++i)
+        {
+            TweenEngine::Start(
+                {
+                    .delay = static_cast<double>(i) * 0.5f,
+                    .duration = 0,
+                    .onEnd =
+                        []() {
+                            prefabs::SpawnZenChanWithBehaviour({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
+                        },
+                },
+                sceneLifeTimeObject);
+        }
     }
 }
 
 void bb::scenes::Level2Scene(Scene& scene)
 {
-
     auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 
     TweenEngine::Start(
@@ -327,7 +333,7 @@ void bb::scenes::Level2Scene(Scene& scene)
 
 void bb::scenes::Level3Scene(Scene&)
 {
-    prefabs::SpawnZenChan({ 0, 12, 0 });
+    prefabs::SpawnZenChanWithBehaviour({ 0, 12, 0 });
     // auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 
     // TweenEngine::Start(

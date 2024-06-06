@@ -148,7 +148,7 @@ void bb::MainMenu::LoadSelectedMode() const
 {
     if(m_SelectedItem == 0 or m_SelectedItem == 1 or m_SelectedItem == 2)
     {
-        MessageQueue::Broadcast(MessageType::GameStart, { m_SelectedItem });
+        MessageQueue::Broadcast(MessageType::GameStart, { static_cast<GameMode>(m_SelectedItem) });
         return;
     }
 

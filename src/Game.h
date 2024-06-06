@@ -66,6 +66,14 @@ namespace bb
         Solid
     };
 
+    enum class GameMode
+    {
+        P1,
+        P2,
+        VS
+    };
+
+
     enum class PickupType
     {
         Fries,
@@ -123,10 +131,13 @@ namespace bb
 
         [[nodiscard]] Event<bool, int>& GetLevelTransitionChangeEvent() { return m_LevelTransitionChangeEvent; }
 
+        [[nodiscard]] GameMode GetActiveGameMode() { return m_ActiveGameMode; }
+
+
         void Initialize();
 
         // Starts the actual game with a mode
-        void StartGame(int mode);
+        void StartGame(GameMode mode);
 
         void TransitionToLevel(int levelIndex, bool delayLoading = true, bool resetPlayers = true);
         void SetPlayer(int playerIndex, Player* player);
@@ -148,6 +159,8 @@ namespace bb
         std::array<Player*, 2> m_Players{ nullptr, nullptr };
         std::vector<Map> m_Maps{};
 
+
+        GameMode m_ActiveGameMode{};
         int m_ActiveLevelIndex{ 0 };
 
         Camera* m_MainCameraPtr{ nullptr };

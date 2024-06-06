@@ -14,6 +14,7 @@
 #include <SpriteRenderer.h>
 #include <TextRenderer.h>
 #include <ZenChan.h>
+#include <ZenChanBehaviour.h>
 
 #include "Game.h"
 #include "MathExtensions.h"
@@ -42,8 +43,14 @@ void bb::prefabs::SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 v
     bubble->AddComponent<CaptureBubble>(glm::vec3{ velocity.x, velocity.y, 0 });
 }
 
+bb::ZenChan* bb::prefabs::SpawnZenChanWithBehaviour(const glm::vec3& spawnPosition)
+{
+    ZenChan* zenChanPtr = SpawnZenChan(spawnPosition);
+    zenChanPtr->GetGameObject()->AddComponent<ZenChanBehaviour>(zenChanPtr);
+    return zenChanPtr;
+}
 
-void bb::prefabs::SpawnZenChan(const glm::vec3& spawnPosition)
+bb::ZenChan* bb::prefabs::SpawnZenChan(const glm::vec3& spawnPosition)
 {
     Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
     if(activeScene == nullptr)
@@ -60,7 +67,7 @@ void bb::prefabs::SpawnZenChan(const glm::vec3& spawnPosition)
         .mask = {.category = layer::ENEMY,
                  .collideWith = layer::PLAYER | layer::TILE | layer::TILE_SEMI_SOLID | layer::CAPTURE_BUBBLE}
     });
-    zenchanGO->AddComponent<ZenChan>();
+    return zenchanGO->AddComponent<ZenChan>();
 }
 
 void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
