@@ -29,8 +29,6 @@ namespace bb
         [[nodiscard]] BoxCollider* GetBoxCollider() { return m_BoxCollider; }
 
     private:
-        [[nodiscard]] bool IsGrounded() const;
-
         [[nodiscard]] std::string GetSpriteName() override { return "Enemys"; }
 
         [[nodiscard]] std::string GetSpriteAnimationName() override { return "zenchan_bubble"; }

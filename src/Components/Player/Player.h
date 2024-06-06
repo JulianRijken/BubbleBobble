@@ -34,6 +34,8 @@ namespace bb
 
     public:
         static constexpr float GROUND_CHECK_DISTANCE{ 0.5f };
+        static constexpr uint16_t GROUND_CHECK_LAYERS{ layer::ALL_TILES | layer::CAPTURE_BUBBLE };
+
 
         Player(GameObject* parentPtr, int playerIndex, SpriteRenderer* bodySpriteRenderer,
                SpriteRenderer* bubbleSpriteRenderer, Animator* bodyAnimator, Animator* bubbleAnimator);
@@ -59,7 +61,6 @@ namespace bb
 
 
     private:
-        [[nodiscard]] bool IsGrounded() const;
 
         void Update() override;
         void FixedUpdate() override;

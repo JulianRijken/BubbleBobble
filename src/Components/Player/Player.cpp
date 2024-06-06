@@ -102,31 +102,6 @@ void bb::Player::OnAttackInput()
     m_ActiveAttackState->OnAttackInput(*this);
 }
 
-
-bool bb::Player::IsGrounded() const
-{
-    // If the player is moving up he is for sure not grounded :)
-    if(m_RigidbodyPtr->Velocity().y > 0)
-        return false;
-
-    const b2Vec2& lowerBound = m_RigidbodyPtr->GetBody()->GetFixtureList()[0].GetAABB(0).lowerBound;
-    const float center = m_RigidbodyPtr->Position().x;
-
-    const glm::vec2 halfSize = m_ColliderPtr->GetSettings().size / 2.0f;
-    const float castHeight = lowerBound.y + halfSize.y;
-    const float castDistance = GROUND_CHECK_DISTANCE + halfSize.y;
-    constexpr glm::vec2 castDirection = { 0, -1 };
-
-    if(Physics::RayCast({ center - (halfSize.x), castHeight }, castDirection, castDistance))
-        return true;
-    if(Physics::RayCast({ center, castHeight }, castDirection, castDistance))
-        return true;
-    if(Physics::RayCast({ center + (halfSize.x), castHeight }, castDirection, castDistance))
-        return true;
-
-    return false;
-}
-
 void bb::Player::SetMainState(PlayerState* nextState)
 {
     m_ActiveMainState->OnExitState(*this);
@@ -150,7 +125,7 @@ void bb::Player::HandleFlip()
         m_BodySpriteRendererPtr->m_FlipX = false;
 }
 
-void bb::Player::ObtainPickup(PickupType) { fmt::println("Pickup"); }
+void bb::Player::ObtainPickup(PickupType /*unused*/) { fmt::println("Pickup"); }
 
 
 void bb::Player::Update()

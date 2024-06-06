@@ -29,7 +29,8 @@ void bb::PlayerWalkingState::Update(Player& player)
 {
     m_TimeWalking += GameTime::GetDeltaTime<float>();
 
-    if(not player.IsGrounded() and m_TimeWalking > MIN_TIME_WALKING_BEFORE_GROUND_CHECK)
+    if(not player.IsGrounded(player.m_RigidbodyPtr, player.m_ColliderPtr) and
+       m_TimeWalking > MIN_TIME_WALKING_BEFORE_GROUND_CHECK)
     {
         player.SetMainState(player.m_JumpingState.get());
         return;
@@ -61,11 +62,12 @@ void bb::PlayerWalkingState::FixedUpdate(Player& player)
 
 void bb::PlayerWalkingState::OnJumpInput(Player& player)
 {
-    if(player.IsGrounded())
+    if(player.IsGrounded(
+           player.m_RigidbodyPtr, player.m_ColliderPtr, player.GROUND_CHECK_DISTANCE, player.GROUND_CHECK_LAYERS))
     {
         MessageQueue::Broadcast(MessageType::PlayerJump);
         player.m_RigidbodyPtr->AddForce({ player.m_RigidbodyPtr->Velocity().x, PlayerJumpingState::JUMP_FORCE },
-                                     Rigidbody::ForceMode::VelocityChange);
+                                        Rigidbody::ForceMode::VelocityChange);
         player.SetMainState(player.m_JumpingState.get());
         return;
     }
@@ -107,7 +109,8 @@ void bb::PlayerJumpingState::OnEnterState(Player& player)
 void bb::PlayerJumpingState::Update(Player& player)
 {
     // Go out of state
-    if(player.IsGrounded())
+    if(player.IsGrounded(
+           player.m_RigidbodyPtr, player.m_ColliderPtr, player.GROUND_CHECK_DISTANCE, player.GROUND_CHECK_LAYERS))
     {
         player.SetMainState(player.m_WalkingState.get());
         return;

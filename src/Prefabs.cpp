@@ -111,7 +111,7 @@ bb::Player* bb::prefabs::SpawnPlayer(jul::Scene& scene, int playerIndex, glm::ve
     playerGameObject->AddComponent<Rigidbody>();
     playerGameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
-        .restitution = 0.1f,
+        .restitution = 0.2f,
         .size = {                    1.80f,                                     1.95f},
         .mask = {.category = layer::PLAYER, .collideWith = layer::ALL ^ layer::PLAYER}
     });

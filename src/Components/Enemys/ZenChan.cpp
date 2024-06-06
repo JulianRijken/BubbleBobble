@@ -28,7 +28,7 @@ void bb::ZenChan::FixedUpdate()
     // TODO: Think about behaviour maybe updating a frame later
     // HandleTurning();
 
-    if(IsGrounded())
+    if(IsGrounded(m_Rigidbody, m_BoxCollider))
         m_Rigidbody->AddForce({ static_cast<float>(GetMoveInput().x) * MOVE_SPEED, 0 },
                               Rigidbody::ForceMode::VelocityChange);
     else
@@ -41,30 +41,6 @@ void bb::ZenChan::Update()
         m_SpriteRenderer->m_FlipX = false;
     else if(GetMoveInput().x > 0)
         m_SpriteRenderer->m_FlipX = true;
-}
-
-bool bb::ZenChan::IsGrounded() const
-{
-    // If the player is moving up he is for sure not grounded :)
-    if(m_Rigidbody->Velocity().y > 0)
-        return false;
-
-    const b2Vec2& lowerBound = m_Rigidbody->GetBody()->GetFixtureList()[0].GetAABB(0).lowerBound;
-    const float center = m_Rigidbody->Position().x;
-
-    const glm::vec2 halfSize = m_BoxCollider->GetSettings().size / 2.0f;
-    const float castHeight = lowerBound.y + halfSize.y;
-    const float castDistance = GROUND_CHECK_DISTANCE + halfSize.y;
-    constexpr glm::vec2 castDirection = { 0, -1 };
-
-    if(Physics::RayCast({ center - (halfSize.x), castHeight }, castDirection, castDistance, layer::ALL_TILES))
-        return true;
-    if(Physics::RayCast({ center, castHeight }, castDirection, castDistance, layer::ALL_TILES))
-        return true;
-    if(Physics::RayCast({ center + (halfSize.x), castHeight }, castDirection, castDistance, layer::ALL_TILES))
-        return true;
-
-    return false;
 }
 
 

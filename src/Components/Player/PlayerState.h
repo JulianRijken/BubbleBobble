@@ -77,6 +77,7 @@ namespace bb
         static constexpr float MOVE_SPEED{ 8.0f };
         static constexpr float MIN_TIME_WALKING_BEFORE_GROUND_CHECK{ 0.5f };
 
+
         void OnEnterState(Player& player) override;
         void Update(Player& player) override;
         void FixedUpdate(Player& player) override;
