@@ -90,8 +90,9 @@ jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
             tile->AddComponent<Rigidbody>(Rigidbody::Settings{ .mode = Rigidbody::Mode::Static });
             tile->AddComponent<OneWayPlatform>();
             tile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                .size{1.0f,  1.0f},
-                .center{0.5f, -0.5f}
+                .size{ 1.0f, 1.0f },
+                .center{ 0.5f, -0.5f },
+                .mask = { .category = layer::TILE_SEMI_SOLID }
             });
         }
 
@@ -100,8 +101,9 @@ jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
             tile->AddComponent<SpriteRenderer>(
                 ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, levelIndex });
             tile->AddComponent<BoxCollider>(BoxCollider::Settings{
-                .size{1.0f,  1.0f},
-                .center{0.5f, -0.5f}
+                .size{ 1.0f, 1.0f },
+                .center{ 0.5f, -0.5f },
+                .mask = { .category = layer::TILE }
             });
         }
 
@@ -212,7 +214,7 @@ void bb::Game::OnIncreaseTimeScale(const InputContext& context)
 
     const double currentTimeScale = GameTime::GetTimeScale();
     if(GameTime::GetTimeScale() >= 1)
-        GameTime::SetTimeScale(std::round(currentTimeScale + 1));
+        GameTime::SetTimeScale(std::round(currentTimeScale + 3));
     else
         GameTime::SetTimeScale(currentTimeScale + 0.1);
 
@@ -226,7 +228,7 @@ void bb::Game::OnDecreaseTimeScale(const InputContext& context)
 
     const double currentTimeScale = GameTime::GetTimeScale();
     if(GameTime::GetTimeScale() > 1)
-        GameTime::SetTimeScale(std::round(currentTimeScale - 1));
+        GameTime::SetTimeScale(std::round(currentTimeScale - 3));
     else
         GameTime::SetTimeScale(currentTimeScale - 0.1);
 

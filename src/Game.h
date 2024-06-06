@@ -1,12 +1,14 @@
 #pragma once
+#include <Event.h>
+#include <InputContext.h>
 #include <Locator.h>
 #include <MessageQueue.h>
-#include <Player.h>
 #include <Scene.h>
 #include <Singleton.h>
 #include <Sound.h>
 
 #include <array>
+#include <glm/vec2.hpp>
 
 #include "Scenes.h"
 
@@ -19,6 +21,8 @@ namespace jul
 
 namespace bb
 {
+
+    class Player;
     using namespace jul;
 
 
@@ -62,11 +66,27 @@ namespace bb
         Solid
     };
 
-    enum class FruitType
+    enum class PickupType
     {
         Fries,
         Watermelon
     };
+
+    namespace layer
+    {
+        constexpr uint16_t Index(int index) { return 1 << index; }
+
+        constexpr uint16_t ALL = 0xFFFF;
+        constexpr uint16_t ENEMY = Index(1);
+        constexpr uint16_t ENEMY_DEAD = Index(2);
+        constexpr uint16_t PICKUP = Index(3);
+        constexpr uint16_t PLAYER = Index(4);
+        constexpr uint16_t CAPTURE_BUBBLE = Index(5);
+        constexpr uint16_t TILE = Index(6);
+        constexpr uint16_t TILE_SEMI_SOLID = Index(7);
+        constexpr uint16_t INVIS_WALLS = Index(8);
+    }  // namespace layer
+
 
     struct Block
     {

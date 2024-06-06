@@ -56,6 +56,8 @@ void LoadResources()
 
     ResourceManager::LoadSprite("DebugCube", "DebugCube.png", 4, { 0, 0 });
 
+    ResourceManager::LoadSprite("Items", "Items.png", 8, { 0.5f, 0.5f }, 4, 36);
+
     ResourceManager::LoadSprite("AttackBubble",
                                 "AttackBubble.png",
                                 8,

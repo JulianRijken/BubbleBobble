@@ -37,6 +37,7 @@ set(BB_SOURCE_FILES
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
     src/Components/DeadEnemy.h src/Components/DeadEnemy.cpp
+    src/Components/Pickup.h src/Components/Pickup.cpp
 )
 
 # Include source directories

@@ -15,8 +15,12 @@
 #include <TextRenderer.h>
 #include <ZenChan.h>
 
+#include <type_traits>
+#include <utility>
+
 #include "Game.h"
 #include "MathExtensions.h"
+#include "Pickup.h"
 #include "Player.h"
 #include "PlayerHUD.h"
 
@@ -33,7 +37,9 @@ void bb::prefabs::SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 v
     bubble->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.5f,
         .restitution = 0.8f,
-        .size = {1.5, 1.5f},
+        .size = {                              1.5,1.5f                                                   },
+        .mask = {.category = layer::CAPTURE_BUBBLE,
+                 .collideWith = layer::CAPTURE_BUBBLE | layer::PLAYER | layer::ENEMY | layer::TILE}
     });
 
     bubble->AddComponent<CaptureBubble>(glm::vec3{ velocity.x, velocity.y, 0 });
@@ -53,7 +59,9 @@ void bb::prefabs::SpawnZenChan(const glm::vec3& spawnPosition)
     zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
         .restitution = 0.1f,
-        .size = {1.90f, 1.90f},
+        .size = {                   1.90f,                   1.90f                                          },
+        .mask = {.category = layer::ENEMY,
+                 .collideWith = layer::PLAYER | layer::TILE | layer::TILE_SEMI_SOLID | layer::CAPTURE_BUBBLE}
     });
     zenchanGO->AddComponent<ZenChan>();
 }
@@ -69,11 +77,13 @@ void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
     zenchanGO->AddComponent<Animator>(spriteRenderer, "zenchan_dead");
     auto* rigidbody = zenchanGO->AddComponent<Rigidbody>();
     zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
-        .friction = 1.0f,
-        .restitution = 1.2f,
-        .size = {1.90f, 1.90f},
+        .friction = 0.0f,
+        .restitution = 1.0f,
+        .size = {                        1.90f,1.90f                                               },
+        .mask = {.category = layer::ENEMY_DEAD,
+                 .collideWith = layer::TILE | layer::TILE_SEMI_SOLID | layer::INVIS_WALLS}
     });
-    zenchanGO->AddComponent<DeadEnemy>(FruitType::Watermelon);
+    zenchanGO->AddComponent<DeadEnemy>(PickupType::Watermelon);
 
     const double angle = glm::radians(jul::math::RandomValue() > 0.5 ? jul::math::RandomRange(50.0, 70.0) + 90.0
                                                                      : jul::math::RandomRange(50.0, 70.0));
@@ -99,7 +109,8 @@ bb::Player* bb::prefabs::SpawnPlayer(jul::Scene& scene, int playerIndex, glm::ve
     playerGameObject->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
         .restitution = 0.1f,
-        .size = {1.80f, 1.95f},
+        .size = {                    1.80f,                                     1.95f},
+        .mask = {.category = layer::PLAYER, .collideWith = layer::ALL ^ layer::PLAYER}
     });
 
     return playerGameObject->AddComponent<Player>(playerIndex, bodySprite, bubbleSprite, bodyAnimator, bubbleAnimator);
@@ -137,4 +148,47 @@ void bb::prefabs::SpawnMainCamera(jul::Scene& scene)
     Game::GetInstance().SetMainCamera(cameraPtr);
 }
 
-void bb::prefabs::SpawnFruit(FruitType) { fmt::println("SpawnFruit"); }
+void bb::prefabs::SpawnPickup(PickupType pickup, const glm::vec3& spawnPosition)
+{
+    Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
+    if(activeScene == nullptr)
+        throw std::runtime_error("Spawning ZenChen with no active level scene");
+
+    auto* fruit = activeScene->AddGameObject("Fruit", spawnPosition);
+    fruit->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Items"), 0, glm::ivec2{ 25, 0 });
+    fruit->AddComponent<Rigidbody>(jul::Rigidbody::Settings{ .mode = jul::Rigidbody::Mode::Dynamic });
+    fruit->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f,
+        .restitution = 1.0f,
+        .size = {                    1.90f,              1.90f                                           },
+        .mask = {.category = layer::PICKUP,
+                 .collideWith = layer::TILE | layer::TILE_SEMI_SOLID | layer::PLAYER | layer::INVIS_WALLS},
+        .isSensor = false,
+    });
+    fruit->AddComponent<Pickup>(pickup);
+}
+
+void bb::prefabs::SpawnSideWalls(Scene& scene)
+{
+    auto* leftWall = scene.AddGameObject("Walls", { -Game::GRID_SIZE_X / 2 + 1, 0, 0 });
+    leftWall->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f,
+        .restitution = 0.1f,
+        .size = { 1.0, 10000 },
+        .center{ 0.5f, -0.5 },
+        .mask = {
+                 .category = layer::INVIS_WALLS,
+                 }
+    });
+
+    auto* rightWall = scene.AddGameObject("Walls", { Game::GRID_SIZE_X / 2 - 2, 0, 0 });
+    rightWall->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f,
+        .restitution = 0.1f,
+        .size = { 1.0, 10000 },
+        .center{ 0.5f, -0.5 },
+        .mask = {
+                 .category = layer::INVIS_WALLS,
+                 }
+    });
+}

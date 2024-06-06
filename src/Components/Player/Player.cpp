@@ -9,6 +9,7 @@
 #include "CaptureBubble.h"
 #include "Game.h"
 #include "GameObject.h"
+#include "Pickup.h"
 
 bb::Player::Player(GameObject* parentPtr, int playerIndex, SpriteRenderer* bodySpriteRenderer,
                    SpriteRenderer* bubbleSpriteRenderer, Animator* bodyAnimator, Animator* bubbleAnimator) :
@@ -138,6 +139,8 @@ void bb::Player::HandleFlip()
         m_BodySpriteRendererPtr->m_FlipX = false;
 }
 
+void bb::Player::ObtainPickup(PickupType) { fmt::println("Pickup"); }
+
 
 // TODO: Pfff this sucks and should be fixed using the input system just like the controllers
 void bb::Player::OnMoveLeftInput(const InputContext& context)
@@ -196,4 +199,14 @@ void bb::Player::OnDamage(Component* instigator)
 
     m_ActiveAttackState->OnPlayerDamage(*this);
     m_ActiveMainState->OnPlayerDamage(*this);
+}
+
+void bb::Player::OnCollisionPreSolve(const Collision& collision, const b2Manifold*)
+{
+    const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
+    if(auto* pickup = collider->GetGameObject()->GetComponent<Pickup>())
+    {
+        ObtainPickup(pickup->Pick());
+        collision.contact->SetEnabled(false);
+    }
 }
