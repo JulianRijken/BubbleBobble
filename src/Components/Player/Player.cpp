@@ -13,7 +13,7 @@
 
 bb::Player::Player(GameObject* parentPtr, int playerIndex, SpriteRenderer* bodySpriteRenderer,
                    SpriteRenderer* bubbleSpriteRenderer, Animator* bodyAnimator, Animator* bubbleAnimator) :
-    Component(parentPtr, "PlayerController"),
+    Character(parentPtr, "PlayerController"),
     m_PlayerIndex(playerIndex),
     m_BodyAnimatorPtr(bodyAnimator),
     m_BubbleAnimatorPtr(bubbleAnimator),
@@ -89,8 +89,19 @@ void bb::Player::BubbleToPosition(const glm::vec3& position, double duration)
         this);
 }
 
+void bb::Player::OnJumpInput()
+{
+    m_ActiveMainState->OnJumpInput(*this);
+    m_ActiveAttackState->OnJumpInput(*this);
+}
 
-void bb::Player::UpdateMoveInput(float input) { m_MovementInput = input; }
+void bb::Player::OnAttackInput()
+{
+
+    m_ActiveMainState->OnAttackInput(*this);
+    m_ActiveAttackState->OnAttackInput(*this);
+}
+
 
 bool bb::Player::IsGrounded() const
 {
@@ -133,51 +144,14 @@ void bb::Player::SetAttackState(PlayerState* nextState)
 void bb::Player::HandleFlip()
 {
     // Not just setting it with the if as 0 should not change
-    if(m_MovementInput < 0)
+    if(GetMoveInput().x < 0)
         m_BodySpriteRendererPtr->m_FlipX = true;
-    else if(m_MovementInput > 0)
+    else if(GetMoveInput().x > 0)
         m_BodySpriteRendererPtr->m_FlipX = false;
 }
 
 void bb::Player::ObtainPickup(PickupType) { fmt::println("Pickup"); }
 
-
-// TODO: Pfff this sucks and should be fixed using the input system just like the controllers
-void bb::Player::OnMoveLeftInput(const InputContext& context)
-{
-    if(context.state == ButtonState::Down)
-        UpdateMoveInput(-1.0f);
-    else if(m_MovementInput < 0)
-        UpdateMoveInput(0.0f);
-}
-
-void bb::Player::OnMoveRightInput(const InputContext& context)
-{
-    if(context.state == ButtonState::Down)
-        UpdateMoveInput(1.0f);
-    else if(m_MovementInput > 0)
-        UpdateMoveInput(0.0f);
-}
-
-void bb::Player::OnMoveStickInput(const InputContext& context) { UpdateMoveInput(std::get<float>(context.value.value())); }
-
-void bb::Player::OnJumpInput(const InputContext& context)
-{
-    if(context.state != ButtonState::Down)
-        return;
-
-    m_ActiveMainState->OnJumpInput(*this);
-    m_ActiveAttackState->OnJumpInput(*this);
-}
-
-void bb::Player::OnAttackInput(const InputContext& context)
-{
-    if(context.state != ButtonState::Down)
-        return;
-
-    m_ActiveMainState->OnAttackInput(*this);
-    m_ActiveAttackState->OnAttackInput(*this);
-}
 
 void bb::Player::Update()
 {

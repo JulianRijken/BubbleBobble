@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Component.h>
+#include <Character.h>
 #include <Event.h>
 #include <ICollisionListener.h>
 #include <IDamageable.h>
@@ -24,7 +24,7 @@ namespace bb
 {
     using namespace jul;
 
-    class Player final : public Component, public IDamageable, public ICollisionListener
+    class Player final : public Character, public IDamageable, public ICollisionListener
     {
         friend class PlayerWalkingState;
         friend class PlayerJumpingState;
@@ -54,12 +54,9 @@ namespace bb
         void AddScore();
         void BubbleToPosition(const glm::vec3& position, double duration);
 
+        void OnJumpInput() override;
+        void OnAttackInput() override;
 
-        void OnMoveLeftInput(const InputContext& context);
-        void OnMoveRightInput(const InputContext& context);
-        void OnMoveStickInput(const InputContext& context);
-        void OnJumpInput(const InputContext& context);
-        void OnAttackInput(const InputContext& context);
 
     private:
         [[nodiscard]] bool IsGrounded() const;
@@ -76,7 +73,7 @@ namespace bb
         void ObtainPickup(PickupType pickupType);
 
         void OnDamage(jul::Component* instigator) override;
-        void OnCollisionPreSolve(const Collision& collision, const b2Manifold*) override;
+        void OnCollisionPreSolve(const Collision& collision, const b2Manifold* /*unused*/) override;
 
         std::unique_ptr<PlayerWalkingState> m_WalkingState{ std::make_unique<PlayerWalkingState>() };
         std::unique_ptr<PlayerJumpingState> m_JumpingState{ std::make_unique<PlayerJumpingState>() };
@@ -94,8 +91,6 @@ namespace bb
         int m_Lives{ 3 };
         int m_Score{0};
         int m_PlayerIndex{ 0 };
-
-        float m_MovementInput{};
 
         std::string m_DeathAnimationName{ "Death" };
         std::string m_IdleAnimationName{"Idle"};

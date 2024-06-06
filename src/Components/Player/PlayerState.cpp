@@ -55,8 +55,8 @@ void bb::PlayerWalkingState::Update(Player& player)
 
 void bb::PlayerWalkingState::FixedUpdate(Player& player)
 {
-    player.m_RigidbodyPtr->AddForce({ player.m_MovementInput * MOVE_SPEED, player.m_RigidbodyPtr->Velocity().y },
-                                 Rigidbody::ForceMode::VelocityChange);
+    player.m_RigidbodyPtr->AddForce({ player.GetMoveInput().x * MOVE_SPEED, player.m_RigidbodyPtr->Velocity().y },
+                                    Rigidbody::ForceMode::VelocityChange);
 }
 
 void bb::PlayerWalkingState::OnJumpInput(Player& player)
@@ -132,8 +132,8 @@ void bb::PlayerJumpingState::FixedUpdate(Player& player)
 
     if(m_Falling)
     {
-        player.m_RigidbodyPtr->AddForce({ player.m_MovementInput * MOVE_SPEED, -FALL_SPEED },
-                                     Rigidbody::ForceMode::VelocityChange);
+        player.m_RigidbodyPtr->AddForce({ player.GetMoveInput().x * MOVE_SPEED, -FALL_SPEED },
+                                        Rigidbody::ForceMode::VelocityChange);
     }
     else
     {
@@ -143,8 +143,8 @@ void bb::PlayerJumpingState::FixedUpdate(Player& player)
 
         if(not m_HasManualControl)
         {
-            if((currentVelocity.x > 0 and player.m_MovementInput < 0) or
-               (currentVelocity.x < 0 and player.m_MovementInput > 0) or currentVelocity.x == 0)
+            if((currentVelocity.x > 0 and player.GetMoveInput().x < 0) or
+               (currentVelocity.x < 0 and player.GetMoveInput().x > 0) or currentVelocity.x == 0)
             {
                 m_HasManualControl = true;
             }
@@ -153,8 +153,8 @@ void bb::PlayerJumpingState::FixedUpdate(Player& player)
 
         if(m_HasManualControl)
         {
-            player.m_RigidbodyPtr->AddForce({ player.m_MovementInput * MOVE_SPEED, currentVelocity.y },
-                                         Rigidbody::ForceMode::VelocityChange);
+            player.m_RigidbodyPtr->AddForce({ player.GetMoveInput().x * MOVE_SPEED, currentVelocity.y },
+                                            Rigidbody::ForceMode::VelocityChange);
         }
     }
 }

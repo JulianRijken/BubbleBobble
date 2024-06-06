@@ -89,7 +89,6 @@ void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
     rigidbody->AddForce(glm::vec3{ velocity.x, velocity.y, 0 }, jul::Rigidbody::ForceMode::Impulse);
 }
 
-
 bb::Player* bb::prefabs::SpawnPlayer(jul::Scene& scene, int playerIndex, glm::vec3 spawnLocation)
 {
     if(Game::GetInstance().GetPlayer(playerIndex) != nullptr)

@@ -89,7 +89,6 @@ jul::Transform* bb::ZenChan::GetCaptureTransform() { return &GetTransform(); }
 
 void bb::ZenChan::SpawnDeadVersion() { prefabs::SpawnZenChanDead(GetTransform().GetWorldPosition()); }
 
-void bb::ZenChan::Jump() {}
 
 void bb::ZenChan::Update()
 {

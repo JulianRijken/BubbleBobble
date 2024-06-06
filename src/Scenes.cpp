@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "BubbleSpiral.h"
+#include "CharacterInput.h"
 #include "FpsCounter.h"
 #include "Game.h"
 #include "Prefabs.h"
@@ -45,7 +46,10 @@ void bb::scenes::BindScenes()
 void bb::scenes::OnePlayerModeScene(Scene& scene)
 {
     prefabs::SpawnMainCamera(scene);
-    prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
+
+    auto* player = prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
+    player->GetGameObject()->AddComponent<CharacterInput>(true, 0);
+
     prefabs::SpawnPlayerHUD(scene, 0);
     prefabs::SpawnPlayerHUD(scene, 1);
     prefabs::SpawnSideWalls(scene);
@@ -56,8 +60,13 @@ void bb::scenes::OnePlayerModeScene(Scene& scene)
 void bb::scenes::TwoPlayerModeScene(Scene& scene)
 {
     prefabs::SpawnMainCamera(scene);
-    prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
-    prefabs::SpawnPlayer(scene, 1, { 3, 0, 0 });
+
+    auto* player1 = prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
+    auto* player2 = prefabs::SpawnPlayer(scene, 1, { 3, 0, 0 });
+
+    player1->GetGameObject()->AddComponent<CharacterInput>(false, 0);
+    player2->GetGameObject()->AddComponent<CharacterInput>(true, 1);
+
     prefabs::SpawnPlayerHUD(scene, 0);
     prefabs::SpawnPlayerHUD(scene, 1);
     prefabs::SpawnSideWalls(scene);
@@ -65,7 +74,20 @@ void bb::scenes::TwoPlayerModeScene(Scene& scene)
     Game::GetInstance().TransitionToLevel(0, false, false);
 }
 
-void bb::scenes::VersusModeScene(Scene&) { throw std::runtime_error("Not Implemented Versus Scene"); }
+void bb::scenes::VersusModeScene(Scene& scene)
+{
+
+    prefabs::SpawnMainCamera(scene);
+
+    auto* player = prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
+    player->GetGameObject()->AddComponent<CharacterInput>(true, 0);
+
+    prefabs::SpawnPlayerHUD(scene, 0);
+    prefabs::SpawnPlayerHUD(scene, 1);
+    prefabs::SpawnSideWalls(scene);
+
+    Game::GetInstance().TransitionToLevel(0, false, false);
+}
 
 void bb::scenes::MainMenuScene(Scene& scene)
 {

@@ -12,30 +12,6 @@
 using namespace jul;
 using namespace bb;
 
-class PlayerInputCommand final : public BaseCommand
-{
-    using InputFunction = std::function<void(const InputContext&)>;
-
-public:
-    PlayerInputCommand(int playerIndex, void (Player::*memberFunction)(const InputContext&)) :
-        m_Function(
-            [playerIndex, memberFunction](const InputContext& context)
-            {
-                Player* player = Game::GetInstance().GetPlayer(playerIndex);
-                if(player == nullptr)
-                    return;
-
-                (player->*memberFunction)(context);
-            })
-    {
-    }
-
-    void Execute(const InputContext& context) override { m_Function(context); }
-
-private:
-    InputFunction m_Function;
-};
-
 void LoadResources()
 {
     ResourceManager::BindSound(Sounds::GameStart, "SFX/The Quest Begins.ogg", true);
@@ -173,18 +149,6 @@ void LoadResources()
 
 void InitControls()
 {
-    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveLeft, 0, false, 0, &bb::Player::OnMoveLeftInput);
-    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveRight, 0, false, 0, &bb::Player::OnMoveRightInput);
-    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveStick, 0, false, 0, &bb::Player::OnMoveStickInput);
-    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Attack, 0, false, 0, &bb::Player::OnAttackInput);
-    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Jump, 0, false, 0, &bb::Player::OnJumpInput);
-
-    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveLeft, 1, true, 1, &bb::Player::OnMoveLeftInput);
-    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveRight, 1, true, 1, &bb::Player::OnMoveRightInput);
-    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::MoveStick, 1, true, 1, &bb::Player::OnMoveStickInput);
-    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Attack, 1, true, 1, &bb::Player::OnAttackInput);
-    Input::RegisterCommand<PlayerInputCommand>((int)InputBind::Jump, 1, true, 1, &bb::Player::OnJumpInput);
-
     Input::RegisterCommand<MuteGameCommand>((int)InputBind::ToggleSound, 1, true);
 }
 
@@ -242,15 +206,14 @@ void jul::Julgen::PreInit()
         InputBind::UiDown,
         {
             { SDL_SCANCODE_DOWN, SDL_SCANCODE_Z, SDL_SCANCODE_S },
-            { SDL_CONTROLLER_BUTTON_DPAD_UP },
-            {}
-    });
-    Input::AddAction(
-        InputBind::UiUp,
-        {
-            { SDL_SCANCODE_UP, SDL_SCANCODE_X, SDL_SCANCODE_W },
             { SDL_CONTROLLER_BUTTON_DPAD_DOWN },
             {}
+    });
+    Input::AddAction(InputBind::UiUp,
+                     {
+                         { SDL_SCANCODE_UP, SDL_SCANCODE_X, SDL_SCANCODE_W },
+                         { SDL_CONTROLLER_BUTTON_DPAD_UP },
+                         {}
     });
     Input::AddAction(InputBind::DebugIncreaseTimeScale, { { SDL_SCANCODE_RIGHTBRACKET }, {}, {} });
     Input::AddAction(InputBind::DebugDecreaseTimeScale, { { SDL_SCANCODE_LEFTBRACKET }, {}, {} });

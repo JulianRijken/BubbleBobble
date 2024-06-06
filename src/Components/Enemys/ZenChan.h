@@ -43,7 +43,6 @@ namespace bb
         void SpawnDeadVersion() override;
 
         void HandleTurning();
-        void Jump();
 
         Animator* m_Animator{ nullptr };
         Rigidbody* m_Rigidbody{ nullptr };

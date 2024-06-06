@@ -39,6 +39,7 @@ set(BB_SOURCE_FILES
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
     src/Components/Enemys/ZenChanState.h src/Components/Enemys/ZenChanState.cpp
+    src/CharacterInput.h src/CharacterInput.cpp
 )
 
 # Include source directories
