@@ -149,29 +149,7 @@ void bb::Game::TryTransitionLevel(int levelIndex, bool onlyLoadAfterTransition, 
 
     fmt::println("Transitioning to level {}", levelIndex);
     m_InTransition = true;
-
-
-    // Move players to default positions
-    if(resetPlayers)
-    {
-        if(m_Players[0])
-        {
-            m_Players[0]->GetTransform().Translate(0, GRID_SIZE_Y, 0);
-            m_Players[0]->BubbleToPosition({ -12, -10, 0 }, LEVEL_TRANSITION_DURATION);
-        }
-
-        if(m_Players[1])
-        {
-            m_Players[1]->GetTransform().Translate(0, GRID_SIZE_Y, 0);
-            m_Players[1]->BubbleToPosition({ 12, -10, 0 }, LEVEL_TRANSITION_DURATION);
-        }
-    }
-
-
-    // Unload old level
-    if(auto* activeLevel = GetActiveLevelScene())
-        activeLevel->Unload();
-
+    m_LevelTransitionChangeEvent.Invoke(true, levelIndex);
 
     TweenEngine::Start(
         {
@@ -180,9 +158,29 @@ void bb::Game::TryTransitionLevel(int levelIndex, bool onlyLoadAfterTransition, 
             .duration = LEVEL_TRANSITION_DURATION,
             .easeFunction = EaseFunction::SineOut,
             .onStart =
-                [this, levelIndex, onlyLoadAfterTransition]()
+                [this, levelIndex, onlyLoadAfterTransition, resetPlayers]()
             {
-                m_LevelTransitionChangeEvent.Invoke(true, levelIndex);
+                // Move players to default positions
+                if(resetPlayers)
+                {
+                    if(m_Players[0])
+                    {
+                        m_Players[0]->GetTransform().Translate(0, GRID_SIZE_Y, 0);
+                        m_Players[0]->BubbleToPosition({ -12, -10, 0 }, LEVEL_TRANSITION_DURATION);
+                    }
+
+                    if(m_Players[1])
+                    {
+                        m_Players[1]->GetTransform().Translate(0, GRID_SIZE_Y, 0);
+                        m_Players[1]->BubbleToPosition({ 12, -10, 0 }, LEVEL_TRANSITION_DURATION);
+                    }
+                }
+
+
+                // Unload old level
+                if(auto* activeLevel = GetActiveLevelScene())
+                    activeLevel->Unload();
+
 
                 // Get rid of old tiles
                 if(m_ActiveLevelTilesPtr != nullptr)

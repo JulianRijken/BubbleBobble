@@ -25,8 +25,7 @@
 void bb::prefabs::SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 velocity)
 {
     Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
-    if(activeScene == nullptr)
-        throw std::runtime_error("Spawning Bubble with no active level scene");
+    assert(activeScene);
 
     auto* bubble = activeScene->AddGameObject("AttackBubble", spawnPosition);
     bubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), 0);
@@ -53,8 +52,7 @@ bb::ZenChan* bb::prefabs::SpawnZenChanWithBehaviour(const glm::vec3& spawnPositi
 bb::ZenChan* bb::prefabs::SpawnZenChan(const glm::vec3& spawnPosition)
 {
     Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
-    if(activeScene == nullptr)
-        throw std::runtime_error("Spawning ZenChen with no active level scene");
+    assert(activeScene);
 
     auto* zenchanGO = activeScene->AddGameObject("ZenChan", spawnPosition);
     zenchanGO->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
@@ -73,8 +71,7 @@ bb::ZenChan* bb::prefabs::SpawnZenChan(const glm::vec3& spawnPosition)
 void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
 {
     Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
-    if(activeScene == nullptr)
-        throw std::runtime_error("Spawning Dead ZenChen with no active level scene");
+    assert(activeScene);
 
     auto* deadZenChen = activeScene->AddGameObject("Dead ZenChen", spawnPosition);
     auto* spriteRenderer = deadZenChen->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
@@ -154,8 +151,7 @@ void bb::prefabs::SpawnMainCamera(jul::Scene& scene)
 void bb::prefabs::SpawnPickup(PickupType pickup, const glm::vec3& spawnPosition)
 {
     Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
-    if(activeScene == nullptr)
-        throw std::runtime_error("Spawning ZenChen with no active level scene");
+    assert(activeScene);
 
     auto* fruit = activeScene->AddGameObject("Fruit", spawnPosition);
     fruit->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Items"), 0, glm::ivec2{ 25, 0 });

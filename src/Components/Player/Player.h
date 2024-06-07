@@ -6,10 +6,6 @@
 #include <IDamageable.h>
 #include <InputContext.h>
 
-#include <glm/vec3.hpp>
-#include <memory>
-
-#include "Game.h"
 #include "PlayerState.h"
 
 namespace jul

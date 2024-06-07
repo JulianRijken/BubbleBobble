@@ -143,7 +143,6 @@ namespace bb
 
         [[nodiscard]] GameMode GetActiveGameMode() { return m_ActiveGameMode; }
 
-
         void Initialize();
 
         // Starts the actual game with a mode
