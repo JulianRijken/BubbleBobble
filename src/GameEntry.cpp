@@ -220,12 +220,11 @@ void jul::Julgen::PreInit()
     Input::AddAction(InputBind::DebugIncreaseTimeScale, { { SDL_SCANCODE_RIGHTBRACKET }, {}, {} });
     Input::AddAction(InputBind::DebugDecreaseTimeScale, { { SDL_SCANCODE_LEFTBRACKET }, {}, {} });
 
-    Input::AddAction(
-        InputBind::ForceReset,
-        {
-            { SDL_SCANCODE_ESCAPE },
-            { SDL_CONTROLLER_BUTTON_START, SDL_CONTROLLER_BUTTON_LEFTSTICK },
-            {}
+    Input::AddAction(InputBind::ForceReset,
+                     {
+                         { SDL_SCANCODE_ESCAPE, SDL_SCANCODE_F3 },
+                         { SDL_CONTROLLER_BUTTON_START, SDL_CONTROLLER_BUTTON_LEFTSTICK },
+                         {}
     });
     Input::AddAction(InputBind::ForceTransition,
                      {
@@ -233,6 +232,7 @@ void jul::Julgen::PreInit()
                          { SDL_CONTROLLER_BUTTON_BACK },
                          {}
     });
+    Input::AddAction(InputBind::ForceEnd, { { SDL_SCANCODE_F2 }, {}, {} });
 
 
     InitControls();

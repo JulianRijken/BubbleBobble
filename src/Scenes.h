@@ -15,6 +15,7 @@ namespace bb::scenes
         Level1,
         Level2,
         Level3,
+        ScoreScreen,
     };
 
 
@@ -28,7 +29,7 @@ namespace bb::scenes
     void Level1Scene(Scene& scene);
     void Level2Scene(Scene& scene);
     void Level3Scene(Scene& scene);
-
+    void ScoreScene(Scene& scene);
 
     void MainMenuScene(Scene& scene);
 
@@ -36,7 +37,6 @@ namespace bb::scenes
     ///////////////////
     /// TEST SCENES ///
     //////////////////
-    void TestScene(Scene& scene);
     void SceneGraphTestScene(Scene& scene);
 
 }  // namespace bb

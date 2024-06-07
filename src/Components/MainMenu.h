@@ -13,7 +13,7 @@ namespace bb
 
     using namespace jul;
 
-    class MainMenu : public Component, public IEventListener
+    class MainMenu final : public Component, public IEventListener
     {
     public:
         static inline constexpr int BUBBLE_COUNT_IN_SELECT_SCREEN = 5;
@@ -22,6 +22,12 @@ namespace bb
 
         MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameObject* intoTextPtr, GameObject* introScreen,
                  GameObject* selectScreen, Transform* selectBubble, std::vector<Transform*>&& options);
+
+        ~MainMenu() override = default;
+        MainMenu(const MainMenu&) = delete;
+        MainMenu(MainMenu&&) noexcept = delete;
+        MainMenu& operator=(const MainMenu&) = delete;
+        MainMenu& operator=(MainMenu&&) noexcept = delete;
 
         void OnSelectButton(const InputContext& context);
         void OnUpButton(const InputContext& context);

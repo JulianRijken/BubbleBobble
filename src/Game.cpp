@@ -31,13 +31,15 @@ void bb::Game::Initialize()
 
     Input::Bind((int)InputBind::ForceReset, 0, false, this, &Game::OnResetGameButton);
     Input::Bind((int)InputBind::ForceTransition, 0, false, this, &Game::OnTransitionGameButton);
-    Input::Bind((int)InputBind::DebugIncreaseTimeScale, 0, false, this, &Game::OnIncreaseTimeScale);
-    Input::Bind((int)InputBind::DebugDecreaseTimeScale, 0, false, this, &Game::OnDecreaseTimeScale);
+    Input::Bind((int)InputBind::ForceEnd, 0, false, this, &Game::OnEndGameButton);
+    Input::Bind((int)InputBind::DebugIncreaseTimeScale, 0, false, this, &Game::OnIncreaseTimeScaleButton);
+    Input::Bind((int)InputBind::DebugDecreaseTimeScale, 0, false, this, &Game::OnDecreaseTimeScaleButton);
 
     Input::Bind((int)InputBind::ForceReset, 1, true, this, &Game::OnResetGameButton);
     Input::Bind((int)InputBind::ForceTransition, 1, true, this, &Game::OnTransitionGameButton);
-    Input::Bind((int)InputBind::DebugIncreaseTimeScale, 1, true, this, &Game::OnIncreaseTimeScale);
-    Input::Bind((int)InputBind::DebugDecreaseTimeScale, 1, true, this, &Game::OnDecreaseTimeScale);
+    Input::Bind((int)InputBind::ForceEnd, 1, true, this, &Game::OnEndGameButton);
+    Input::Bind((int)InputBind::DebugIncreaseTimeScale, 1, true, this, &Game::OnIncreaseTimeScaleButton);
+    Input::Bind((int)InputBind::DebugDecreaseTimeScale, 1, true, this, &Game::OnDecreaseTimeScaleButton);
 }
 
 void bb::Game::StartGame(GameMode mode)
@@ -142,8 +144,7 @@ void bb::Game::TryTransitionLevel(int levelIndex, bool onlyLoadAfterTransition, 
 
     if(levelIndex >= static_cast<int>(LEVELS.size()))
     {
-        fmt::println("Level index {} is not yet implemented :(", levelIndex);
-        ResetGame();
+        EndGame();
         return;
     }
 
@@ -251,7 +252,15 @@ void bb::Game::OnTransitionGameButton(const InputContext& context)
     TryTransitionLevel(m_ActiveLevelIndex + 1);
 }
 
-void bb::Game::OnIncreaseTimeScale(const InputContext& context)
+void bb::Game::OnEndGameButton(const InputContext& context)
+{
+    if(context.state != ButtonState::Down)
+        return;
+
+    EndGame();
+}
+
+void bb::Game::OnIncreaseTimeScaleButton(const InputContext& context)
 {
     if(context.state != ButtonState::Down)
         return;
@@ -265,7 +274,7 @@ void bb::Game::OnIncreaseTimeScale(const InputContext& context)
     fmt::println("Time Scale Changed: {}", GameTime::GetTimeScale());
 }
 
-void bb::Game::OnDecreaseTimeScale(const InputContext& context)
+void bb::Game::OnDecreaseTimeScaleButton(const InputContext& context)
 {
     if(context.state != ButtonState::Down)
         return;
@@ -283,6 +292,11 @@ void bb::Game::ResetGame()
 {
     m_GameState = GameState::MainMenu;
     SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu, SceneLoadMode::OverrideForce);
+}
+
+void bb::Game::EndGame()
+{
+    SceneManager::GetInstance().LoadScene((int)scenes::Id::ScoreScreen, SceneLoadMode::OverrideForce);
 }
 
 

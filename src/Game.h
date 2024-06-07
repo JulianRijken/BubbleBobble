@@ -38,6 +38,7 @@ namespace bb
     {
         ForceReset,
         ForceTransition,
+        ForceEnd,
         TestLivesButton,
         ToggleSound,
         ToggleDebug,
@@ -156,11 +157,13 @@ namespace bb
 
         void OnResetGameButton(const InputContext& context);
         void OnTransitionGameButton(const InputContext& context);
-        void OnIncreaseTimeScale(const InputContext& context);
-        void OnDecreaseTimeScale(const InputContext& context);
+        void OnEndGameButton(const InputContext& context);
+        void OnIncreaseTimeScaleButton(const InputContext& context);
+        void OnDecreaseTimeScaleButton(const InputContext& context);
 
     private:
         void ResetGame();
+        void EndGame();
 
         void OnMessage(const Message& message);
         void ParseMaps(const std::string& fileName);

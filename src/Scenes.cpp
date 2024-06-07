@@ -27,6 +27,7 @@
 #include "FpsCounter.h"
 #include "Game.h"
 #include "Prefabs.h"
+#include "ScoreScreen.h"
 #include "Transform.h"
 
 void bb::scenes::BindScenes()
@@ -41,6 +42,8 @@ void bb::scenes::BindScenes()
     SceneManager::GetInstance().BindScene((int)Id::Level1, Level1Scene);
     SceneManager::GetInstance().BindScene((int)Id::Level2, Level2Scene);
     SceneManager::GetInstance().BindScene((int)Id::Level3, Level3Scene);
+
+    SceneManager::GetInstance().BindScene((int)Id::ScoreScreen, ScoreScene);
 }
 
 void bb::scenes::OnePlayerModeScene(Scene& scene)
@@ -90,13 +93,7 @@ void bb::scenes::VersusModeScene(Scene& scene)
 
 void bb::scenes::MainMenuScene(Scene& scene)
 {
-    // auto* fpsCounter = scene.AddGameObject("FPS_Counter", { -12, 12, 0 });
-    // fpsCounter->AddComponent<TextRenderer>("0", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f },
-    // true); fpsCounter->AddComponent<FpsCounter>();
-
-    auto* cameraGameObject = scene.AddGameObject("Camera");
-    cameraGameObject->AddComponent<Camera>(14, GameSettings::GetAspectRatio());
-
+    prefabs::SpawnMainCamera(scene);
 
     ////////////////////
     /// INTRO SCREEN ///
@@ -164,8 +161,6 @@ void bb::scenes::MainMenuScene(Scene& scene)
         std::vector<Transform*>{ &p1Text->GetTransform(), &p2Text->GetTransform(), &p3Text->GetTransform() });
 }
 
-
-void bb::scenes::TestScene(Scene&) {}
 
 void bb::scenes::SceneGraphTestScene(Scene& scene)
 {
@@ -383,4 +378,12 @@ void bb::scenes::Level3Scene(Scene& scene)
     //         .onEnd = []() { SceneManager::GetInstance().LoadScene((int)scenes::Id::TwoPlayerMode); },
     //     },
     //     sceneLifeTimeObject);
+}
+
+void bb::scenes::ScoreScene(Scene& scene)
+{
+    prefabs::SpawnMainCamera(scene);
+
+    auto* scoreScreen = scene.AddGameObject("ScoreScreen");
+    scoreScreen->AddComponent<ScoreScreen>();
 }
