@@ -26,15 +26,11 @@ namespace bb
         ZenChanBehaviour& operator=(ZenChanBehaviour&&) noexcept = delete;
 
     private:
-        void FixedUpdate() override;
         void Update() override;
-
         void HandleTurning();
-
 
         float m_JumpInterval{ JUMP_INTERVAL.y };
         float m_FacePlayerInterval{ FACE_TARGET_INTERVAL.y };
-
 
         ZenChan* m_Target;
         int m_WalkingDirection{ 1 };

@@ -2,7 +2,6 @@
 
 #include <Animator.h>
 #include <BoxCollider.h>
-#include <fmt/core.h>
 #include <GameObject.h>
 #include <GameTime.h>
 #include <Physics.h>
@@ -62,8 +61,6 @@ void bb::ZenChan::FixedUpdate()
 
 void bb::ZenChan::Update()
 {
-    fmt::println("{}", (int)GetState());
-
 
     if(GetMoveInput().x < 0)
         m_SpriteRenderer->m_FlipX = false;

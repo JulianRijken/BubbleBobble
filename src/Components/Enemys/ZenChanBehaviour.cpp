@@ -34,8 +34,13 @@ void bb::ZenChanBehaviour::HandleTurning()
     }
 }
 
-void bb::ZenChanBehaviour::FixedUpdate()
+
+void bb::ZenChanBehaviour::Update()
 {
+    m_TimeSinceLastJump += GameTime::GetDeltaTime<float>();
+    m_TimeSinceLastFacePlayer += GameTime::GetDeltaTime<float>();
+
+
     if(m_Target->GetState() == ZenChan::State::Walking)
         HandleTurning();
 
@@ -70,12 +75,7 @@ void bb::ZenChanBehaviour::FixedUpdate()
             return;
         }
     }
-}
 
-void bb::ZenChanBehaviour::Update()
-{
-    m_TimeSinceLastJump += GameTime::GetDeltaTime<float>();
-    m_TimeSinceLastFacePlayer += GameTime::GetDeltaTime<float>();
 
     Player* player1 = Game::GetInstance().GetPlayer(0);
     Player* player2 = Game::GetInstance().GetPlayer(0);
