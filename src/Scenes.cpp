@@ -54,7 +54,7 @@ void bb::scenes::OnePlayerModeScene(Scene& scene)
     prefabs::SpawnPlayerHUD(scene, 1);
     prefabs::SpawnSideWalls(scene);
 
-    Game::GetInstance().TransitionToLevel(0, false, false);
+    Game::GetInstance().TryTransitionLevel(0, false, false);
 }
 
 void bb::scenes::TwoPlayerModeScene(Scene& scene)
@@ -71,7 +71,7 @@ void bb::scenes::TwoPlayerModeScene(Scene& scene)
     prefabs::SpawnPlayerHUD(scene, 1);
     prefabs::SpawnSideWalls(scene);
 
-    Game::GetInstance().TransitionToLevel(0, false, false);
+    Game::GetInstance().TryTransitionLevel(0, false, false);
 }
 
 void bb::scenes::VersusModeScene(Scene& scene)
@@ -85,7 +85,7 @@ void bb::scenes::VersusModeScene(Scene& scene)
     prefabs::SpawnPlayerHUD(scene, 1);
     prefabs::SpawnSideWalls(scene);
 
-    Game::GetInstance().TransitionToLevel(0, false, false);
+    Game::GetInstance().TryTransitionLevel(0, false, false);
 }
 
 void bb::scenes::MainMenuScene(Scene& scene)
@@ -224,6 +224,7 @@ void bb::scenes::IntroLevelScene(Scene& scene)
                                          glm ::vec2{ 0.5f, 0.0f },
                                          true);
 
+
     auto* bubbleSpiral = scene.AddGameObject("Bubble Spiral");
     bubbleSpiral->AddComponent<BubbleSpiral>();
     // Auto destroy bubble spiral
@@ -286,7 +287,7 @@ void bb::scenes::IntroLevelScene(Scene& scene)
         {
             .duration = intoDuration,
             .invokeWhenDestroyed = false,
-            .onEnd = []() { Game::GetInstance().TransitionToLevel(1); },
+            .onEnd = []() { Game::GetInstance().TryTransitionLevel(1); },
         },
         nameText);
 }
@@ -321,7 +322,7 @@ void bb::scenes::Level1Scene(Scene& scene)
         {
             .delay = 30,
             .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-            .onEnd = []() { Game::GetInstance().TransitionToLevel(2); },
+            .onEnd = []() { Game::GetInstance().TryTransitionLevel(2); },
         },
         sceneLifeTimeObject);
 }
@@ -348,7 +349,7 @@ void bb::scenes::Level2Scene(Scene& scene)
         {
             .delay = 30,
             .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-            .onEnd = []() { Game::GetInstance().TransitionToLevel(3); },
+            .onEnd = []() { Game::GetInstance().TryTransitionLevel(3); },
         },
         sceneLifeTimeObject);
 }

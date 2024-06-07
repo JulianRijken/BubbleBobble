@@ -82,6 +82,14 @@ namespace bb
         Watermelon
     };
 
+    enum class GameState
+    {
+        MainMenu,
+        Intro,
+        Game,
+        ScoreScreen
+    };
+
     namespace layer
     {
         constexpr uint16_t Index(int index) { return 1 << index; }
@@ -141,7 +149,7 @@ namespace bb
         // Starts the actual game with a mode
         void StartGame(GameMode mode);
 
-        void TransitionToLevel(int levelIndex, bool delayLoading = true, bool resetPlayers = true);
+        void TryTransitionLevel(int levelIndex, bool onlyLoadAfterTransition = true, bool resetPlayers = true);
         void SetPlayer(int playerIndex, Player* player);
         void SetMainCamera(Camera* camera);
 
@@ -153,6 +161,8 @@ namespace bb
         void OnDecreaseTimeScale(const InputContext& context);
 
     private:
+        void ResetGame();
+
         void OnMessage(const Message& message);
         void ParseMaps(const std::string& fileName);
 
@@ -162,11 +172,14 @@ namespace bb
         std::array<Player*, 2> m_Players{ nullptr, nullptr };
         std::vector<Map> m_Maps{};
 
-
+        // Transition
+        bool m_InTransition{ false };
         int m_ActiveLevelIndex{ 0 };
+        GameObject* m_ActiveLevelTilesPtr{ nullptr };
+
+        GameState m_GameState{};
         GameMode m_ActiveGameMode{};
         Camera* m_MainCameraPtr{ nullptr };
-        GameObject* m_ActiveLevelTilesPtr{ nullptr };
 
         Event<bool, int> m_LevelTransitionChangeEvent{};
     };
