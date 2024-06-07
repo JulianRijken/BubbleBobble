@@ -29,13 +29,13 @@ void bb::Game::Initialize()
 
     ParseMaps("Levels/Levels.jxl");
 
-    Input::Bind((int)InputBind::ForceReset, 0, false, this, &Game::OnForceResetGame);
-    Input::Bind((int)InputBind::ForceTransition, 0, false, this, &Game::OnForceTransitionGame);
+    Input::Bind((int)InputBind::ForceReset, 0, false, this, &Game::OnResetGameButton);
+    Input::Bind((int)InputBind::ForceTransition, 0, false, this, &Game::OnTransitionGameButton);
     Input::Bind((int)InputBind::DebugIncreaseTimeScale, 0, false, this, &Game::OnIncreaseTimeScale);
     Input::Bind((int)InputBind::DebugDecreaseTimeScale, 0, false, this, &Game::OnDecreaseTimeScale);
 
-    Input::Bind((int)InputBind::ForceReset, 1, true, this, &Game::OnForceResetGame);
-    Input::Bind((int)InputBind::ForceTransition, 1, true, this, &Game::OnForceTransitionGame);
+    Input::Bind((int)InputBind::ForceReset, 1, true, this, &Game::OnResetGameButton);
+    Input::Bind((int)InputBind::ForceTransition, 1, true, this, &Game::OnTransitionGameButton);
     Input::Bind((int)InputBind::DebugIncreaseTimeScale, 1, true, this, &Game::OnIncreaseTimeScale);
     Input::Bind((int)InputBind::DebugDecreaseTimeScale, 1, true, this, &Game::OnDecreaseTimeScale);
 }
@@ -202,7 +202,7 @@ void bb::Game::TransitionToLevel(int levelIndex, bool delayLoading, bool resetPl
     }
 }
 
-void bb::Game::OnForceResetGame(const InputContext& context)
+void bb::Game::OnResetGameButton(const InputContext& context)
 {
     if(context.state != ButtonState::Down)
         return;
@@ -214,7 +214,7 @@ void bb::Game::OnForceResetGame(const InputContext& context)
     SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu, SceneLoadMode::OverrideForce);
 }
 
-void bb::Game::OnForceTransitionGame(const InputContext&) { TransitionToLevel(2); }
+void bb::Game::OnTransitionGameButton(const InputContext&) { TransitionToLevel(2); }
 
 void bb::Game::OnIncreaseTimeScale(const InputContext& context)
 {

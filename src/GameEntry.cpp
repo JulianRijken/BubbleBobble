@@ -150,6 +150,7 @@ void LoadResources()
 void InitControls()
 {
     Input::RegisterCommand<MuteGameCommand>((int)InputBind::ToggleSound, 1, true);
+    Input::RegisterCommand<DebugGameCommand>((int)InputBind::ToggleDebug, 1, true);
 }
 
 void jul::Julgen::PreInit()
@@ -195,6 +196,7 @@ void jul::Julgen::PreInit()
 
 
     Input::AddAction(InputBind::ToggleSound, { { SDL_SCANCODE_M }, {}, {} });
+    Input::AddAction(InputBind::ToggleDebug, { { SDL_SCANCODE_T }, {}, {} });
     Input::AddAction(
         InputBind::UiSelect,
         {
@@ -225,7 +227,12 @@ void jul::Julgen::PreInit()
             { SDL_CONTROLLER_BUTTON_START, SDL_CONTROLLER_BUTTON_LEFTSTICK },
             {}
     });
-    Input::AddAction(InputBind::ForceTransition, { { SDL_SCANCODE_P }, { SDL_CONTROLLER_BUTTON_BACK }, {} });
+    Input::AddAction(InputBind::ForceTransition,
+                     {
+                         { SDL_SCANCODE_P, SDL_SCANCODE_F1 },
+                         { SDL_CONTROLLER_BUTTON_BACK },
+                         {}
+    });
 
 
     InitControls();

@@ -40,6 +40,7 @@ namespace bb
         ForceTransition,
         TestLivesButton,
         ToggleSound,
+        ToggleDebug,
         Jump,
         MoveLeft,
         MoveRight,
@@ -146,8 +147,8 @@ namespace bb
 
         GameObject* SpawnLevelTiles(int levelIndex);
 
-        void OnForceResetGame(const InputContext& context);
-        void OnForceTransitionGame(const InputContext& context);
+        void OnResetGameButton(const InputContext& context);
+        void OnTransitionGameButton(const InputContext& context);
         void OnIncreaseTimeScale(const InputContext& context);
         void OnDecreaseTimeScale(const InputContext& context);
 
@@ -162,9 +163,8 @@ namespace bb
         std::vector<Map> m_Maps{};
 
 
-        GameMode m_ActiveGameMode{};
         int m_ActiveLevelIndex{ 0 };
-
+        GameMode m_ActiveGameMode{};
         Camera* m_MainCameraPtr{ nullptr };
         GameObject* m_ActiveLevelTilesPtr{ nullptr };
 
