@@ -30,13 +30,9 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
     m_SelectScreen(selectScreen),
     m_Options(std::move(options))
 {
-
-    // TODO: THIS IS A MEMORY LEAK BECAUSE A NEW COMMAND AND EVENT IS CREATED EVERY SINGLE TIME
     Input::Bind((int)InputBind::UiSelect, 1, true, this, &bb::MainMenu::OnSelectButton);
     Input::Bind((int)InputBind::UiDown, 1, true, this, &bb::MainMenu::OnDownButton);
     Input::Bind((int)InputBind::UiUp, 1, true, this, &bb::MainMenu::OnUpButton);
-
-    // Todo allow controller index -1 for all controllers
     Input::Bind((int)InputBind::UiSelect, 0, false, this, &bb::MainMenu::OnSelectButton);
     Input::Bind((int)InputBind::UiDown, 0, false, this, &bb::MainMenu::OnDownButton);
     Input::Bind((int)InputBind::UiUp, 0, false, this, &bb::MainMenu::OnUpButton);

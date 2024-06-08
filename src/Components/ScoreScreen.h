@@ -3,7 +3,13 @@
 #include <Component.h>
 
 #include <filesystem>
+#include <optional>
 
+namespace jul
+{
+    class InputContext;
+    class TextRenderer;
+}  // namespace jul
 
 namespace bb
 {
@@ -19,12 +25,20 @@ namespace bb
             int round;
             std::string name;
 
-            bool operator<(const UserScore& other) const
+            bool operator==(const UserScore& other) const
+            {
+                return score == other.score && round == other.round && name == other.name;
+            }
+
+            bool operator>(const UserScore& other) const
             {
                 if(score != other.score)
                     return score > other.score;
 
-                return round > other.round;
+                if(round != other.round)
+                    return round > other.round;
+
+                return name > name;
             }
         };
 
@@ -36,14 +50,32 @@ namespace bb
         ScoreScreen& operator=(const ScoreScreen&) = delete;
         ScoreScreen& operator=(ScoreScreen&&) noexcept = delete;
 
-        bool IsNumber(const std::string& string);
-        std::vector<UserScore> ParseScores(const std::filesystem::path& filePath);
-
-        // void OnSelectButton(const InputContext& context);
-        // void OnUpButton(const InputContext& context);
-        // void OnDownButton(const InputContext& context);
 
     private:
-        GameObject* screenElementsPtr{};
+        bool IsNumber(const std::string& string);
+
+        void CreateScoresFileIfNotExist(const std::filesystem::path& filePath);
+        std::vector<UserScore> ParseScores(const std::filesystem::path& filePath);
+        void WriteScore(const UserScore& userScore, const std::filesystem::path& filePath);
+
+
+        void OnSelectButton(const InputContext& context);
+        void OnUpButton(const InputContext& context);
+        void OnDownButton(const InputContext& context);
+
+        void UpdateSelectedLetter();
+        void OnScoreFilledIn();
+        void ShowTopFive(std::optional<UserScore> showcaseScore = std::nullopt);
+
+        const std::string LETTER_OPTIONS{ ".ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
+        const std::filesystem::path SCORE_PATH{ "./Scores/Scores.txt" };
+
+        bool m_FillingInScore{ true };
+        int m_CurrentLetter{ 0 };
+        int m_SelectedLetterRenderer{ 0 };
+        std::array<TextRenderer*, 3> m_LetterTextRendererPtrs{ nullptr, nullptr, nullptr };
+
+        GameObject* m_ScreenElementsPtr{ nullptr };
+        GameObject* m_TopFiveScores{ nullptr };
     };
 }  // namespace bb

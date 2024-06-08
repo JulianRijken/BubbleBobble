@@ -200,7 +200,7 @@ void jul::Julgen::PreInit()
     Input::AddAction(
         InputBind::UiSelect,
         {
-            { SDL_SCANCODE_E, SDL_SCANCODE_KP_ENTER, SDL_SCANCODE_SPACE },
+            { SDL_SCANCODE_E, SDL_SCANCODE_RETURN, SDL_SCANCODE_SPACE },
             { SDL_CONTROLLER_BUTTON_A },
             {}
     });

@@ -161,10 +161,10 @@ namespace bb
         void OnIncreaseTimeScaleButton(const InputContext& context);
         void OnDecreaseTimeScaleButton(const InputContext& context);
 
-    private:
         void ResetGame();
         void EndGame();
 
+    private:
         void OnMessage(const Message& message);
         void ParseMaps(const std::string& fileName);
 
