@@ -1,11 +1,15 @@
 #include "ScoreScreen.h"
 
 #include <Animator.h>
+#include <fmt/core.h>
 #include <GameObject.h>
 #include <ResourceManager.h>
 #include <Scene.h>
 #include <SpriteRenderer.h>
 #include <TextRenderer.h>
+
+#include <filesystem>
+#include <fstream>
 
 bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
     Component(parentPtr)
@@ -75,23 +79,44 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
             {5, "5TH"},
         };
 
-        for(int i = 1; i <= 5; ++i)
+
+        try
         {
-            auto* number = scene.AddGameObject("Text", { -8, startHeight - i * 2, 0 }, screenElementsPtr);
-            number->AddComponent<TextRenderer>(
-                numberToText.at(i), ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+            auto scores = ParseScores("C:/Git/BubbleBobble/Scores/Scores.txt");
+            std::sort(scores.begin(), scores.end());
 
-            auto* score = scene.AddGameObject("Text", { -2, startHeight - i * 2, 0 }, screenElementsPtr);
-            score->AddComponent<TextRenderer>(
-                std::to_string(i * i * i), ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+            // fmt::println("Loaded Scores:");
+            // for(auto&& score : scores)
+            //     fmt::println("{} {} {}", score.score, score.round, score.name);
 
-            auto* round = scene.AddGameObject("Text", { 4, startHeight - i * 2, 0 }, screenElementsPtr);
-            round->AddComponent<TextRenderer>(
-                std::to_string(i * i * i), ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+            for(int i = 0; i < std::min(static_cast<int>(scores.size()), 5); ++i)
+            {
+                auto* number = scene.AddGameObject("Text", { -8, startHeight - i * 2, 0 }, screenElementsPtr);
+                number->AddComponent<TextRenderer>(
+                    numberToText.at(i + 1), ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
 
-            auto* name = scene.AddGameObject("Text", { 9, startHeight - i * 2, 0 }, screenElementsPtr);
-            name->AddComponent<TextRenderer>(
-                "...", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+                auto* score = scene.AddGameObject("Text", { -2, startHeight - i * 2, 0 }, screenElementsPtr);
+                score->AddComponent<TextRenderer>(std::to_string(scores[i].score),
+                                                  ResourceManager::GetFont("NES"),
+                                                  100,
+                                                  glm ::vec2{ 0.5f, 0.5f },
+                                                  true);
+
+                auto* round = scene.AddGameObject("Text", { 4, startHeight - i * 2, 0 }, screenElementsPtr);
+                round->AddComponent<TextRenderer>(std::to_string(scores[i].round),
+                                                  ResourceManager::GetFont("NES"),
+                                                  100,
+                                                  glm ::vec2{ 0.5f, 0.5f },
+                                                  true);
+
+                auto* name = scene.AddGameObject("Text", { 9, startHeight - i * 2, 0 }, screenElementsPtr);
+                name->AddComponent<TextRenderer>(
+                    scores[i].name, ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+            }
+        }
+        catch(const std::runtime_error& error)
+        {
+            fmt::println("Failed to load file {}", error.what());
         }
 
 
@@ -115,4 +140,61 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
         // p3Text->AddComponent<TextRenderer>(
         //     "VS START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
     }
+}
+
+bool bb::ScoreScreen::IsNumber(const std::string& string)
+{
+    // Avoid empty string
+    if(string.empty())
+        return false;
+
+    // Avoid decimal values
+    if(string.find('.') != std::string::npos)
+        return false;
+
+    // Check if string only contains digits
+    return std::ranges::find_if(string, [](unsigned char character) { return not std::isdigit(character); }) ==
+           string.end();
+}
+
+std::vector<bb::ScoreScreen::UserScore> bb::ScoreScreen::ParseScores(const std::filesystem::path& filePath)
+{
+    if(not std::filesystem::exists(filePath))
+        throw std::runtime_error("File Does Not Exist");
+
+    std::ifstream inFile;
+    inFile.open(filePath);
+
+    if(not inFile.is_open())
+        throw std::runtime_error("File Already Open");
+
+
+    std::vector<bb::ScoreScreen::UserScore> scores{};
+
+    std::string line;
+    while(std::getline(inFile, line))
+    {
+        std::istringstream lineStringStream(line);
+        std::string token;
+        std::vector<std::string> tokens;
+
+        while(std::getline(lineStringStream, token, ' '))
+            tokens.push_back(token);
+
+        if(tokens.size() != 3)
+            continue;
+
+        if(not IsNumber(tokens[0]))
+            continue;
+
+        if(not IsNumber(tokens[1]))
+            continue;
+
+        if(std::any_of(tokens[2].begin(), tokens[2].end(), ::isdigit))
+            continue;
+
+        scores.emplace_back(std::stoi(tokens[0]), std::stoi(tokens[1]), tokens[2]);
+    }
+
+    return scores;
 }
