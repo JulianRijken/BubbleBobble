@@ -27,7 +27,7 @@ void bb::Game::Initialize()
     MessageQueue::AddListener(MessageType::PlayerDied, this, &Game::OnMessage);
     MessageQueue::AddListener(MessageType::PlayerJump, this, &Game::OnMessage);
 
-    ParseMaps("Levels/Levels.jxl");
+    ParseMaps("Levels.jxl");
 
     Input::Bind((int)InputBind::ForceReset, 0, false, this, &Game::OnResetGameButton);
     Input::Bind((int)InputBind::ForceTransition, 0, false, this, &Game::OnTransitionGameButton);
@@ -309,7 +309,7 @@ void bb::Game::OnMessage(const Message& message)
     {
         case MessageType::GameStart:
         {
-            GameMode mode = std::any_cast<GameMode>(message.arguments[0]);
+            const GameMode mode = std::any_cast<GameMode>(message.arguments[0]);
             StartGame(mode);
         }
             break;

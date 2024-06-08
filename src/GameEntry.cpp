@@ -20,12 +20,8 @@ void LoadResources()
     ResourceManager::BindSound(Sounds::Jump, "SFX/Jump.wav");
 
 
-    ResourceManager::LoadFont("Lingua", "Lingua.otf", 36);
-    ResourceManager::LoadFont("LinguaSmall", "Lingua.otf", 16);
     ResourceManager::LoadFont("NES", "NES_Font.ttf", 8);
 
-    ResourceManager::LoadSprite("background", "background.tga", 32);
-    ResourceManager::LoadSprite("Dot", "Dot.png", 32);
     ResourceManager::LoadSprite("Logo", "Logo.png", 8, { 0.5f, 0.5f });
     ResourceManager::LoadSprite("Julgen_Retro_Logo", "Julgen_Logo_BB_Retro.png", 8, { 0.5f, 0.5f });
 
