@@ -6,7 +6,7 @@
 #include <GameObject.h>
 #include <GameTime.h>
 #include <Input.h>
-#include <prefabs.h>
+#include <Prefabs.h>
 #include <ResourceManager.h>
 #include <SceneManager.h>
 #include <SDL_image.h>

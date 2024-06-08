@@ -4,7 +4,7 @@
 
 #include "BoxCollider.h"
 #include "GameObject.h"
-#include "prefabs.h"
+#include "Prefabs.h"
 
 bb::DeadEnemy::DeadEnemy(GameObject* parentPtr, PickupType fruitType) :
     Component(parentPtr),
