@@ -10,38 +10,41 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 # Add all files from game
 set(BB_SOURCE_FILES
     ${SOURCE_DIR}/GameEntry.cpp
-    ${SOURCE_DIR}/Game.cpp                          ${SOURCE_DIR}/Game.h
-    ${SOURCE_DIR}/Scenes.h                          ${SOURCE_DIR}/Scenes.cpp
-    ${SOURCE_DIR}/Prefabs.h                         ${SOURCE_DIR}/Prefabs.cpp
+    ${SOURCE_DIR}/Game.cpp                              ${SOURCE_DIR}/Game.h
+    ${SOURCE_DIR}/GameScore.h                           ${SOURCE_DIR}/GameScore.cpp
+    ${SOURCE_DIR}/Scenes.h                              ${SOURCE_DIR}/Scenes.cpp
+    ${SOURCE_DIR}/Prefabs.h                             ${SOURCE_DIR}/Prefabs.cpp
     ${SOURCE_DIR}/IDamageable.h
     ${SOURCE_DIR}/IBubbleable.h
 
-    ${SOURCE_DIR}/Components/DeadEnemy.h            ${SOURCE_DIR}/Components/DeadEnemy.cpp
-    ${SOURCE_DIR}/Components/Pickup.h               ${SOURCE_DIR}/Components/Pickup.cpp
-    ${SOURCE_DIR}/Components/CaptureBubble.h        ${SOURCE_DIR}/Components/CaptureBubble.cpp
 
-    ${SOURCE_DIR}/Components/Player/Player.h        ${SOURCE_DIR}/Components/Player/Player.cpp
-    ${SOURCE_DIR}/Components/Player/PlayerState.h   ${SOURCE_DIR}/Components/Player/PlayerState.cpp
+    ${SOURCE_DIR}/Components/CharacterInput.h           ${SOURCE_DIR}/Components/CharacterInput.cpp
+    ${SOURCE_DIR}/Components/Enemys/ZenChanState.h      ${SOURCE_DIR}/Components/Enemys/ZenChanState.cpp
+    ${SOURCE_DIR}/Components/Enemys/ZenChanBehaviour.h  ${SOURCE_DIR}/Components/Enemys/ZenChanBehaviour.cpp
+    ${SOURCE_DIR}/Components/ScoreScreen.h              ${SOURCE_DIR}/Components/ScoreScreen.cpp
+    ${SOURCE_DIR}/Components/Health.h                   ${SOURCE_DIR}/Components/Health.cpp
+    ${SOURCE_DIR}/Components/DeadEnemy.h                ${SOURCE_DIR}/Components/DeadEnemy.cpp
+    ${SOURCE_DIR}/Components/Pickup.h                   ${SOURCE_DIR}/Components/Pickup.cpp
+    ${SOURCE_DIR}/Components/CaptureBubble.h            ${SOURCE_DIR}/Components/CaptureBubble.cpp
 
-    ${SOURCE_DIR}/Components/Enemys/ZenChan.h       ${SOURCE_DIR}/Components/Enemys/ZenChan.cpp
+    ${SOURCE_DIR}/Components/Player/Player.h            ${SOURCE_DIR}/Components/Player/Player.cpp
+    ${SOURCE_DIR}/Components/Player/PlayerState.h       ${SOURCE_DIR}/Components/Player/PlayerState.cpp
 
-    ${SOURCE_DIR}/Components/BubbleSpiral.h         ${SOURCE_DIR}/Components/BubbleSpiral.cpp
-    ${SOURCE_DIR}/Components/OneWayPlatform.h       ${SOURCE_DIR}/Components/OneWayPlatform.cpp
-    ${SOURCE_DIR}/Components/AutoMove.h             ${SOURCE_DIR}/Components/AutoMove.cpp
-    ${SOURCE_DIR}/Components/AutoRotateAround.h     ${SOURCE_DIR}/Components/AutoRotateAround.cpp
-    ${SOURCE_DIR}/Components/FpsCounter.h           ${SOURCE_DIR}/Components/FpsCounter.cpp
-    ${SOURCE_DIR}/Components/Character.h            ${SOURCE_DIR}/Components/Character.cpp
-    ${SOURCE_DIR}/Components/PlayerHUD.h            ${SOURCE_DIR}/Components/PlayerHUD.cpp
-    ${SOURCE_DIR}/Components/MainMenu.h             ${SOURCE_DIR}/Components/MainMenu.cpp
+    ${SOURCE_DIR}/Components/Enemys/ZenChan.h           ${SOURCE_DIR}/Components/Enemys/ZenChan.cpp
+
+    ${SOURCE_DIR}/Components/BubbleSpiral.h             ${SOURCE_DIR}/Components/BubbleSpiral.cpp
+    ${SOURCE_DIR}/Components/OneWayPlatform.h           ${SOURCE_DIR}/Components/OneWayPlatform.cpp
+    ${SOURCE_DIR}/Components/AutoMove.h                 ${SOURCE_DIR}/Components/AutoMove.cpp
+    ${SOURCE_DIR}/Components/AutoRotateAround.h         ${SOURCE_DIR}/Components/AutoRotateAround.cpp
+    ${SOURCE_DIR}/Components/FpsCounter.h               ${SOURCE_DIR}/Components/FpsCounter.cpp
+    ${SOURCE_DIR}/Components/Character.h                ${SOURCE_DIR}/Components/Character.cpp
+    ${SOURCE_DIR}/Components/PlayerHUD.h                ${SOURCE_DIR}/Components/PlayerHUD.cpp
+    ${SOURCE_DIR}/Components/MainMenu.h                 ${SOURCE_DIR}/Components/MainMenu.cpp
 )
 
 # Adds the source files to the executible
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
-    src/Components/Enemys/ZenChanState.h src/Components/Enemys/ZenChanState.cpp
-    src/CharacterInput.h src/CharacterInput.cpp
-    src/Components/Enemys/ZenChanBehaviour.h src/Components/Enemys/ZenChanBehaviour.cpp
-    src/Components/ScoreScreen.h src/Components/ScoreScreen.cpp
 )
 
 # Include source directories

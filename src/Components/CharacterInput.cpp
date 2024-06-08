@@ -15,7 +15,7 @@ bb::CharacterInput::CharacterInput(GameObject* parentPtr, bool canUseKeyboard, i
         m_CharacterPtr = parentPtr->GetComponent<Character>();
 
 
-    Input::Bind((int)InputBind::MoveLeft, controllerIndex, canUseKeyboard, this, &CharacterInput::OnMoveLeftInput);
+    Input::Bind(InputBind::MoveLeft, controllerIndex, canUseKeyboard, this, &CharacterInput::OnMoveLeftInput);
     Input::Bind(InputBind::MoveRight, controllerIndex, canUseKeyboard, this, &CharacterInput::OnMoveRightInput);
     Input::Bind(InputBind::MoveStick, controllerIndex, canUseKeyboard, this, &CharacterInput::OnMoveStickInput);
     Input::Bind(InputBind::Attack, controllerIndex, canUseKeyboard, this, &CharacterInput::OnAttackInput);

@@ -59,8 +59,8 @@ void bb::scenes::OnePlayerModeScene(Scene& scene)
 {
     prefabs::SpawnMainCamera(scene);
 
-    auto* player = prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
-    player->GetGameObject()->AddComponent<CharacterInput>(true, 0);
+    auto* player1 = prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
+    player1->GetGameObject()->AddComponent<CharacterInput>(true, 0);
 
     prefabs::SpawnPlayerHUD(scene, 0);
     prefabs::SpawnPlayerHUD(scene, 1);
@@ -74,9 +74,9 @@ void bb::scenes::TwoPlayerModeScene(Scene& scene)
     prefabs::SpawnMainCamera(scene);
 
     auto* player1 = prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
-    auto* player2 = prefabs::SpawnPlayer(scene, 1, { 3, 0, 0 });
-
     player1->GetGameObject()->AddComponent<CharacterInput>(false, 0);
+
+    auto* player2 = prefabs::SpawnPlayer(scene, 1, { 3, 0, 0 });
     player2->GetGameObject()->AddComponent<CharacterInput>(true, 1);
 
     prefabs::SpawnPlayerHUD(scene, 0);
@@ -90,8 +90,8 @@ void bb::scenes::VersusModeScene(Scene& scene)
 {
     prefabs::SpawnMainCamera(scene);
 
-    auto* player = prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
-    player->GetGameObject()->AddComponent<CharacterInput>(true, 0);
+    auto* player2 = prefabs::SpawnPlayer(scene, 0, { -3, 0, 0 });
+    player2->GetGameObject()->AddComponent<CharacterInput>(true, 0);
 
     prefabs::SpawnPlayerHUD(scene, 0);
     prefabs::SpawnPlayerHUD(scene, 1);
@@ -289,14 +289,6 @@ void bb::scenes::Level1Scene(Scene& scene)
                 sceneLifeTimeObject);
         }
     }
-
-    TweenEngine::Start(
-        {
-            .delay = 30,
-            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-            .onEnd = []() { Game::GetInstance().TryTransitionLevel(2); },
-        },
-        sceneLifeTimeObject);
 }
 
 void bb::scenes::Level2Scene(Scene& scene)
@@ -319,14 +311,6 @@ void bb::scenes::Level2Scene(Scene& scene)
             },
             sceneLifeTimeObject);
     }
-
-    TweenEngine::Start(
-        {
-            .delay = 30,
-            .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-            .onEnd = []() { Game::GetInstance().TryTransitionLevel(3); },
-        },
-        sceneLifeTimeObject);
 }
 
 void bb::scenes::Level3Scene(Scene& scene)
@@ -351,15 +335,6 @@ void bb::scenes::Level3Scene(Scene& scene)
     }
 
     prefabs::SpawnZenChanWithBehaviour({ 0, 12, 0 });
-    // auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
-
-    // TweenEngine::Start(
-    //     {
-    //         .delay = 30,
-    //         .invokeWhenDestroyed = false,  // We don't want to transition when scenes is unloaded
-    //         .onEnd = []() { SceneManager::GetInstance().LoadScene((int)scenes::Id::TwoPlayerMode); },
-    //     },
-    //     sceneLifeTimeObject);
 }
 
 

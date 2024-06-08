@@ -4,12 +4,15 @@
 #include <Locator.h>
 #include <MessageQueue.h>
 #include <Scene.h>
+#include <SDL_pixels.h>
 #include <Singleton.h>
 #include <Sound.h>
 
 #include <array>
 #include <glm/vec2.hpp>
+#include <unordered_map>
 
+#include "GameScore.h"
 #include "Scenes.h"
 
 struct SDL_Surface;
@@ -31,6 +34,24 @@ namespace bb
         PlayerDied,
         PlayerAttack,
         PlayerJump,
+
+        // position = glm::vec3
+        // playerIndex = int
+        // pickupType = PickupType
+        PlayerPickup,
+
+        // playerIndex = int
+        // lives = int
+        CharacterLivesChange,
+
+        // playerIndex = int
+        // score = int
+        CharacterScoreChange,
+
+        // playerIndex = int
+        // score = int
+        CharacterScoreAdded,
+
         GameStart,
     };
 
@@ -128,8 +149,20 @@ namespace bb
         inline const static std::string BOBBLE_SPRITE_NAME = "BobbleCharacter";
         inline constexpr static int GRID_SIZE_X = 32;
         inline constexpr static int GRID_SIZE_Y = 28;
+        inline constexpr static int STARTING_LIVES = 3;
         inline constexpr static int PIXELS_PER_GRID_CELL = 8;
         inline constexpr static double LEVEL_TRANSITION_DURATION = 4.0;
+        inline constexpr static SDL_Color PLAYER_1_COLOR = { 92, 230, 52, 255 };
+        inline constexpr static SDL_Color PLAYER_2_COLOR = { 52, 168, 230, 255 };
+        inline constexpr static glm::vec3 PLAYER_1_DEFAULT_POSITION = { -12, -10, 0 };
+        inline constexpr static glm::vec3 PLAYER_2_DEFAULT_POSITION = { 12, -10, 0 };
+
+
+        inline const static std::unordered_map<PickupType, int> PICKUP_VALUES{
+            {PickupType::Watermelon, 100},
+            {     PickupType::Fries, 200},
+        };
+
         inline constexpr static std::array<scenes::Id, 4> LEVELS{
             scenes::Id::IntroLevel, scenes::Id::Level1, scenes::Id::Level2, scenes::Id::Level3
         };
@@ -145,6 +178,9 @@ namespace bb
         [[nodiscard]] Event<bool, int>& GetLevelTransitionChangeEvent() { return m_LevelTransitionChangeEvent; }
 
         [[nodiscard]] GameMode GetActiveGameMode() { return m_ActiveGameMode; }
+
+        [[nodiscard]] const GameScore& GetGameScore() { return m_GameScore; }
+
 
         void Initialize();
 
@@ -172,7 +208,6 @@ namespace bb
 
         static SDL_Surface* JxlToSurface(const std::string& fileName);
 
-
         std::array<Player*, 2> m_Players{ nullptr, nullptr };
         std::vector<Map> m_Maps{};
 
@@ -186,6 +221,7 @@ namespace bb
         Camera* m_MainCameraPtr{ nullptr };
 
         Event<bool, int> m_LevelTransitionChangeEvent{};
+        GameScore m_GameScore{};
     };
 
 }  // namespace bb

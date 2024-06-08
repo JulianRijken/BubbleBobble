@@ -61,7 +61,6 @@ void bb::ZenChan::FixedUpdate()
 
 void bb::ZenChan::Update()
 {
-
     if(GetMoveInput().x < 0)
         m_SpriteRenderer->m_FlipX = false;
     else if(GetMoveInput().x > 0)

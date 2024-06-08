@@ -6,6 +6,7 @@
 #include <GameObject.h>
 #include <GameTime.h>
 #include <Input.h>
+#include <prefabs.h>
 #include <ResourceManager.h>
 #include <SceneManager.h>
 #include <SDL_image.h>
@@ -26,6 +27,7 @@ void bb::Game::Initialize()
     MessageQueue::AddListener(MessageType::PlayerAttack, this, &Game::OnMessage);
     MessageQueue::AddListener(MessageType::PlayerDied, this, &Game::OnMessage);
     MessageQueue::AddListener(MessageType::PlayerJump, this, &Game::OnMessage);
+    MessageQueue::AddListener(MessageType::PlayerPickup, this, &Game::OnMessage);
 
     ParseMaps("Levels.jxl");
 
@@ -52,6 +54,7 @@ void bb::Game::StartGame(GameMode mode)
     m_MainCameraPtr = nullptr;
     m_InTransition = false;
     m_GameState = GameState::Intro;
+    m_GameScore.ResetScore();
 
     switch(mode)
     {
@@ -163,13 +166,13 @@ void bb::Game::TryTransitionLevel(int levelIndex, bool onlyLoadAfterTransition, 
                     if(m_Players[0])
                     {
                         m_Players[0]->GetTransform().Translate(0, GRID_SIZE_Y, 0);
-                        m_Players[0]->BubbleToPosition({ -12, -10, 0 }, LEVEL_TRANSITION_DURATION);
+                        m_Players[0]->BubbleToPosition(PLAYER_1_DEFAULT_POSITION, LEVEL_TRANSITION_DURATION);
                     }
 
                     if(m_Players[1])
                     {
                         m_Players[1]->GetTransform().Translate(0, GRID_SIZE_Y, 0);
-                        m_Players[1]->BubbleToPosition({ 12, -10, 0 }, LEVEL_TRANSITION_DURATION);
+                        m_Players[1]->BubbleToPosition(PLAYER_2_DEFAULT_POSITION, LEVEL_TRANSITION_DURATION);
                     }
                 }
 
@@ -309,10 +312,10 @@ void bb::Game::OnMessage(const Message& message)
     {
         case MessageType::GameStart:
         {
-            const GameMode mode = std::any_cast<GameMode>(message.arguments[0]);
+            const GameMode mode = std::any_cast<GameMode>(message.args[0]);
             StartGame(mode);
         }
-            break;
+        break;
         case MessageType::PlayerDied:
             Locator::Get<Sound>().PlaySound((int)Sounds::Death);
             break;
@@ -321,6 +324,22 @@ void bb::Game::OnMessage(const Message& message)
             break;
         case MessageType::PlayerJump:
             Locator::Get<Sound>().PlaySound((int)Sounds::Jump);
+            break;
+        case MessageType::PlayerPickup:
+        {
+            auto position = std::any_cast<glm::vec3>(message.args[0]);
+            auto playerIndex = std::any_cast<int>(message.args[1]);
+            auto pickupType = std::any_cast<PickupType>(message.args[2]);
+
+            auto color = playerIndex == 0 ? PLAYER_1_COLOR : PLAYER_2_COLOR;
+
+            assert(PICKUP_VALUES.contains(pickupType));
+            const int score = PICKUP_VALUES.at(pickupType);
+
+            prefabs::SpawnScoreText(position, score, color);
+        }
+        break;
+        default:
             break;
     }
 }

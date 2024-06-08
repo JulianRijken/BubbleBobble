@@ -132,6 +132,7 @@ namespace bb
     public:
         void OnEnterState(Player& player) override;
         void OnExitState(Player& player) override;
+        void Update(Player& player) override;
     };
 
     class PlayerBubbleState final : public PlayerState

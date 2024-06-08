@@ -20,7 +20,8 @@ bb::Player::Player(GameObject* parentPtr, int playerIndex, SpriteRenderer* bodyS
     m_RigidbodyPtr(parentPtr->GetComponent<Rigidbody>()),
     m_BodySpriteRendererPtr(bodySpriteRenderer),
     m_BubbleSpriteRendererPtr(bubbleSpriteRenderer),
-    m_ColliderPtr(parentPtr->GetComponent<BoxCollider>())
+    m_ColliderPtr(parentPtr->GetComponent<BoxCollider>()),
+    m_Health(parentPtr->GetComponent<Health>())
 {
     Game::GetInstance().SetPlayer(playerIndex, this);
     m_ActiveMainState->OnEnterState(*this);
@@ -28,14 +29,8 @@ bb::Player::Player(GameObject* parentPtr, int playerIndex, SpriteRenderer* bodyS
 
 bb::Player::~Player() { Game::GetInstance().SetPlayer(m_PlayerIndex, nullptr); }
 
+bool bb::Player::IsDead() const { return m_ActiveMainState == m_DeathState.get(); }
 
-void bb::Player::AddScore()
-{
-    m_Score += 100;
-
-    // Can be used by individual observers and just this player instance
-    m_OnScoreChangeEvent.Invoke(m_Score);
-}
 
 void bb::Player::BubbleToPosition(const glm::vec3& position, double duration)
 {
@@ -124,7 +119,38 @@ void bb::Player::HandleFlip()
         m_BodySpriteRendererPtr->m_FlipX = false;
 }
 
-void bb::Player::ObtainPickup(PickupType /*unused*/) { fmt::println("Pickup"); }
+void bb::Player::Respawn()
+{
+    glm::vec3 position = m_PlayerIndex == 0 ? Game::PLAYER_1_DEFAULT_POSITION : Game::PLAYER_2_DEFAULT_POSITION;
+    GetTransform().SetWorldPosition(position);
+    SetMainState(m_WalkingState.get());
+
+    m_Respawning = true;
+
+    TweenEngine::Cancel(this);
+    TweenEngine::Start(
+
+        { .duration = 3.0,
+          .onUpdate =
+              [this](double)
+          {
+              const bool enabled = m_BodySpriteRendererPtr->IsEnabled();
+              m_BodySpriteRendererPtr->SetEnabled(not enabled);
+          },
+          .onEnd =
+              [this]()
+          {
+              m_Respawning = false;
+              m_BodySpriteRendererPtr->SetEnabled(true);
+          } },
+        this);
+}
+
+void bb::Player::ObtainPickup(PickupType pickupType)
+{
+    MessageQueue::Broadcast(MessageType::PlayerPickup,
+                            { GetTransform().GetWorldPosition(), m_PlayerIndex, pickupType });
+}
 
 
 void bb::Player::Update()
@@ -141,7 +167,10 @@ void bb::Player::FixedUpdate()
 
 void bb::Player::OnDamage(Component* instigator)
 {
-    // TODO: Maybe avoid a dynamic cast
+    if(m_Respawning)
+        return;
+
+    // TODO: Try to avoid dynamic cast
     if(dynamic_cast<CaptureBubble*>(instigator))
         return;
 
@@ -151,6 +180,13 @@ void bb::Player::OnDamage(Component* instigator)
 
 void bb::Player::OnCollisionPreSolve(const Collision& collision, const b2Manifold*)
 {
+    if(collision.otherFixture->GetFilterData().categoryBits == layer::ENEMY)
+        collision.contact->SetEnabled(false);
+
+
+    if(m_ActiveMainState != m_WalkingState.get() and m_ActiveMainState != m_JumpingState.get())
+        return;
+
     const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
     if(auto* pickup = collider->GetGameObject()->GetComponent<Pickup>())
     {

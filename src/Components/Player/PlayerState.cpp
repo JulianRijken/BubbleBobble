@@ -21,7 +21,7 @@
 void bb::PlayerWalkingState::OnEnterState(Player& player)
 {
     m_TimeWalking = 0.0f;
-    player.m_BodyAnimatorPtr->Play(player.m_IdleAnimationName, true);
+    player.m_BodyAnimatorPtr->Play(player.IDLE_ANIMATION_NAME, true);
     player.m_RigidbodyPtr->SetGravityScale(WALK_GRAVITY_SCALE);
 }
 
@@ -39,18 +39,18 @@ void bb::PlayerWalkingState::Update(Player& player)
     player.HandleFlip();
 
     if(not player.m_BodyAnimatorPtr->IsPlaying())
-        player.m_BodyAnimatorPtr->Play(player.m_IdleAnimationName, true);
+        player.m_BodyAnimatorPtr->Play(player.IDLE_ANIMATION_NAME, true);
 
 
     if(std::abs(player.m_RigidbodyPtr->GetVelocity().x) > 0.0f)
     {
-        if(player.m_BodyAnimatorPtr->IsActiveAnimation(player.m_IdleAnimationName))
-            player.m_BodyAnimatorPtr->Play(player.m_WalkAnimationName, true);
+        if(player.m_BodyAnimatorPtr->IsActiveAnimation(player.IDLE_ANIMATION_NAME))
+            player.m_BodyAnimatorPtr->Play(player.WALK_ANIMATION_NAME, true);
     }
     else
     {
-        if(player.m_BodyAnimatorPtr->IsActiveAnimation(player.m_WalkAnimationName))
-            player.m_BodyAnimatorPtr->Play(player.m_IdleAnimationName, true);
+        if(player.m_BodyAnimatorPtr->IsActiveAnimation(player.WALK_ANIMATION_NAME))
+            player.m_BodyAnimatorPtr->Play(player.IDLE_ANIMATION_NAME, true);
     }
 }
 
@@ -98,11 +98,11 @@ void bb::PlayerJumpingState::OnEnterState(Player& player)
     if(player.m_RigidbodyPtr->GetVelocity().y > 0)
     {
         m_Falling = false;
-        player.m_BodyAnimatorPtr->Play(player.m_JumpAnimationName);
+        player.m_BodyAnimatorPtr->Play(player.JUMP_ANIMATION_NAME);
     }
     else
     {
-        player.m_BodyAnimatorPtr->Play(player.m_FallingAnimationName, true);
+        player.m_BodyAnimatorPtr->Play(player.FALLING_ANIMATION_NAME, true);
     }
 }
 
@@ -126,7 +126,7 @@ void bb::PlayerJumpingState::Update(Player& player)
 
     // Force falling animation when done with jump
     if(not player.m_BodyAnimatorPtr->IsPlaying())
-        player.m_BodyAnimatorPtr->Play(player.m_FallingAnimationName, true);
+        player.m_BodyAnimatorPtr->Play(player.FALLING_ANIMATION_NAME, true);
 }
 
 void bb::PlayerJumpingState::FixedUpdate(Player& player)
@@ -186,11 +186,8 @@ void bb::PlayerAttackingState::OnEnterState(Player& player)
 
     m_TimeOfLastAttack = GameTime::GetElapsedTime<float>();
 
-    player.m_BodyAnimatorPtr->Play(player.m_AttackAnimationName);
+    player.m_BodyAnimatorPtr->Play(player.ATTACK_ANIMATION_NAME);
     MessageQueue::Broadcast(MessageType::PlayerAttack);
-
-    player.m_Score += 1000;
-    player.m_OnScoreChangeEvent.Invoke(player.m_Score);
 
     glm::vec3 spawnPosition = player.GetTransform().GetWorldPosition();
     const int direction = player.m_BodySpriteRendererPtr->m_FlipX ? -1 : 1;
@@ -202,7 +199,7 @@ void bb::PlayerAttackingState::OnEnterState(Player& player)
 
 void bb::PlayerAttackingState::Update(Player& player)
 {
-    if(not player.m_BodyAnimatorPtr->IsActiveAnimation(player.m_AttackAnimationName))
+    if(not player.m_BodyAnimatorPtr->IsActiveAnimation(player.ATTACK_ANIMATION_NAME))
         player.SetAttackState(player.m_NullState.get());
 }
 
@@ -215,9 +212,8 @@ void bb::PlayerDeathState::OnEnterState(Player& player)
     player.m_ColliderPtr->SetSensor(true);
 
     MessageQueue::Broadcast(MessageType::PlayerDied);
-    player.m_BodyAnimatorPtr->Play(player.m_DeathAnimationName);
-    player.m_Lives--;
-    player.m_OnDeathEvent.Invoke(player.m_Lives);
+    player.m_BodyAnimatorPtr->Play(player.DEATH_ANIMATION_NAME);
+    player.m_Health->Damage();
 }
 
 
@@ -225,6 +221,15 @@ void bb::PlayerDeathState::OnExitState(Player& player)
 {
     player.m_RigidbodyPtr->SetMode(Rigidbody::Mode::Dynamic);
     player.m_ColliderPtr->SetSensor(false);
+}
+
+void bb::PlayerDeathState::Update(Player& player)
+{
+    if(player.m_BodyAnimatorPtr->IsPlaying())
+        return;
+
+    if(not player.m_Health->IsDead())
+        player.Respawn();
 }
 
 ////////////////////

@@ -4,15 +4,18 @@
 #include <BoxCollider.h>
 #include <Camera.h>
 #include <CaptureBubble.h>
+#include <CharacterInput.h>
 #include <DeadEnemy.h>
 #include <fmt/core.h>
 #include <GameSettings.h>
+#include <Health.h>
 #include <ResourceManager.h>
 #include <Rigidbody.h>
 #include <Scene.h>
 #include <SceneManager.h>
 #include <SpriteRenderer.h>
 #include <TextRenderer.h>
+#include <TweenEngine.h>
 #include <ZenChan.h>
 #include <ZenChanBehaviour.h>
 
@@ -101,6 +104,7 @@ bb::Player* bb::prefabs::SpawnPlayer(jul::Scene& scene, int playerIndex, glm::ve
     auto spriteName = playerIndex == 0 ? Game::BUBBLE_SPRITE_NAME : Game::BOBBLE_SPRITE_NAME;
 
     auto* playerGameObject = scene.AddGameObject("Player", spawnLocation);
+
     auto* bodySprite = playerGameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite(spriteName), 0);
     auto* bubbleSprite = playerGameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleLarge"), 0);
     auto* bodyAnimator = playerGameObject->AddComponent<Animator>(bodySprite);
@@ -112,31 +116,33 @@ bb::Player* bb::prefabs::SpawnPlayer(jul::Scene& scene, int playerIndex, glm::ve
         .size = {                    1.80f,                                     1.95f},
         .mask = {.category = layer::PLAYER, .collideWith = layer::ALL ^ layer::PLAYER}
     });
+    playerGameObject->AddComponent<Health>(Game::STARTING_LIVES, playerIndex);
+    auto* playerPtr =
+        playerGameObject->AddComponent<Player>(playerIndex, bodySprite, bubbleSprite, bodyAnimator, bubbleAnimator);
 
-    return playerGameObject->AddComponent<Player>(playerIndex, bodySprite, bubbleSprite, bodyAnimator, bubbleAnimator);
+    return playerPtr;
 }
 
 void bb::prefabs::SpawnPlayerHUD(jul::Scene& scene, int playerIndex)
 {
     GameObject* player1Hud = scene.AddGameObject(fmt::format("Player {}", playerIndex));
     {
-        auto* livesGameObject = scene.AddGameObject("LivesText", { playerIndex ? -15 : 14, -12, 0 });
+        auto* livesGameObject = scene.AddGameObject("LivesText", { playerIndex ? 14 : -15, -12, 0 });
         auto* livesText = livesGameObject->AddComponent<TextRenderer>(
             "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
         livesGameObject->AddComponent<SpriteRenderer>(
             ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
 
 
-        auto* scoreGameObject = scene.AddGameObject("ScoreText", { playerIndex ? -4 : 4, 13, 0 });
+        auto* scoreGameObject = scene.AddGameObject("ScoreText", { playerIndex ? 4 : -4, 13, 0 });
         auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ playerIndex ? 1 : 0, 0 });
+            "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ playerIndex ? 0 : 1, 0 });
 
 
         livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
         scoreGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
 
-        player1Hud->AddComponent<PlayerHUD>(
-            Game::GetInstance().GetPlayer(playerIndex), scoreText, livesText, SDL_Color(255, 255, 255, 255));
+        player1Hud->AddComponent<PlayerHUD>(scoreText, livesText, playerIndex);
     }
 }
 
@@ -190,4 +196,28 @@ void bb::prefabs::SpawnSideWalls(Scene& scene)
                  .category = layer::INVIS_WALLS,
                  }
     });
+}
+
+void bb::prefabs::SpawnScoreText(const glm::vec3& spawnPosition, int score, const SDL_Color& color)
+{
+    Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
+    assert(activeScene);
+
+    auto* scoreText = activeScene->AddGameObject("ScoreText", spawnPosition);
+    scoreText->AddComponent<TextRenderer>(
+        std::to_string(score), ResourceManager::GetFont("NES"), 0, glm::vec2{ 0.5, 0.5 }, true, 1.0, color);
+
+    TweenEngine::Start({ .from = scoreText->GetTransform().GetWorldPosition().y,
+                         .to = scoreText->GetTransform().GetWorldPosition().y + 4.0,
+                         .duration = 2.0,
+                         .invokeWhenDestroyed = false,
+                         .onUpdate =
+                             [scoreText](double value)
+                         {
+                             glm::vec3 targetPosition = scoreText->GetTransform().GetWorldPosition();
+                             targetPosition.y = static_cast<float>(value);
+                             scoreText->GetTransform().SetWorldPosition(targetPosition);
+                         },
+                         .onEnd = [scoreText]() { scoreText->Destroy(); } },
+                       scoreText);
 }

@@ -40,12 +40,10 @@ void bb::ZenChanBehaviour::Update()
     m_TimeSinceLastJump += GameTime::GetDeltaTime<float>();
     m_TimeSinceLastFacePlayer += GameTime::GetDeltaTime<float>();
 
-
     if(m_Target->GetState() == ZenChan::State::Walking)
         HandleTurning();
 
     m_Target->OnMoveInput({ m_WalkingDirection, 0 });
-
 
     const glm::vec2 halfSize = m_Target->GetBoxCollider()->GetSettings().size * 0.5f;
     const glm::vec2 center = m_Target->GetRigidbody()->Position();
@@ -78,7 +76,7 @@ void bb::ZenChanBehaviour::Update()
 
 
     Player* player1 = Game::GetInstance().GetPlayer(0);
-    Player* player2 = Game::GetInstance().GetPlayer(0);
+    Player* player2 = Game::GetInstance().GetPlayer(1);
 
     glm::vec3 targetPosition{};
     const glm::vec3 currentPositon{ GetTransform().GetWorldPosition() };

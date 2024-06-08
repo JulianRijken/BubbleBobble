@@ -1,18 +1,26 @@
 #pragma once
+#include <Component.h>
+#include <Event.h>
+#include <MessageQueue.h>
 #include <TextRenderer.h>
 
-#include "Component.h"
-#include "Player.h"
+namespace jul
+{
+    class TextRenderer;
+    class GameObject;
+}  // namespace jul
 
 namespace bb
 {
-    class PlayerHUD : public Component, public IEventListener
+    using namespace jul;
+
+    class PlayerHUD final : public Component, public IEventListener
     {
     public:
-        inline static constexpr int SCORE_CHANGE_PER_SECOND = 5000;
+        inline static constexpr int SCORE_CHANGE_PER_SECOND = 400;
 
-        PlayerHUD(GameObject* parentPtr, Player* player, TextRenderer* scoreText, TextRenderer* livesText,
-                  const SDL_Color& color);
+        PlayerHUD(GameObject* parentPtr, TextRenderer* scoreText, TextRenderer* livesText, int playerIndex);
+        ~PlayerHUD();
 
     private:
         void Update() override;
@@ -20,15 +28,17 @@ namespace bb
         void UpdateLives(int lives);
         void OnLevelTransitionChange(bool inTransition, int levelIndex);
 
-        int m_Score{};
+        void OnCharacterLivesChanged(const Message& message);
+        void OnCharacterScoreChanged(const Message& message);
 
-        // Score as a float *(yes a float)
+        int m_PlayerIndex{};
+
+        // Score as a double (yes a double)
         // This is because we need half score for frame independent animation!
         double m_VisualScore{};
+        int m_TargetScore{};
 
         TextRenderer* m_ScoreText{ nullptr };
         TextRenderer* m_LivesText{ nullptr };
-
-        Player* m_PlayerPtr{ nullptr };
     };
 }
