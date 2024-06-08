@@ -303,7 +303,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
                     [target](double value)
                 {
                     glm::vec3 targetPosition = target->GetTransform().GetWorldPosition();
-                    targetPosition.y = value;
+                    targetPosition.y = static_cast<float>(value);
                     target->GetTransform().SetWorldPosition(targetPosition);
                 },
             },
@@ -326,7 +326,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
 
         for(int i = 0; i < std::min(static_cast<int>(scores.size()), 5); ++i)
         {
-            UserScore scoreToDisplay = scores[i];
+            const UserScore scoreToDisplay = scores[i];
 
             bool isShowcaseScore{ false };
 
@@ -334,7 +334,8 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
                 if(scoreToDisplay == showcaseScore.value())
                     isShowcaseScore = true;
 
-            SDL_Color textColor = isShowcaseScore ? SDL_Color{ 247, 239, 0, 255 } : SDL_Color{ 255, 255, 255, 255 };
+            const SDL_Color textColor =
+                isShowcaseScore ? SDL_Color{ 247, 239, 0, 255 } : SDL_Color{ 255, 255, 255, 255 };
 
             auto* number = scene.AddGameObject("Text", { -9, startHeight - i * 2, 0 }, m_TopFiveScoresPtr);
             number->SetActive(false);
@@ -386,7 +387,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
             tweenText(name, delay * 3, i * durationScale + defaultDuration);
         }
     }
-    catch(const std::runtime_error& error)
+    catch(...)
     {
         auto* firstOneText = scene.AddGameObject("Text", { 0, -2, 0 }, m_TopFiveScoresPtr);
         firstOneText->SetActive(false);
@@ -413,7 +414,7 @@ void bb::ScoreScreen::TryLeaveScoreScreen()
                              [camera](double value)
                          {
                              glm::vec3 targetPosition = camera->GetTransform().GetWorldPosition();
-                             targetPosition.y = value;
+                             targetPosition.y = static_cast<float>(value);
                              camera->GetTransform().SetWorldPosition(targetPosition);
                          },
                          .onEnd = []() { Game::GetInstance().ResetGame(); } },

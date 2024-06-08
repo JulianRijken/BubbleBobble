@@ -2,12 +2,13 @@
 
 #include <Component.h>
 
+#include <array>
 #include <filesystem>
 #include <optional>
 
 namespace jul
 {
-    class InputContext;
+    struct InputContext;
     class TextRenderer;
 }  // namespace jul
 

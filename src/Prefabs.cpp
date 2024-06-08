@@ -143,7 +143,7 @@ void bb::prefabs::SpawnPlayerHUD(jul::Scene& scene, int playerIndex)
 void bb::prefabs::SpawnMainCamera(jul::Scene& scene)
 {
     auto* cameraGameObject = scene.AddGameObject("Camera");
-    auto* cameraPtr = cameraGameObject->AddComponent<Camera>(14, GameSettings::GetAspectRatio());
+    auto* cameraPtr = cameraGameObject->AddComponent<Camera>(14.0f, GameSettings::GetAspectRatio());
     cameraGameObject->GetTransform().SetWorldPosition({ 0, 0, 0 });
     Game::GetInstance().SetMainCamera(cameraPtr);
 }

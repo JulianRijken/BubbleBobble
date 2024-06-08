@@ -207,7 +207,7 @@ void bb::MainMenu::TransitionInToGame()
         { .to = 26,
           .duration = 2.0,
           .easeFunction = EaseFunction::SineIn,
-          .onUpdate = [this](float value) { m_SelectScreen->GetTransform().SetWorldPosition(0, value, 0); },
+          .onUpdate = [this](double value) { m_SelectScreen->GetTransform().SetWorldPosition(0, value, 0); },
           .onEnd = [this]() { LoadSelectedMode(); } },
         GetGameObject());
 
@@ -242,7 +242,7 @@ void bb::MainMenu::ShowSelectScreen()
             .to = 50,
             .duration = 3.0,
             .easeFunction = EaseFunction::SineIn,
-            .onUpdate = [this](float value) { m_IntroScreen->GetTransform().SetWorldPosition(0, value, 0); },
+            .onUpdate = [this](double value) { m_IntroScreen->GetTransform().SetWorldPosition(0, value, 0); },
         },
         GetGameObject());
 
@@ -253,7 +253,8 @@ void bb::MainMenu::ShowSelectScreen()
             .to = 0,
             .duration = 4.0,
             .easeFunction = EaseFunction::SineOut,
-            .onUpdate = [this](float value) { m_SelectScreen->GetTransform().SetWorldPosition(0, value, 0); },
+            .onUpdate = [this](double value)
+            { m_SelectScreen->GetTransform().SetWorldPosition(0, static_cast<float>(value), 0); },
         },
         GetGameObject());
 
