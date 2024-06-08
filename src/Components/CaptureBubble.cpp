@@ -75,6 +75,12 @@ void bb::CaptureBubble::ReleaseCapturedTarget()
 
 void bb::CaptureBubble::OnCollisionPreSolve(const Collision& collision, const b2Manifold*)
 {
+    if(m_FloatingDuration < 0.1)
+    {
+        if(collision.otherFixture->GetFilterData().categoryBits == layer::PLAYER)
+            collision.contact->SetEnabled(false);
+    }
+
     if(m_GettingPopped)
     {
         collision.contact->SetEnabled(false);

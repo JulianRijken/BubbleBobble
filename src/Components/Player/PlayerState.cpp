@@ -192,9 +192,23 @@ void bb::PlayerAttackingState::OnEnterState(Player& player)
     glm::vec3 spawnPosition = player.GetTransform().GetWorldPosition();
     const int direction = player.m_BodySpriteRendererPtr->m_FlipX ? -1 : 1;
 
-    spawnPosition.x += player.m_ColliderPtr->GetSettings().size.x * static_cast<float>(direction);
+    const float bubbleSize{ 1.5f };
+    float castDistance = player.m_ColliderPtr->GetSettings().size.x / 2 + bubbleSize;
+    float firePower = FIRE_POWER;
+    RayCastResult out;
+    if(Physics::RayCast(
+           player.GetTransform().GetWorldPosition(), { direction, 0 }, castDistance, out, layer::ALL_TILES))
+    {
+        spawnPosition.x = out.point.x;
+        spawnPosition.y -= player.m_ColliderPtr->GetSettings().size.y / 2.0;
+        firePower = 0.0;
+    }
+    else
+    {
+        spawnPosition.x += castDistance * static_cast<float>(direction);
+    }
 
-    prefabs::SpawnCaptureBubble(spawnPosition, { direction * FIRE_POWER, 0 });
+    prefabs::SpawnCaptureBubble(spawnPosition, { direction * firePower, 0 });
 }
 
 void bb::PlayerAttackingState::Update(Player& player)
