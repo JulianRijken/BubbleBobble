@@ -46,7 +46,6 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
     {
         for(int x = -16; x < 16; ++x)
         {
-
             if(math::RandomValue() < 0.90)
                 continue;
 
@@ -77,7 +76,7 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
                              for(size_t bubbleIndex{}; bubbleIndex < m_Bubbles.size(); ++bubbleIndex)
                                  m_Bubbles[bubbleIndex]->GetGameObject()->SetActive(activeBubbleCount > bubbleIndex);
                          } },
-                       this);
+                       GetGameObject());
 
 
     // Show main menu logo
@@ -89,7 +88,7 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
                          .onStart = [this]() { m_LogoTransformPtr->GetGameObject()->SetActive(true); },
                          .onUpdate = [this](double value) { m_LogoTransformPtr->SetWorldPosition(0, value, 0); },
                          .onEnd = [this]() { OnLogoLand(); } },
-                       this);
+                       GetGameObject());
 
 
     UpdateSelectBubblePosition();
@@ -277,7 +276,6 @@ void bb::MainMenu::ShowSelectScreen()
               }
           },
           .onEnd = [this]() { m_IntroScreen->SetActive(false); } },
-
         GetGameObject());
 }
 

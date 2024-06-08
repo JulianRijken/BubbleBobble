@@ -39,6 +39,7 @@ set(BB_SOURCE_FILES
     ${SOURCE_DIR}/Components/FpsCounter.h               ${SOURCE_DIR}/Components/FpsCounter.cpp
     ${SOURCE_DIR}/Components/Character.h                ${SOURCE_DIR}/Components/Character.cpp
     ${SOURCE_DIR}/Components/PlayerHUD.h                ${SOURCE_DIR}/Components/PlayerHUD.cpp
+    ${SOURCE_DIR}/Components/LevelHUD.h                 ${SOURCE_DIR}/Components/LevelHUD.cpp
     ${SOURCE_DIR}/Components/MainMenu.h                 ${SOURCE_DIR}/Components/MainMenu.cpp
 )
 

@@ -20,6 +20,7 @@
 #include <ZenChanBehaviour.h>
 
 #include "Game.h"
+#include "LevelHUD.h"
 #include "MathExtensions.h"
 #include "Pickup.h"
 #include "Player.h"
@@ -129,14 +130,14 @@ void bb::prefabs::SpawnPlayerHUD(jul::Scene& scene, int playerIndex)
     {
         auto* livesGameObject = scene.AddGameObject("LivesText", { playerIndex ? 14 : -15, -12, 0 });
         auto* livesText = livesGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
+            "error", ResourceManager::GetFont("NES"), -80, glm::vec2{ 0, 0 });
         livesGameObject->AddComponent<SpriteRenderer>(
-            ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
+            ResourceManager::GetSprite("LevelTiles"), -90, glm::ivec2{ 4, 20 });
 
 
         auto* scoreGameObject = scene.AddGameObject("ScoreText", { playerIndex ? 4 : -4, 13, 0 });
         auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), 100, glm ::vec2{ playerIndex ? 0 : 1, 0 });
+            "error", ResourceManager::GetFont("NES"), -100, glm ::vec2{ playerIndex ? 0 : 1, 0 });
 
 
         livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
@@ -220,4 +221,10 @@ void bb::prefabs::SpawnScoreText(const glm::vec3& spawnPosition, int score, cons
                          },
                          .onEnd = [scoreText]() { scoreText->Destroy(); } },
                        scoreText);
+}
+
+void bb::prefabs::SpawnLevelHUD(Scene& scene)
+{
+    auto* levelHudGoPtr = scene.AddGameObject("Level HUD");
+    levelHudGoPtr->AddComponent<LevelHUD>();
 }

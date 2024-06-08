@@ -26,6 +26,7 @@ namespace bb
 
         Player* SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation = {});
 
+        void SpawnLevelHUD(Scene& scene);
         void SpawnZenChanDead(const glm::vec3& spawnPosition);
         void SpawnPlayerHUD(Scene& scene, int playerIndex);
         void SpawnMainCamera(Scene& scene);

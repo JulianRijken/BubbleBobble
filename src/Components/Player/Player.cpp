@@ -34,6 +34,9 @@ bool bb::Player::IsDead() const { return m_ActiveMainState == m_DeathState.get()
 
 void bb::Player::BubbleToPosition(const glm::vec3& position, double duration)
 {
+    if(m_ActiveMainState == m_DeathState.get())
+        return;
+
     if(m_ActiveMainState != m_BubbleState.get())
         SetMainState(m_BubbleState.get());
 

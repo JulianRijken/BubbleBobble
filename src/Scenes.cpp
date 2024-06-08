@@ -63,7 +63,7 @@ void bb::scenes::OnePlayerModeScene(Scene& scene)
     player1->GetGameObject()->AddComponent<CharacterInput>(true, 0);
 
     prefabs::SpawnPlayerHUD(scene, 0);
-    prefabs::SpawnPlayerHUD(scene, 1);
+    prefabs::SpawnLevelHUD(scene);
     prefabs::SpawnSideWalls(scene);
 
     Game::GetInstance().TryTransitionLevel(0, false, false);
@@ -81,6 +81,7 @@ void bb::scenes::TwoPlayerModeScene(Scene& scene)
 
     prefabs::SpawnPlayerHUD(scene, 0);
     prefabs::SpawnPlayerHUD(scene, 1);
+    prefabs::SpawnLevelHUD(scene);
     prefabs::SpawnSideWalls(scene);
 
     Game::GetInstance().TryTransitionLevel(0, false, false);
@@ -95,6 +96,7 @@ void bb::scenes::VersusModeScene(Scene& scene)
 
     prefabs::SpawnPlayerHUD(scene, 0);
     prefabs::SpawnPlayerHUD(scene, 1);
+    prefabs::SpawnLevelHUD(scene);
     prefabs::SpawnSideWalls(scene);
 
     Game::GetInstance().TryTransitionLevel(0, false, false);
@@ -104,11 +106,12 @@ void bb::scenes::VersusModeScene(Scene& scene)
 void bb::scenes::MainMenuScene(Scene& scene)
 {
     prefabs::SpawnMainCamera(scene);
+    auto* mainMenuGO = scene.AddGameObject("MainMenu");
 
     ////////////////////
     /// INTRO SCREEN ///
     ////////////////////
-    auto* introScreen = scene.AddGameObject("Intro Screen");
+    auto* introScreen = scene.AddGameObject("Intro Screen", {}, mainMenuGO);
 
     auto* logo = scene.AddGameObject("Logo", { 0, 0, 0 }, introScreen);
     logo->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Logo"), 1);
@@ -136,7 +139,7 @@ void bb::scenes::MainMenuScene(Scene& scene)
     GameObject* p1Text{ nullptr };
     GameObject* p2Text{ nullptr };
     GameObject* p3Text{ nullptr };
-    auto* selectScreen = scene.AddGameObject("Select Screen");
+    auto* selectScreen = scene.AddGameObject("Select Screen", {}, mainMenuGO);
     {
         selectBubble = scene.AddGameObject("Select Bugble", { -7, 8, 0 }, selectScreen);
         selectBubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), 1);
@@ -161,7 +164,6 @@ void bb::scenes::MainMenuScene(Scene& scene)
     selectScreen->SetActive(false);
 
 
-    auto* mainMenuGO = scene.AddGameObject("MainMenu");
     mainMenuGO->AddComponent<MainMenu>(
         &logo->GetTransform(),
         intoScreenInfo,
@@ -264,7 +266,6 @@ void bb::scenes::IntroLevelScene(Scene& scene)
 void bb::scenes::Level1Scene(Scene& scene)
 {
     scenes::AssertModeSceneLoaded();
-
 
     auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 

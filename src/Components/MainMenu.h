@@ -33,7 +33,6 @@ namespace bb
         void OnUpButton(const InputContext& context);
         void OnDownButton(const InputContext& context);
 
-
     private:
         void Update() override;
 
@@ -49,6 +48,7 @@ namespace bb
         bool m_SelectedMode{ false };
         bool m_IntroFinished{ false };
         bool m_OpenedSelectScreen{ false };
+
         Transform* m_LogoTransformPtr{ nullptr };
         Transform* m_SelectBubble{ nullptr };
         GameObject* m_IntoTextPtr{ nullptr };

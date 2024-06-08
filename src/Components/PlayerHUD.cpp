@@ -29,6 +29,9 @@ bb::PlayerHUD::PlayerHUD(GameObject* parentPtr, TextRenderer* scoreText, TextRen
 
     // Force jump visual at start
     m_VisualScore = m_TargetScore;
+
+    // Wouw we actaully manually call the update :)
+    Update();
 }
 
 bb::PlayerHUD::~PlayerHUD() { MessageQueue::RemoveListenerInstance(this); }
