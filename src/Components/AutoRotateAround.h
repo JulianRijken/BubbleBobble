@@ -4,7 +4,7 @@
 
 #include <glm/vec3.hpp>
 
-class AutoRotateAround : public jul::Component
+class AutoRotateAround final : public jul::Component
 {
 public:
     AutoRotateAround(jul::GameObject* parent, float distanceFromTarget, float speed = 1.0f);

@@ -42,7 +42,7 @@ namespace bb
         void KillCapturedTarget();
         void ReleaseCapturedTarget();
 
-        void OnCollisionPreSolve(const Collision& collision, const b2Manifold*) override;
+        void OnCollisionPreSolve(const Collision& collision, const b2Manifold* /*unused*/) override;
 
         void Update() override;
         void FixedUpdate() override;

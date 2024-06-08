@@ -4,6 +4,9 @@ namespace bb
 {
     class ZenChan;
 
+    ////////////////////////////
+    /// CURRENTLY NOT IN USE ///
+    ////////////////////////////
     class ZenChanState
     {
     public:

@@ -12,7 +12,7 @@ namespace bb
 {
     using namespace jul;
 
-    class Pickup : public Component
+    class Pickup final : public Component
     {
     public:
         inline static constexpr double LIFE_TIME{ 10 };

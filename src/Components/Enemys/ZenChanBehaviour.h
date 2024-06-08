@@ -9,7 +9,7 @@ namespace bb
 
     class ZenChan;
 
-    class ZenChanBehaviour : public Component
+    class ZenChanBehaviour final : public Component
     {
     public:
         static constexpr float MIN_TIME_BETWEEN_WALL_TURN{ 1.0f };
