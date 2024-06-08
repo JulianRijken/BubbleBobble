@@ -49,12 +49,12 @@ namespace bb
         bool m_SelectedMode{ false };
         bool m_IntroFinished{ false };
         bool m_OpenedSelectScreen{ false };
-        Transform* m_LogoTransformPtr;
-        Transform* m_SelectBubble;
-        GameObject* m_IntoTextPtr;
-        GameObject* m_IntroScreen;
-        GameObject* m_SelectScreen;
-        std::vector<Transform*> m_Options;
-        std::vector<AutoMove*> m_Bubbles;
+        Transform* m_LogoTransformPtr{ nullptr };
+        Transform* m_SelectBubble{ nullptr };
+        GameObject* m_IntoTextPtr{ nullptr };
+        GameObject* m_IntroScreen{ nullptr };
+        GameObject* m_SelectScreen{ nullptr };
+        std::vector<Transform*> m_Options{};
+        std::vector<AutoMove*> m_Bubbles{};
     };
 }  // namespace bb

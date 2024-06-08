@@ -38,26 +38,20 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
     Input::Bind((int)InputBind::UiUp, 0, false, this, &bb::MainMenu::OnUpButton);
 
 
-    // Show main menu logo
-    TweenEngine::Start({ .from = 20.0,
-                         .to = 4.0,
-                         .duration = 2.0,
-                         .easeFunction = EaseFunction::SineOut,
-                         .onUpdate = [this](double value) { m_LogoTransformPtr->SetWorldPosition(0, value, 0); },
-                         .onEnd = [this]() { OnLogoLand(); } },
-                       GetGameObject());
-
-
     Scene& scene = GetGameObject()->GetScene();
 
-    for(int x = -16; x < 16; ++x)
+    m_LogoTransformPtr->GetGameObject()->SetActive(false);
+
+    for(int y = -15; y < 15; ++y)
     {
-        for(int y = -15; y < 15; ++y)
+        for(int x = -16; x < 16; ++x)
         {
+
             if(math::RandomValue() < 0.90)
                 continue;
 
             auto* bubbleParticle = scene.AddGameObject("Bubble Particle", { x, y, 0 });
+            bubbleParticle->SetActive(false);
             bubbleParticle->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleParticle"), -90);
             bubbleParticle->AddComponent<Animator>()->Play("Twinkle", true, jul::math::RandomValue<float>());
             auto* autoMove = bubbleParticle->AddComponent<AutoMove>(
@@ -66,6 +60,37 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
             m_Bubbles.emplace_back(autoMove);
         }
     }
+
+    // Show bubbles
+    TweenEngine::Start({ .from = 20.0,
+                         .to = 4.0,
+                         .duration = 2.0,
+                         .easeFunction = EaseFunction::SineOut,
+                         .onUpdate =
+                             [this](double value)
+                         {
+                             const double alpha = math::MapValueInRange(value, 20.0, 4.0);
+
+                             const auto activeBubbleCount =
+                                 static_cast<size_t>(std::lerp(0.0, static_cast<double>(m_Bubbles.size() - 1), alpha));
+
+                             for(size_t bubbleIndex{}; bubbleIndex < m_Bubbles.size(); ++bubbleIndex)
+                                 m_Bubbles[bubbleIndex]->GetGameObject()->SetActive(activeBubbleCount > bubbleIndex);
+                         } },
+                       this);
+
+
+    // Show main menu logo
+    TweenEngine::Start({ .delay = 2.0,
+                         .from = 20.0,
+                         .to = 4.0,
+                         .duration = 2.0,
+                         .easeFunction = EaseFunction::SineOut,
+                         .onStart = [this]() { m_LogoTransformPtr->GetGameObject()->SetActive(true); },
+                         .onUpdate = [this](double value) { m_LogoTransformPtr->SetWorldPosition(0, value, 0); },
+                         .onEnd = [this]() { OnLogoLand(); } },
+                       this);
+
 
     UpdateSelectBubblePosition();
 }

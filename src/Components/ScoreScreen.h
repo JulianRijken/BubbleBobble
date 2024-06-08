@@ -67,6 +67,8 @@ namespace bb
         void OnScoreFilledIn();
         void ShowTopFive(std::optional<UserScore> showcaseScore = std::nullopt);
 
+        void TryLeaveScoreScreen();
+
         const std::string LETTER_OPTIONS{ ".ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
         const std::filesystem::path SCORE_PATH{ "./Scores/Scores.txt" };
 
@@ -76,6 +78,6 @@ namespace bb
         std::array<TextRenderer*, 3> m_LetterTextRendererPtrs{ nullptr, nullptr, nullptr };
 
         GameObject* m_ScreenElementsPtr{ nullptr };
-        GameObject* m_TopFiveScores{ nullptr };
+        GameObject* m_TopFiveScoresPtr{ nullptr };
     };
 }  // namespace bb

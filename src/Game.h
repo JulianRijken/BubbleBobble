@@ -140,6 +140,8 @@ namespace bb
 
         [[nodiscard]] Scene* GetActiveLevelScene() const;
 
+        [[nodiscard]] Camera* GetMainCamera() const { return m_MainCameraPtr; }
+
         [[nodiscard]] Event<bool, int>& GetLevelTransitionChangeEvent() { return m_LevelTransitionChangeEvent; }
 
         [[nodiscard]] GameMode GetActiveGameMode() { return m_ActiveGameMode; }

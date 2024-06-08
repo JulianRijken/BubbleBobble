@@ -18,7 +18,6 @@ bb::BubbleSpiral::BubbleSpiral(GameObject* parentPtr) :
 
 void bb::BubbleSpiral::Update()
 {
-    //
     m_SpawnIntervalTimer += GameTime::GetDeltaTime();
     if(m_SpawnIntervalTimer >= SPAWN_INTERVAL)
     {
@@ -44,5 +43,6 @@ void bb::BubbleSpiral::SpawnBubble()
         bubble->AddComponent<Animator>(sprite, "Spawn");
         auto* autoMove = bubble->AddComponent<AutoMove>(glm::vec3(velocity.x, velocity.y, 0));
         autoMove->SetUseBoundingBox(false);
+        bubble->DestroyDelayed(1.3);
     }
 }

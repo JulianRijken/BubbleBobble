@@ -1,6 +1,7 @@
 #include "ScoreScreen.h"
 
 #include <Animator.h>
+#include <Camera.h>
 #include <fmt/core.h>
 #include <GameObject.h>
 #include <Input.h>
@@ -14,7 +15,6 @@
 #include <fstream>
 
 #include "Game.h"
-
 
 bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
     Component(parentPtr)
@@ -93,6 +93,7 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
         Input::Bind((int)InputBind::UiUp, 0, false, this, &bb::ScoreScreen::OnUpButton);
     }
 }
+
 
 bool bb::ScoreScreen::IsNumber(const std::string& string)
 {
@@ -185,7 +186,7 @@ void bb::ScoreScreen::OnSelectButton(const InputContext& context)
 
     if(not m_FillingInScore)
     {
-        Game::GetInstance().ResetGame();
+        TryLeaveScoreScreen();
         return;
     }
 
@@ -282,10 +283,10 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
 
     auto& scene = GetGameObject()->GetScene();
 
-    if(m_TopFiveScores != nullptr)
-        m_TopFiveScores->Destroy();
+    if(m_TopFiveScoresPtr != nullptr)
+        m_TopFiveScoresPtr->Destroy();
 
-    m_TopFiveScores = scene.AddGameObject("TopFiveScores");
+    m_TopFiveScoresPtr = scene.AddGameObject("TopFiveScores");
 
 
     auto tweenText = [](GameObject* target, double delay, double duration)
@@ -314,7 +315,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
         std::vector<UserScore> scores = ParseScores(SCORE_PATH);
         std::sort(scores.begin(), scores.end(), std::greater<UserScore>());
 
-        auto* topFiveText = scene.AddGameObject("Text", { 0, 0, 0 }, m_TopFiveScores);
+        auto* topFiveText = scene.AddGameObject("Text", { 0, 0, 0 }, m_TopFiveScoresPtr);
         topFiveText->AddComponent<TextRenderer>("BEST 5",
                                                 ResourceManager::GetFont("NES"),
                                                 100,
@@ -333,9 +334,9 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
                 if(scoreToDisplay == showcaseScore.value())
                     isShowcaseScore = true;
 
-            SDL_Color textColor = isShowcaseScore ? SDL_Color{ 0, 255, 255, 255 } : SDL_Color{ 255, 255, 255, 255 };
+            SDL_Color textColor = isShowcaseScore ? SDL_Color{ 247, 239, 0, 255 } : SDL_Color{ 255, 255, 255, 255 };
 
-            auto* number = scene.AddGameObject("Text", { -9, startHeight - i * 2, 0 }, m_TopFiveScores);
+            auto* number = scene.AddGameObject("Text", { -9, startHeight - i * 2, 0 }, m_TopFiveScoresPtr);
             number->SetActive(false);
             number->AddComponent<TextRenderer>(numberToText.at(i + 1),
                                                ResourceManager::GetFont("NES"),
@@ -345,7 +346,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
                                                1,
                                                textColor);
 
-            auto* score = scene.AddGameObject("Text", { -2, startHeight - i * 2, 0 }, m_TopFiveScores);
+            auto* score = scene.AddGameObject("Text", { -2, startHeight - i * 2, 0 }, m_TopFiveScoresPtr);
             score->SetActive(false);
             score->AddComponent<TextRenderer>(std::to_string(scoreToDisplay.score),
                                               ResourceManager::GetFont("NES"),
@@ -355,7 +356,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
                                               1,
                                               textColor);
 
-            auto* round = scene.AddGameObject("Text", { 4, startHeight - i * 2, 0 }, m_TopFiveScores);
+            auto* round = scene.AddGameObject("Text", { 4, startHeight - i * 2, 0 }, m_TopFiveScoresPtr);
             round->SetActive(false);
             round->AddComponent<TextRenderer>(std::to_string(scoreToDisplay.round),
                                               ResourceManager::GetFont("NES"),
@@ -365,7 +366,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
                                               1,
                                               textColor);
 
-            auto* name = scene.AddGameObject("Text", { 9, startHeight - i * 2, 0 }, m_TopFiveScores);
+            auto* name = scene.AddGameObject("Text", { 9, startHeight - i * 2, 0 }, m_TopFiveScoresPtr);
             name->SetActive(false);
             name->AddComponent<TextRenderer>(scoreToDisplay.name,
                                              ResourceManager::GetFont("NES"),
@@ -387,11 +388,34 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
     }
     catch(const std::runtime_error& error)
     {
-        auto* firstOneText = scene.AddGameObject("Text", { 0, -2, 0 }, m_TopFiveScores);
+        auto* firstOneText = scene.AddGameObject("Text", { 0, -2, 0 }, m_TopFiveScoresPtr);
         firstOneText->SetActive(false);
         firstOneText->AddComponent<TextRenderer>(
             "You are the first one!", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
 
         tweenText(firstOneText, 0, 2);
     }
+}
+
+void bb::ScoreScreen::TryLeaveScoreScreen()
+{
+    Camera* camera = Game::GetInstance().GetMainCamera();
+    assert(camera);
+
+    if(TweenEngine::HasActiveTweens(camera))
+        return;
+
+    TweenEngine::Start({ .from = camera->GetTransform().GetWorldPosition().y,
+                         .to = -Game::GRID_SIZE_Y,
+                         .duration = 2.0,
+                         .easeFunction = EaseFunction::SineIn,
+                         .onUpdate =
+                             [camera](double value)
+                         {
+                             glm::vec3 targetPosition = camera->GetTransform().GetWorldPosition();
+                             targetPosition.y = value;
+                             camera->GetTransform().SetWorldPosition(targetPosition);
+                         },
+                         .onEnd = []() { Game::GetInstance().ResetGame(); } },
+                       camera);
 }
