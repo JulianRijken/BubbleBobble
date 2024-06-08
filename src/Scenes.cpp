@@ -46,6 +46,15 @@ void bb::scenes::BindScenes()
     SceneManager::GetInstance().BindScene((int)Id::ScoreScreen, ScoreScene);
 }
 
+void bb::scenes::AssertModeSceneLoaded()
+{
+    assert((SceneManager::GetPrimaryScene().GetId() == (int)scenes::Id::OnePlayerMode or
+            SceneManager::GetPrimaryScene().GetId() == (int)scenes::Id::TwoPlayerMode or
+            SceneManager::GetPrimaryScene().GetId() == (int)scenes::Id::VersusMode) &&
+           "Loaded Scene Requires Mode Scene To Be Loaded!");
+}
+
+
 void bb::scenes::OnePlayerModeScene(Scene& scene)
 {
     prefabs::SpawnMainCamera(scene);
@@ -90,6 +99,7 @@ void bb::scenes::VersusModeScene(Scene& scene)
 
     Game::GetInstance().TryTransitionLevel(0, false, false);
 }
+
 
 void bb::scenes::MainMenuScene(Scene& scene)
 {
@@ -162,46 +172,10 @@ void bb::scenes::MainMenuScene(Scene& scene)
 }
 
 
-void bb::scenes::SceneGraphTestScene(Scene& scene)
-{
-    GameObject* bubbleBase = scene.AddGameObject("Bubble");
-    bubbleBase->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Dot"), 1);
-    bubbleBase->AddComponent<AutoRotateAround>(4.0f, 4.0f);
-
-
-    const GameObject* lastBubble = bubbleBase;
-    for(int i = 0; i < 10; ++i)
-    {
-        GameObject* bubble = scene.AddGameObject("Bubble");
-        bubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), i);
-        bubble->AddComponent<AutoRotateAround>(1.0f, 0.1f * i);
-        bubble->GetTransform().SetParent(&lastBubble->GetTransform());
-
-        if(i == 4)
-            bubble->SetActive(false);
-
-        if(i == 6)
-        {
-            // TODO: A issue showed up here
-            // because the visibility chagnes instantly instead of at the end of the frame
-            // The positon the rotate around had will be shown for a frame as that is in Unpdate
-            // The tween on end happends afte rupdate so now later update is needed in the rotate around
-
-            // Show main menu logo
-            TweenEngine::Start(
-                {
-                    .duration = 2.0f,
-                    .onEnd = [bubbleBase, bubble]() { bubble->GetTransform().SetParent(&bubbleBase->GetTransform()); },
-                },
-                nullptr);
-        }
-
-        lastBubble = bubble;
-    }
-}
-
 void bb::scenes::IntroLevelScene(Scene& scene)
 {
+    scenes::AssertModeSceneLoaded();
+
     constexpr double rotateDistance = 3.5;
     constexpr double rotateSpeed = 3.0;
     constexpr double heightOffset = -3.0;
@@ -289,6 +263,9 @@ void bb::scenes::IntroLevelScene(Scene& scene)
 
 void bb::scenes::Level1Scene(Scene& scene)
 {
+    scenes::AssertModeSceneLoaded();
+
+
     auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 
     if(Game::GetInstance().GetActiveGameMode() == GameMode::VS)
@@ -324,6 +301,9 @@ void bb::scenes::Level1Scene(Scene& scene)
 
 void bb::scenes::Level2Scene(Scene& scene)
 {
+    scenes::AssertModeSceneLoaded();
+
+
     auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 
     for(int i{}; i < 5; ++i)
@@ -351,6 +331,8 @@ void bb::scenes::Level2Scene(Scene& scene)
 
 void bb::scenes::Level3Scene(Scene& scene)
 {
+    scenes::AssertModeSceneLoaded();
+
     auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
 
 
@@ -380,10 +362,49 @@ void bb::scenes::Level3Scene(Scene& scene)
     //     sceneLifeTimeObject);
 }
 
+
 void bb::scenes::ScoreScene(Scene& scene)
 {
     prefabs::SpawnMainCamera(scene);
 
     auto* scoreScreen = scene.AddGameObject("ScoreScreen");
     scoreScreen->AddComponent<ScoreScreen>();
+}
+
+void bb::scenes::SceneGraphTestScene(Scene& scene)
+{
+    GameObject* bubbleBase = scene.AddGameObject("Bubble");
+    bubbleBase->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Dot"), 1);
+    bubbleBase->AddComponent<AutoRotateAround>(4.0f, 4.0f);
+
+
+    const GameObject* lastBubble = bubbleBase;
+    for(int i = 0; i < 10; ++i)
+    {
+        GameObject* bubble = scene.AddGameObject("Bubble");
+        bubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), i);
+        bubble->AddComponent<AutoRotateAround>(1.0f, 0.1f * i);
+        bubble->GetTransform().SetParent(&lastBubble->GetTransform());
+
+        if(i == 4)
+            bubble->SetActive(false);
+
+        if(i == 6)
+        {
+            // TODO: A issue showed up here
+            // because the visibility chagnes instantly instead of at the end of the frame
+            // The positon the rotate around had will be shown for a frame as that is in Unpdate
+            // The tween on end happends afte rupdate so now later update is needed in the rotate around
+
+            // Show main menu logo
+            TweenEngine::Start(
+                {
+                    .duration = 2.0f,
+                    .onEnd = [bubbleBase, bubble]() { bubble->GetTransform().SetParent(&bubbleBase->GetTransform()); },
+                },
+                nullptr);
+        }
+
+        lastBubble = bubble;
+    }
 }

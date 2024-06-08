@@ -44,6 +44,8 @@ void bb::Game::Initialize()
 
 void bb::Game::StartGame(GameMode mode)
 {
+    assert(m_GameState == GameState::MainMenu && "Starting game is only allowed from main menu");
+
     m_ActiveGameMode = mode;
     m_ActiveLevelIndex = 0;
     m_ActiveLevelTilesPtr = nullptr;
@@ -130,17 +132,11 @@ jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
 
 void bb::Game::TryTransitionLevel(int levelIndex, bool onlyLoadAfterTransition, bool resetPlayers)
 {
-    if(m_InTransition)
-    {
-        std::cerr << "Trying to transition when when already in transition" << std::endl;
-        return;
-    }
+    assert(not m_InTransition && "Trying to transition when when already in transition");
+    assert(levelIndex >= 0 && "Trying to transition to invalid index");
+    assert((m_GameState == GameState::Intro or m_GameState == GameState::Game) &&
+           "Transition called when not in game or in intro");
 
-    if(levelIndex < 0)
-    {
-        std::cerr << "Trying to transition to invalid index " << levelIndex << std::endl;
-        return;
-    }
 
     if(levelIndex >= static_cast<int>(LEVELS.size()))
     {
@@ -243,9 +239,15 @@ void bb::Game::OnTransitionGameButton(const InputContext& context)
     if(context.state != ButtonState::Down)
         return;
 
+    if(m_InTransition)
+    {
+        std::cerr << "Can't transition while in transition" << std::endl;
+        return;
+    }
+
     if(m_GameState != GameState::Game)
     {
-        fmt::println("Transition only works when in game and not in intro");
+        std::cerr << "Can't transition while not in game" << std::endl;
         return;
     }
 
@@ -296,6 +298,7 @@ void bb::Game::ResetGame()
 
 void bb::Game::EndGame()
 {
+    m_GameState = GameState::ScoreScreen;
     SceneManager::GetInstance().LoadScene((int)scenes::Id::ScoreScreen, SceneLoadMode::OverrideForce);
 }
 

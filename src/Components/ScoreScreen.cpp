@@ -7,9 +7,13 @@
 #include <Scene.h>
 #include <SpriteRenderer.h>
 #include <TextRenderer.h>
+#include <TweenEngine.h>
 
 #include <filesystem>
 #include <fstream>
+
+#include "Game.h"
+
 
 bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
     Component(parentPtr)
@@ -92,10 +96,12 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
             for(int i = 0; i < std::min(static_cast<int>(scores.size()), 5); ++i)
             {
                 auto* number = scene.AddGameObject("Text", { -8, startHeight - i * 2, 0 }, screenElementsPtr);
+                number->SetActive(false);
                 number->AddComponent<TextRenderer>(
                     numberToText.at(i + 1), ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
 
                 auto* score = scene.AddGameObject("Text", { -2, startHeight - i * 2, 0 }, screenElementsPtr);
+                score->SetActive(false);
                 score->AddComponent<TextRenderer>(std::to_string(scores[i].score),
                                                   ResourceManager::GetFont("NES"),
                                                   100,
@@ -103,6 +109,7 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
                                                   true);
 
                 auto* round = scene.AddGameObject("Text", { 4, startHeight - i * 2, 0 }, screenElementsPtr);
+                round->SetActive(false);
                 round->AddComponent<TextRenderer>(std::to_string(scores[i].round),
                                                   ResourceManager::GetFont("NES"),
                                                   100,
@@ -110,8 +117,38 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
                                                   true);
 
                 auto* name = scene.AddGameObject("Text", { 9, startHeight - i * 2, 0 }, screenElementsPtr);
+                name->SetActive(false);
                 name->AddComponent<TextRenderer>(
                     scores[i].name, ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+
+                auto tweenText = [](GameObject* target, double delay, double duration)
+                {
+                    TweenEngine::Start(
+                        {
+                            .delay = delay,
+                            .from = -Game::GRID_SIZE_Y,
+                            .to = target->GetTransform().GetWorldPosition().y,
+                            .duration = duration,
+                            .easeFunction = EaseFunction::SineOut,
+                            .onStart = [target]() { target->SetActive(true); },
+                            .onUpdate =
+                                [target](double value)
+                            {
+                                glm::vec3 targetPosition = target->GetTransform().GetWorldPosition();
+                                targetPosition.y = value;
+                                target->GetTransform().SetWorldPosition(targetPosition);
+                            },
+                        },
+                        target);
+                };
+
+                const double defaultDuration = 1.0;
+                const double delay = 0.4;
+                const double durationScale = 0.1;
+                tweenText(number, 0, i * durationScale + defaultDuration);
+                tweenText(score, delay, i * durationScale + defaultDuration);
+                tweenText(round, delay * 2, i * durationScale + defaultDuration);
+                tweenText(name, delay * 3, i * durationScale + defaultDuration);
             }
         }
         catch(const std::runtime_error& error)

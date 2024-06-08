@@ -21,6 +21,10 @@ namespace bb::scenes
 
     void BindScenes();
 
+    // Used to make sure scenes that depend on the
+    // mode scenes don't get loaded
+    void AssertModeSceneLoaded();
+
     void OnePlayerModeScene(Scene& scene);
     void TwoPlayerModeScene(Scene& scene);
     void VersusModeScene(Scene& scene);
