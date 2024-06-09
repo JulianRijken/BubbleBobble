@@ -25,6 +25,7 @@
 #include "Pickup.h"
 #include "Player.h"
 #include "PlayerHUD.h"
+#include "ZenChan.h"
 
 void bb::prefabs::SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 velocity)
 {

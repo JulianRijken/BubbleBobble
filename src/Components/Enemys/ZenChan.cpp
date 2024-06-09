@@ -12,7 +12,7 @@
 #include "Prefabs.h"
 
 bb::ZenChan::ZenChan(GameObject* parentPtr) :
-    Character(parentPtr, "Zen Chan"),
+    Enemy(parentPtr, "Zen Chan"),
     m_Animator(parentPtr->GetComponent<Animator>()),
     m_Rigidbody(parentPtr->GetComponent<Rigidbody>()),
     m_SpriteRenderer(parentPtr->GetComponent<SpriteRenderer>()),
@@ -84,6 +84,7 @@ void bb::ZenChan::OnCollisionBegin(const Collision& collision)
 }
 
 jul::Transform* bb::ZenChan::GetCaptureTransform() { return &GetTransform(); }
+
 
 void bb::ZenChan::OnJumpInput()
 {

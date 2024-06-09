@@ -46,6 +46,8 @@ set(BB_SOURCE_FILES
 # Adds the source files to the executible
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
+    src/Components/LevelState.h src/Components/LevelState.cpp
+    src/Components/Enemys/Enemy.h src/Components/Enemys/Enemy.cpp
 )
 
 # Include source directories

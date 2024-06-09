@@ -112,6 +112,12 @@ namespace bb
         ScoreScreen
     };
 
+    enum class EnemyType
+    {
+        ZenChan,
+    };
+
+
     namespace layer
     {
         constexpr uint16_t Index(int index) { return 1 << index; }

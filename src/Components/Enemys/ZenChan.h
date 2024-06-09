@@ -1,7 +1,8 @@
 #pragma once
-#include <Character.h>
 #include <IBubbleable.h>
 #include <ICollisionListener.h>
+
+#include "Enemy.h"
 
 namespace jul
 {
@@ -15,7 +16,7 @@ namespace bb
 {
     using namespace jul;
 
-    class ZenChan final : public Character, public ICollisionListener, public IBubbleable
+    class ZenChan final : public Enemy, public ICollisionListener, public IBubbleable
     {
     public:
         static constexpr float MOVE_SPEED{ 8.0f };
@@ -48,7 +49,6 @@ namespace bb
         [[nodiscard]] std::string GetSpriteAnimationName() override { return "zenchan_bubble"; }
 
         [[nodiscard]] Transform* GetCaptureTransform() override;
-
 
         void FixedUpdate() override;
         void Update() override;

@@ -26,6 +26,7 @@
 #include "CharacterInput.h"
 #include "FpsCounter.h"
 #include "Game.h"
+#include "LevelState.h"
 #include "Prefabs.h"
 #include "ScoreScreen.h"
 #include "Transform.h"
@@ -267,75 +268,44 @@ void bb::scenes::Level1Scene(Scene& scene)
 {
     scenes::AssertModeSceneLoaded();
 
-    auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
+    const std::vector<LevelState::EnemySpawn> enemys{
+        {.type = EnemyType::ZenChan, .delay = 0, .location = glm::vec3{ -2, 6, 0 }},
+        {.type = EnemyType::ZenChan, .delay = 1,  .location = glm::vec3{ 0, 6, 0 }},
+        {.type = EnemyType::ZenChan, .delay = 2,  .location = glm::vec3{ 2, 6, 0 }}
+    };
 
-    if(Game::GetInstance().GetActiveGameMode() == GameMode::VS)
-    {
-        auto* zenChan = prefabs::SpawnZenChan({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
-        zenChan->GetGameObject()->AddComponent<CharacterInput>(false, 1);
-    }
-    else
-    {
-        for(int i{}; i < 5; ++i)
-        {
-            TweenEngine::Start(
-                {
-                    .delay = static_cast<double>(i) * 0.5f,
-                    .duration = 0,
-                    .onEnd =
-                        []() {
-                            prefabs::SpawnZenChanWithBehaviour({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
-                        },
-                },
-                sceneLifeTimeObject);
-        }
-    }
+    auto* levelStateGoPtr = scene.AddGameObject("Level1State");
+    levelStateGoPtr->AddComponent<LevelState>(enemys);
 }
 
 void bb::scenes::Level2Scene(Scene& scene)
 {
     scenes::AssertModeSceneLoaded();
 
+    const std::vector<LevelState::EnemySpawn> enemys{
+        {.type = EnemyType::ZenChan, .delay = 0,  .location = glm::vec3{ -4, 4, 0 }},
+        {.type = EnemyType::ZenChan, .delay = 0, .location = glm::vec3{ -1, 10, 0 }},
+        {.type = EnemyType::ZenChan, .delay = 0,  .location = glm::vec3{ 1, 10, 0 }},
+        {.type = EnemyType::ZenChan, .delay = 0,   .location = glm::vec3{ 4, 4, 0 }}
+    };
 
-    auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
-
-    for(int i{}; i < 5; ++i)
-    {
-        TweenEngine::Start(
-            {
-                .delay = static_cast<double>(i) * 0.5f,
-                .duration = 0,
-                .onEnd =
-                    []() {
-                        prefabs::SpawnZenChanWithBehaviour({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
-                    },
-            },
-            sceneLifeTimeObject);
-    }
+    auto* levelStateGoPtr = scene.AddGameObject("Level2State");
+    levelStateGoPtr->AddComponent<LevelState>(enemys);
 }
 
 void bb::scenes::Level3Scene(Scene& scene)
 {
     scenes::AssertModeSceneLoaded();
 
-    auto* sceneLifeTimeObject = scene.AddGameObject("LifeTimeObject");
+    const std::vector<LevelState::EnemySpawn> enemys{
+        {.type = EnemyType::ZenChan, .delay = 2, .location = glm::vec3{ -6, 4, 0 }},
+        {.type = EnemyType::ZenChan, .delay = 0, .location = glm::vec3{ -4, 8, 0 }},
+        {.type = EnemyType::ZenChan, .delay = 2,  .location = glm::vec3{ 4, 8, 0 }},
+        {.type = EnemyType::ZenChan, .delay = 0,  .location = glm::vec3{ 6, 4, 0 }}
+    };
 
-
-    for(int i{}; i < 5; ++i)
-    {
-        TweenEngine::Start(
-            {
-                .delay = static_cast<double>(i) * 0.5f,
-                .duration = 0,
-                .onEnd =
-                    []() {
-                        prefabs::SpawnZenChanWithBehaviour({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
-                    },
-            },
-            sceneLifeTimeObject);
-    }
-
-    prefabs::SpawnZenChanWithBehaviour({ 0, 12, 0 });
+    auto* levelStateGoPtr = scene.AddGameObject("Level3State");
+    levelStateGoPtr->AddComponent<LevelState>(enemys);
 }
 
 
@@ -345,42 +315,4 @@ void bb::scenes::ScoreScene(Scene& scene)
 
     auto* scoreScreen = scene.AddGameObject("ScoreScreen");
     scoreScreen->AddComponent<ScoreScreen>();
-}
-
-void bb::scenes::SceneGraphTestScene(Scene& scene)
-{
-    GameObject* bubbleBase = scene.AddGameObject("Bubble");
-    bubbleBase->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Dot"), 1);
-    bubbleBase->AddComponent<AutoRotateAround>(4.0f, 4.0f);
-
-
-    const GameObject* lastBubble = bubbleBase;
-    for(int i = 0; i < 10; ++i)
-    {
-        GameObject* bubble = scene.AddGameObject("Bubble");
-        bubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), i);
-        bubble->AddComponent<AutoRotateAround>(1.0f, 0.1f * i);
-        bubble->GetTransform().SetParent(&lastBubble->GetTransform());
-
-        if(i == 4)
-            bubble->SetActive(false);
-
-        if(i == 6)
-        {
-            // TODO: A issue showed up here
-            // because the visibility chagnes instantly instead of at the end of the frame
-            // The positon the rotate around had will be shown for a frame as that is in Unpdate
-            // The tween on end happends afte rupdate so now later update is needed in the rotate around
-
-            // Show main menu logo
-            TweenEngine::Start(
-                {
-                    .duration = 2.0f,
-                    .onEnd = [bubbleBase, bubble]() { bubble->GetTransform().SetParent(&bubbleBase->GetTransform()); },
-                },
-                nullptr);
-        }
-
-        lastBubble = bubble;
-    }
 }

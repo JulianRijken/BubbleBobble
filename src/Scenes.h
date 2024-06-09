@@ -36,11 +36,4 @@ namespace bb::scenes
     void ScoreScene(Scene& scene);
 
     void MainMenuScene(Scene& scene);
-
-
-    ///////////////////
-    /// TEST SCENES ///
-    //////////////////
-    void SceneGraphTestScene(Scene& scene);
-
 }  // namespace bb
