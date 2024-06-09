@@ -115,6 +115,7 @@ namespace bb
     enum class EnemyType
     {
         ZenChan,
+        Maita
     };
 
 

@@ -3,8 +3,10 @@
 #include <CharacterInput.h>
 #include <TweenEngine.h>
 
+#include "Maita.h"
 #include "prefabs.h"
 #include "ZenChan.h"
+
 
 bb::LevelState::LevelState(jul::GameObject* parentPtr, const std::vector<EnemySpawn>& enemySpawns) :
     Component(parentPtr, "LevelState")
@@ -26,6 +28,10 @@ bb::LevelState::LevelState(jul::GameObject* parentPtr, const std::vector<EnemySp
             Enemy* enemy = nullptr;
             if(enemySpawn.type == EnemyType::ZenChan)
                 enemy = prefabs::SpawnZenChanWithBehaviour(fromLocation);
+            else if(enemySpawn.type == EnemyType::Maita)
+                enemy = prefabs::SpawnMaitaWithBehaviour(fromLocation);
+
+
             assert(enemy != nullptr && "Enemy Not Implemented");
 
             enemy->GetGameObject()->SetActive(false);

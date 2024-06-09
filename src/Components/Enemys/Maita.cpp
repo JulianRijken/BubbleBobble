@@ -1,4 +1,4 @@
-#include "ZenChan.h"
+#include "Maita.h"
 
 #include <Animator.h>
 #include <BoxCollider.h>
@@ -11,18 +11,18 @@
 #include "Player.h"
 #include "Prefabs.h"
 
-bb::ZenChan::ZenChan(GameObject* parentPtr) :
-    Enemy(parentPtr, "Zen Chan"),
+bb::Maita::Maita(GameObject* parentPtr) :
+    Enemy(parentPtr, "Maita"),
     m_Animator(parentPtr->GetComponent<Animator>()),
     m_Rigidbody(parentPtr->GetComponent<Rigidbody>()),
     m_SpriteRenderer(parentPtr->GetComponent<SpriteRenderer>()),
     m_BoxCollider(parentPtr->GetComponent<BoxCollider>())
 {
     m_Rigidbody->SetGravityScale(1.0f);
-    m_Animator->Play("zenchan_normal", true);
+    m_Animator->Play("maita_normal", true);
 }
 
-void bb::ZenChan::FixedUpdate()
+void bb::Maita::FixedUpdate()
 {
     switch(m_State)
     {
@@ -59,7 +59,7 @@ void bb::ZenChan::FixedUpdate()
     }
 }
 
-void bb::ZenChan::Update()
+void bb::Maita::Update()
 {
     if(GetMoveInput().x < 0)
         m_SpriteRenderer->m_FlipX = false;
@@ -67,25 +67,24 @@ void bb::ZenChan::Update()
         m_SpriteRenderer->m_FlipX = true;
 }
 
-void bb::ZenChan::Jump()
+void bb::Maita::Jump()
 {
     m_State = State::Jumping;
     m_Rigidbody->AddForce({ m_Rigidbody->GetVelocity().x * CLIMB_MOMENTEM_KEEP, CLIMB_SPEED },
                           Rigidbody::ForceMode::VelocityChange);
 }
 
-void bb::ZenChan::OnCollisionBegin(const Collision& collision)
+void bb::Maita::OnCollisionBegin(const Collision& collision)
 {
-    // Allows ZenChan to damage player
+    // Allows Maita to damage player
     const auto* collider = static_cast<BoxCollider*>(collision.otherFixture->GetUserData());
     if(auto* damageable = collider->GetGameObject()->GetComponent<IDamageable>())
         damageable->OnDamage(this);
 }
 
-jul::Transform* bb::ZenChan::GetCaptureTransform() { return &GetTransform(); }
+jul::Transform* bb::Maita::GetCaptureTransform() { return &GetTransform(); }
 
-
-void bb::ZenChan::OnJumpInput()
+void bb::Maita::OnJumpInput()
 {
     if(m_State != State::Walking)
         return;
@@ -93,6 +92,6 @@ void bb::ZenChan::OnJumpInput()
     Jump();
 }
 
-void bb::ZenChan::OnAttackInput() {}
+void bb::Maita::OnAttackInput() {}
 
-void bb::ZenChan::SpawnDeadVersion() { prefabs::SpawnZenChanDead(GetTransform().GetWorldPosition()); }
+void bb::Maita::SpawnDeadVersion() { prefabs::SpawnMaitaDead(GetTransform().GetWorldPosition()); }

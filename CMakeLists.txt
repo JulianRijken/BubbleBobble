@@ -19,7 +19,9 @@ set(BB_SOURCE_FILES
 
 
     ${SOURCE_DIR}/Components/CharacterInput.h           ${SOURCE_DIR}/Components/CharacterInput.cpp
-    ${SOURCE_DIR}/Components/Enemys/ZenChanState.h      ${SOURCE_DIR}/Components/Enemys/ZenChanState.cpp
+    ${SOURCE_DIR}/Components/Enemys/Maita.h             ${SOURCE_DIR}/Components/Enemys/Maita.cpp
+    ${SOURCE_DIR}/Components/Enemys/MaitaBehaviour.h    ${SOURCE_DIR}/Components/Enemys/MaitaBehaviour.cpp
+    ${SOURCE_DIR}/Components/Enemys/ZenChan.h           ${SOURCE_DIR}/Components/Enemys/ZenChan.cpp
     ${SOURCE_DIR}/Components/Enemys/ZenChanBehaviour.h  ${SOURCE_DIR}/Components/Enemys/ZenChanBehaviour.cpp
     ${SOURCE_DIR}/Components/ScoreScreen.h              ${SOURCE_DIR}/Components/ScoreScreen.cpp
     ${SOURCE_DIR}/Components/Health.h                   ${SOURCE_DIR}/Components/Health.cpp
@@ -30,7 +32,6 @@ set(BB_SOURCE_FILES
     ${SOURCE_DIR}/Components/Player/Player.h            ${SOURCE_DIR}/Components/Player/Player.cpp
     ${SOURCE_DIR}/Components/Player/PlayerState.h       ${SOURCE_DIR}/Components/Player/PlayerState.cpp
 
-    ${SOURCE_DIR}/Components/Enemys/ZenChan.h           ${SOURCE_DIR}/Components/Enemys/ZenChan.cpp
 
     ${SOURCE_DIR}/Components/BubbleSpiral.h             ${SOURCE_DIR}/Components/BubbleSpiral.cpp
     ${SOURCE_DIR}/Components/OneWayPlatform.h           ${SOURCE_DIR}/Components/OneWayPlatform.cpp

@@ -16,16 +16,17 @@
 #include <SpriteRenderer.h>
 #include <TextRenderer.h>
 #include <TweenEngine.h>
-#include <ZenChan.h>
-#include <ZenChanBehaviour.h>
 
 #include "Game.h"
 #include "LevelHUD.h"
+#include "Maita.h"
+#include "MaitaBehaviour.h"
 #include "MathExtensions.h"
 #include "Pickup.h"
 #include "Player.h"
 #include "PlayerHUD.h"
 #include "ZenChan.h"
+#include "ZenChanBehaviour.h"
 
 void bb::prefabs::SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 velocity)
 {
@@ -78,9 +79,9 @@ void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
     Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
     assert(activeScene);
 
-    auto* deadZenChen = activeScene->AddGameObject("Dead ZenChen", spawnPosition);
+    auto* deadZenChen = activeScene->AddGameObject("Dead Maita", spawnPosition);
     auto* spriteRenderer = deadZenChen->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
-    deadZenChen->AddComponent<Animator>(spriteRenderer, "zenchan_dead");
+    deadZenChen->AddComponent<Animator>(spriteRenderer, "maita_dead");
     auto* rigidbody = deadZenChen->AddComponent<Rigidbody>();
     deadZenChen->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
@@ -97,6 +98,58 @@ void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
     const glm::vec2 velocity = flyDirection * jul::math::RandomRange(15.0f, 20.0f);
     rigidbody->AddForce(glm::vec3{ velocity.x, velocity.y, 0 }, jul::Rigidbody::ForceMode::Impulse);
 }
+
+bb::Maita* bb::prefabs::SpawnMaitaWithBehaviour(const glm::vec3& spawnPosition)
+{
+    Maita* maitaPtr = SpawnMaita(spawnPosition);
+    maitaPtr->GetGameObject()->AddComponent<MaitaBehaviour>(maitaPtr);
+    return maitaPtr;
+}
+
+bb::Maita* bb::prefabs::SpawnMaita(const glm::vec3& spawnPosition)
+{
+    Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
+    assert(activeScene);
+
+    auto* maitaGoPtr = activeScene->AddGameObject("Maita", spawnPosition);
+    maitaGoPtr->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    maitaGoPtr->AddComponent<Animator>();
+    maitaGoPtr->AddComponent<Rigidbody>();
+    maitaGoPtr->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f,
+        .restitution = 0.1f,
+        .size = {                   1.80f,                   1.90f                                          },
+        .mask = {.category = layer::ENEMY,
+                 .collideWith = layer::PLAYER | layer::TILE | layer::TILE_SEMI_SOLID | layer::CAPTURE_BUBBLE}
+    });
+    return maitaGoPtr->AddComponent<Maita>();
+}
+
+void bb::prefabs::SpawnMaitaDead(const glm::vec3& spawnPosition)
+{
+    Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
+    assert(activeScene);
+
+    auto* deadMaita = activeScene->AddGameObject("Dead Maita", spawnPosition);
+    auto* spriteRenderer = deadMaita->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    deadMaita->AddComponent<Animator>(spriteRenderer, "maita_dead");
+    auto* rigidbody = deadMaita->AddComponent<Rigidbody>();
+    deadMaita->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f,
+        .restitution = 1.0f,
+        .size = {                        1.90f,1.90f                                               },
+        .mask = {.category = layer::ENEMY_DEAD,
+                 .collideWith = layer::TILE | layer::TILE_SEMI_SOLID | layer::INVIS_WALLS}
+    });
+    deadMaita->AddComponent<DeadEnemy>(PickupType::Fries);
+
+    const double angle = glm::radians(jul::math::RandomValue() > 0.5 ? jul::math::RandomRange(50.0, 70.0) + 90.0
+                                                                     : jul::math::RandomRange(50.0, 70.0));
+    const glm::vec2 flyDirection{ std::cos(angle), std::sin(angle) };
+    const glm::vec2 velocity = flyDirection * jul::math::RandomRange(15.0f, 20.0f);
+    rigidbody->AddForce(glm::vec3{ velocity.x, velocity.y, 0 }, jul::Rigidbody::ForceMode::Impulse);
+}
+
 
 bb::Player* bb::prefabs::SpawnPlayer(jul::Scene& scene, int playerIndex, glm::vec3 spawnLocation)
 {
@@ -161,8 +214,16 @@ void bb::prefabs::SpawnPickup(PickupType pickup, const glm::vec3& spawnPosition)
     Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
     assert(activeScene);
 
+    glm::ivec2 itemCell{};
+
+    if(pickup == PickupType::Fries)
+        itemCell = { 25, 0 };
+    else if(pickup == PickupType::Watermelon)
+        itemCell = { 19, 0 };
+
+
     auto* fruit = activeScene->AddGameObject("Fruit", spawnPosition);
-    fruit->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Items"), 0, glm::ivec2{ 25, 0 });
+    fruit->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Items"), 0, itemCell);
     fruit->AddComponent<Rigidbody>(jul::Rigidbody::Settings{ .mode = jul::Rigidbody::Mode::Dynamic });
     fruit->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,

@@ -11,6 +11,7 @@
 namespace bb
 {
 
+    class Maita;
     class Player;
     class ZenChan;
 
@@ -23,14 +24,19 @@ namespace bb
 
         ZenChan* SpawnZenChanWithBehaviour(const glm::vec3& spawnPosition);
         ZenChan* SpawnZenChan(const glm::vec3& spawnPosition);
+        void SpawnZenChanDead(const glm::vec3& spawnPosition);
+
+        Maita* SpawnMaitaWithBehaviour(const glm::vec3& spawnPosition);
+        Maita* SpawnMaita(const glm::vec3& spawnPosition);
+        void SpawnMaitaDead(const glm::vec3& spawnPosition);
+
+        void SpawnPickup(PickupType fruitType, const glm::vec3& spawnPosition);
 
         Player* SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation = {});
 
         void SpawnLevelHUD(Scene& scene);
-        void SpawnZenChanDead(const glm::vec3& spawnPosition);
         void SpawnPlayerHUD(Scene& scene, int playerIndex);
         void SpawnMainCamera(Scene& scene);
-        void SpawnPickup(PickupType fruitType, const glm::vec3& spawnPosition);
         void SpawnSideWalls(Scene& scene);
         void SpawnScoreText(const glm::vec3& spawnPosition, int score, const SDL_Color& color = { 255, 255, 255, 255 });
     }  // namespace prefabs

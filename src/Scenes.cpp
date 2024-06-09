@@ -270,7 +270,7 @@ void bb::scenes::Level1Scene(Scene& scene)
 
     const std::vector<LevelState::EnemySpawn> enemys{
         {.type = EnemyType::ZenChan, .delay = 0, .location = glm::vec3{ -2, 6, 0 }},
-        {.type = EnemyType::ZenChan, .delay = 1,  .location = glm::vec3{ 0, 6, 0 }},
+        {  .type = EnemyType::Maita, .delay = 1,  .location = glm::vec3{ 0, 6, 0 }},
         {.type = EnemyType::ZenChan, .delay = 2,  .location = glm::vec3{ 2, 6, 0 }}
     };
 
