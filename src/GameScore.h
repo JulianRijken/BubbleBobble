@@ -14,7 +14,7 @@ namespace bb
         GameScore();
         ~GameScore();
 
-        [[nodiscard]] int GetScore(int playerIndex);
+        [[nodiscard]] int GetScore(int playerIndex) const;
         void ResetScore();
 
     private:

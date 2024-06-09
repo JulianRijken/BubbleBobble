@@ -15,16 +15,57 @@
 #include <fstream>
 
 #include "Game.h"
+#include "GameScore.h"
 
 bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
-    Component(parentPtr)
+    Component(parentPtr),
+    m_SelectedPlayerWriting(0)
 {
     Scene& scene = GetGameObject()->GetScene();
+
+    m_LocalP1Score.score = Game::GetInstance().GetGameScore().GetScore(0);
+    m_LocalP1Score.round = Game::GetInstance().GetActiveLevelIndex();
+    m_LocalP2Score.score = Game::GetInstance().GetGameScore().GetScore(1);
+    m_LocalP2Score.round = Game::GetInstance().GetActiveLevelIndex();
+
+
+    if(m_LocalP1Score.score == -1)
+    {
+        if(m_LocalP2Score.score != -1)
+        {
+            m_LocalP1Score = m_LocalP2Score;
+            m_LocalP2Score.score = -1;
+        }
+    }
 
 
     m_ScreenElementsPtr = scene.AddGameObject("Score Screen");
     {
-        auto* titleText = scene.AddGameObject("Text", { 0, 10, 0 }, m_ScreenElementsPtr);
+        int heightOffset = 5;
+
+        if(m_LocalP1Score.score == -1 and m_LocalP2Score.score == -1)
+        {
+
+            auto* titleText = scene.AddGameObject("Text", { 0, 11, 0 }, m_ScreenElementsPtr);
+            titleText->AddComponent<TextRenderer>("Bubble Bobble Leaderboard",
+                                                  ResourceManager::GetFont("NES"),
+                                                  100,
+                                                  glm ::vec2{ 0.5f, 0.5f },
+                                                  true,
+                                                  1.0,
+                                                  SDL_Color{ 0, 255, 0, 255 });
+
+            auto* noPlayerText = scene.AddGameObject("Text", { 0, 9, 0 }, m_ScreenElementsPtr);
+            noPlayerText->AddComponent<TextRenderer>(
+                "ARE YOU READY TO BE THE BEST!", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+
+            m_TopCount = 10;
+            ShowTop();
+            return;
+        }
+
+
+        auto* titleText = scene.AddGameObject("Text", { 0, 11, 0 }, m_ScreenElementsPtr);
         titleText->AddComponent<TextRenderer>("Enter 1up Initials!",
                                               ResourceManager::GetFont("NES"),
                                               100,
@@ -33,8 +74,19 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
                                               1.0,
                                               SDL_Color{ 0, 255, 0, 255 });
 
+        const int topTextHeight = 7;
 
-        auto* scoreInfo = scene.AddGameObject("Text", { -8, 6, 0 }, m_ScreenElementsPtr);
+
+        auto* playerInfo = scene.AddGameObject("Text", { -9, topTextHeight, 0 }, m_ScreenElementsPtr);
+        playerInfo->AddComponent<TextRenderer>("PLAYER",
+                                               ResourceManager::GetFont("NES"),
+                                               100,
+                                               glm ::vec2{ 0.5f, 0.5f },
+                                               true,
+                                               1.0,
+                                               SDL_Color{ 247, 239, 0, 255 });
+
+        auto* scoreInfo = scene.AddGameObject("Text", { -2, topTextHeight, 0 }, m_ScreenElementsPtr);
         scoreInfo->AddComponent<TextRenderer>("SCORE",
                                               ResourceManager::GetFont("NES"),
                                               100,
@@ -43,7 +95,8 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
                                               1.0,
                                               SDL_Color{ 247, 239, 0, 255 });
 
-        auto* roundInfo = scene.AddGameObject("Text", { 0, 6, 0 }, m_ScreenElementsPtr);
+
+        auto* roundInfo = scene.AddGameObject("Text", { 4, topTextHeight, 0 }, m_ScreenElementsPtr);
         roundInfo->AddComponent<TextRenderer>("ROUND",
                                               ResourceManager::GetFont("NES"),
                                               100,
@@ -53,8 +106,8 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
                                               SDL_Color{ 247, 239, 0, 255 });
 
 
-        auto* nameInfo = scene.AddGameObject("Text", { 8, 6, 0 }, m_ScreenElementsPtr);
-        nameInfo->AddComponent<TextRenderer>("Name",
+        auto* nameInfo = scene.AddGameObject("Text", { 10, topTextHeight, 0 }, m_ScreenElementsPtr);
+        nameInfo->AddComponent<TextRenderer>("NAME",
                                              ResourceManager::GetFont("NES"),
                                              100,
                                              glm ::vec2{ 0.5f, 0.5f },
@@ -63,27 +116,47 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
                                              SDL_Color{ 247, 239, 0, 255 });
 
 
-        auto* score = scene.AddGameObject("Text", { -8, 4, 0 }, m_ScreenElementsPtr);
-        score->AddComponent<TextRenderer>(
-            "30000", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+        /// Player
+        for(int playerIndex = 0; playerIndex < 2; ++playerIndex)
+        {
+            const UserScore localUserScore = playerIndex == 0 ? m_LocalP1Score : m_LocalP2Score;
 
-        auto* round = scene.AddGameObject("Text", { 0, 4, 0 }, m_ScreenElementsPtr);
-        round->AddComponent<TextRenderer>("ALL", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+            if(localUserScore.score == -1)
+                continue;
 
-        auto* letter1 = scene.AddGameObject("Text", { 7, 4, 0 }, m_ScreenElementsPtr);
-        m_LetterTextRendererPtrs[0] = letter1->AddComponent<TextRenderer>(
-            ".", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+            heightOffset += -playerIndex * 2;
 
-        auto* letter2 = scene.AddGameObject("Text", { 8, 4, 0 }, m_ScreenElementsPtr);
-        m_LetterTextRendererPtrs[1] = letter2->AddComponent<TextRenderer>(
-            ".", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+            auto* player = scene.AddGameObject("Text", { -9, heightOffset, 0 }, m_ScreenElementsPtr);
+            player->AddComponent<TextRenderer>(
+                playerIndex == 0 ? "P1" : "P2", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
 
-        auto* letter3 = scene.AddGameObject("Text", { 9, 4, 0 }, m_ScreenElementsPtr);
-        m_LetterTextRendererPtrs[2] = letter3->AddComponent<TextRenderer>(
-            ".", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+            std::string scoreText = localUserScore.score == -1 ? "NUL" : std::to_string(localUserScore.score);
 
+            auto* score = scene.AddGameObject("Text", { -2, heightOffset, 0 }, m_ScreenElementsPtr);
+            score->AddComponent<TextRenderer>(
+                scoreText, ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
 
-        ShowTopFive();
+            std::string roundText = localUserScore.round <= 0 ? "NUL" : std::to_string(localUserScore.round);
+            auto* round = scene.AddGameObject("Text", { 4, heightOffset, 0 }, m_ScreenElementsPtr);
+            round->AddComponent<TextRenderer>(
+                roundText, ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+
+            auto& letter = playerIndex == 0 ? m_P1LetterTextRendererPtrs : m_P2LetterTextRendererPtrs;
+
+            auto* letter1 = scene.AddGameObject("Text", { 9, heightOffset, 0 }, m_ScreenElementsPtr);
+            letter[0] = letter1->AddComponent<TextRenderer>(
+                ".", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+
+            auto* letter2 = scene.AddGameObject("Text", { 10, heightOffset, 0 }, m_ScreenElementsPtr);
+            letter[1] = letter2->AddComponent<TextRenderer>(
+                ".", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+
+            auto* letter3 = scene.AddGameObject("Text", { 11, heightOffset, 0 }, m_ScreenElementsPtr);
+            letter[2] = letter3->AddComponent<TextRenderer>(
+                ".", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+        }
+
+        ShowTop();
 
         Input::Bind((int)InputBind::UiSelect, 1, true, this, &bb::ScoreScreen::OnSelectButton);
         Input::Bind((int)InputBind::UiDown, 1, true, this, &bb::ScoreScreen::OnDownButton);
@@ -190,13 +263,13 @@ void bb::ScoreScreen::OnSelectButton(const InputContext& context)
         return;
     }
 
-    if(m_LetterTextRendererPtrs[m_SelectedLetterRenderer]->GetText() == ".")
+    if(m_P1LetterTextRendererPtrs[m_SelectedLetterRenderer]->GetText() == ".")
         return;
 
     m_SelectedLetterRenderer++;
     m_CurrentLetter = 0;
 
-    if(m_SelectedLetterRenderer >= static_cast<int>(m_LetterTextRendererPtrs.size()))
+    if(m_SelectedLetterRenderer >= static_cast<int>(m_P1LetterTextRendererPtrs.size()))
         OnScoreFilledIn();
     else
         UpdateSelectedLetter();
@@ -234,51 +307,74 @@ void bb::ScoreScreen::OnDownButton(const InputContext& context)
 
 void bb::ScoreScreen::UpdateSelectedLetter()
 {
-    for(auto* textRenderer : m_LetterTextRendererPtrs)
+    if(not m_FillingInScore)
+        return;
+
+    auto& letterTextRendererPtrs =
+        m_SelectedPlayerWriting == 0 ? m_P1LetterTextRendererPtrs : m_P2LetterTextRendererPtrs;
+
+    for(auto* textRenderer : letterTextRendererPtrs)
         if(textRenderer->GetText() == ".")
             textRenderer->SetColor(200, 200, 200, 255);
         else
             textRenderer->SetColor(255, 255, 255, 255);
 
     const std::string letter{ LETTER_OPTIONS[m_CurrentLetter] };
-    auto* textRendererPtr = m_LetterTextRendererPtrs[m_SelectedLetterRenderer];
+    auto* textRendererPtr = letterTextRendererPtrs[m_SelectedLetterRenderer];
     textRendererPtr->SetText(letter);
     textRendererPtr->SetColor(SDL_Color{ 0, 255, 0, 0 });
 }
 
 void bb::ScoreScreen::OnScoreFilledIn()
 {
-    assert(m_FillingInScore && "Can't fill in score again");
-    m_FillingInScore = false;
+    auto& letterTextRendererPtrs =
+        m_SelectedPlayerWriting == 0 ? m_P1LetterTextRendererPtrs : m_P2LetterTextRendererPtrs;
+
+    UserScore& userScore = m_SelectedPlayerWriting == 0 ? m_LocalP1Score : m_LocalP2Score;
 
     // Set all letters to white
-    for(auto* textRenderer : m_LetterTextRendererPtrs)
+    for(auto* textRenderer : letterTextRendererPtrs)
         textRenderer->SetColor(255, 255, 255, 255);
 
-    auto newScore = UserScore{ 123,
-                               1,
+    auto newScore = UserScore{ userScore.score,
+                               userScore.round,
                                fmt::format("{}{}{}",
-                                           m_LetterTextRendererPtrs[0]->GetText(),
-                                           m_LetterTextRendererPtrs[1]->GetText(),
-                                           m_LetterTextRendererPtrs[2]->GetText()) };
+                                           letterTextRendererPtrs[0]->GetText(),
+                                           letterTextRendererPtrs[1]->GetText(),
+                                           letterTextRendererPtrs[2]->GetText()) };
 
     fmt::println("Score Filled In");
 
     WriteScore(newScore, SCORE_PATH);
-    ShowTopFive(newScore);
+    ShowTop(newScore);
+
+    assert(m_FillingInScore && "Can't fill in score again");
+    m_SelectedPlayerWriting++;
+    m_SelectedLetterRenderer = 0;
+
+    if(m_SelectedPlayerWriting == 1 and m_LocalP2Score.score == -1)
+        m_FillingInScore = false;
+
+    if(m_SelectedPlayerWriting == 2)
+        m_FillingInScore = false;
 }
 
-void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
+void bb::ScoreScreen::ShowTop(std::optional<UserScore> showcaseScore)
 {
 
-    const int startHeight = -2;
+    const int startHeight = m_TopCount == 10 ? 5 : -2;
 
     const std::unordered_map<int, std::string> numberToText{
-        {1, "1ST"},
-        {2, "2ND"},
-        {3, "3RD"},
-        {4, "4TH"},
-        {5, "5TH"},
+        { 1,  "1ST"},
+        { 2,  "2ND"},
+        { 3,  "3RD"},
+        { 4,  "4TH"},
+        { 5,  "5TH"},
+        { 6,  "6ST"},
+        { 7,  "7ND"},
+        { 8,  "8RD"},
+        { 9,  "9TH"},
+        {10, "10TH"},
     };
 
     auto& scene = GetGameObject()->GetScene();
@@ -315,8 +411,8 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
         std::vector<UserScore> scores = ParseScores(SCORE_PATH);
         std::sort(scores.begin(), scores.end(), std::greater<UserScore>());
 
-        auto* topFiveText = scene.AddGameObject("Text", { 0, 0, 0 }, m_TopFiveScoresPtr);
-        topFiveText->AddComponent<TextRenderer>("BEST 5",
+        auto* topFiveText = scene.AddGameObject("Text", { 0, startHeight + 2, 0 }, m_TopFiveScoresPtr);
+        topFiveText->AddComponent<TextRenderer>(m_TopCount == 10 ? "BEST 10" : "BEST 5",
                                                 ResourceManager::GetFont("NES"),
                                                 100,
                                                 glm ::vec2{ 0.5f, 0.5f },
@@ -324,9 +420,10 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
                                                 1,
                                                 SDL_Color{ 240, 0, 0, 0 });
 
-        for(int i = 0; i < std::min(static_cast<int>(scores.size()), 5); ++i)
+        for(int i = 0; i < std::min(static_cast<int>(scores.size()), m_TopCount); ++i)
         {
             const UserScore scoreToDisplay = scores[i];
+            const double scale = m_TopCount == 10 ? 1.8 : 2;
 
             bool isShowcaseScore{ false };
 
@@ -337,7 +434,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
             const SDL_Color textColor =
                 isShowcaseScore ? SDL_Color{ 247, 239, 0, 255 } : SDL_Color{ 255, 255, 255, 255 };
 
-            auto* number = scene.AddGameObject("Text", { -9, startHeight - i * 2, 0 }, m_TopFiveScoresPtr);
+            auto* number = scene.AddGameObject("Text", { -9, startHeight - i * scale, 0 }, m_TopFiveScoresPtr);
             number->SetActive(false);
             number->AddComponent<TextRenderer>(numberToText.at(i + 1),
                                                ResourceManager::GetFont("NES"),
@@ -347,7 +444,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
                                                1,
                                                textColor);
 
-            auto* score = scene.AddGameObject("Text", { -2, startHeight - i * 2, 0 }, m_TopFiveScoresPtr);
+            auto* score = scene.AddGameObject("Text", { -2, startHeight - i * scale, 0 }, m_TopFiveScoresPtr);
             score->SetActive(false);
             score->AddComponent<TextRenderer>(std::to_string(scoreToDisplay.score),
                                               ResourceManager::GetFont("NES"),
@@ -357,7 +454,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
                                               1,
                                               textColor);
 
-            auto* round = scene.AddGameObject("Text", { 4, startHeight - i * 2, 0 }, m_TopFiveScoresPtr);
+            auto* round = scene.AddGameObject("Text", { 4, startHeight - i * scale, 0 }, m_TopFiveScoresPtr);
             round->SetActive(false);
             round->AddComponent<TextRenderer>(std::to_string(scoreToDisplay.round),
                                               ResourceManager::GetFont("NES"),
@@ -367,7 +464,7 @@ void bb::ScoreScreen::ShowTopFive(std::optional<UserScore> showcaseScore)
                                               1,
                                               textColor);
 
-            auto* name = scene.AddGameObject("Text", { 9, startHeight - i * 2, 0 }, m_TopFiveScoresPtr);
+            auto* name = scene.AddGameObject("Text", { 9, startHeight - i * scale, 0 }, m_TopFiveScoresPtr);
             name->SetActive(false);
             name->AddComponent<TextRenderer>(scoreToDisplay.name,
                                              ResourceManager::GetFont("NES"),
@@ -405,6 +502,8 @@ void bb::ScoreScreen::TryLeaveScoreScreen()
 
     if(TweenEngine::HasActiveTweens(camera))
         return;
+
+    Game::GetInstance().GetGameScore().ResetScore();
 
     TweenEngine::Start({ .from = camera->GetTransform().GetWorldPosition().y,
                          .to = -Game::GRID_SIZE_Y,

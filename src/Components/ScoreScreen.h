@@ -22,9 +22,9 @@ namespace bb
     public:
         struct UserScore
         {
-            int score;
-            int round;
-            std::string name;
+            int score = -1;
+            int round = -1;
+            std::string name{ "..." };
 
             bool operator==(const UserScore& other) const
             {
@@ -66,7 +66,7 @@ namespace bb
 
         void UpdateSelectedLetter();
         void OnScoreFilledIn();
-        void ShowTopFive(std::optional<UserScore> showcaseScore = std::nullopt);
+        void ShowTop(std::optional<UserScore> showcaseScore = std::nullopt);
 
         void TryLeaveScoreScreen();
 
@@ -76,7 +76,15 @@ namespace bb
         bool m_FillingInScore{ true };
         int m_CurrentLetter{ 0 };
         int m_SelectedLetterRenderer{ 0 };
-        std::array<TextRenderer*, 3> m_LetterTextRendererPtrs{ nullptr, nullptr, nullptr };
+        int m_SelectedPlayerWriting{ 0 };
+        int m_TopCount{ 5 };
+
+        std::array<TextRenderer*, 3> m_P1LetterTextRendererPtrs{ nullptr, nullptr, nullptr };
+        std::array<TextRenderer*, 3> m_P2LetterTextRendererPtrs{ nullptr, nullptr, nullptr };
+
+
+        UserScore m_LocalP1Score{};
+        UserScore m_LocalP2Score{};
 
         GameObject* m_ScreenElementsPtr{ nullptr };
         GameObject* m_TopFiveScoresPtr{ nullptr };

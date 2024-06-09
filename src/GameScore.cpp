@@ -14,7 +14,7 @@ bb::GameScore::GameScore()
 
 bb::GameScore::~GameScore() { MessageQueue::RemoveListenerInstance(this); }
 
-int bb::GameScore::GetScore(int playerIndex)
+int bb::GameScore::GetScore(int playerIndex) const
 {
     assert(playerIndex < PLAYER_COUNT);
 
@@ -25,7 +25,7 @@ void bb::GameScore::ResetScore()
 {
     for(int playerIndex = 0; playerIndex < PLAYER_COUNT; ++playerIndex)
     {
-        m_PlayerScore[playerIndex] = 0;
+        m_PlayerScore[playerIndex] = -1;
         MessageQueue::Broadcast(MessageType::CharacterScoreChange, { playerIndex, m_PlayerScore[playerIndex] });
     }
 }
@@ -33,6 +33,10 @@ void bb::GameScore::ResetScore()
 void bb::GameScore::AddScore(int playerIndex, int delta)
 {
     assert(playerIndex < PLAYER_COUNT);
+
+    // We use -1 as a way to check if any score has been set
+    if(m_PlayerScore[playerIndex] == -1)
+        m_PlayerScore[playerIndex] = 0;
 
     m_PlayerScore[playerIndex] += delta;
     MessageQueue::Broadcast(MessageType::CharacterScoreChange, { playerIndex, m_PlayerScore[playerIndex] });

@@ -185,7 +185,9 @@ namespace bb
 
         [[nodiscard]] GameMode GetActiveGameMode() { return m_ActiveGameMode; }
 
-        [[nodiscard]] const GameScore& GetGameScore() { return m_GameScore; }
+        [[nodiscard]] GameScore& GetGameScore() { return m_GameScore; }
+
+        [[nodiscard]] int GetActiveLevelIndex() const { return m_ActiveLevelIndex; }
 
         void Initialize();
 

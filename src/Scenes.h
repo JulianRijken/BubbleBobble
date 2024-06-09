@@ -18,7 +18,6 @@ namespace bb::scenes
         ScoreScreen,
     };
 
-
     void BindScenes();
 
     // Used to make sure scenes that depend on the
