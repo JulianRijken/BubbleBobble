@@ -207,9 +207,9 @@ void bb::prefabs::SpawnPlayerHUD(jul::Scene& scene, int playerIndex)
     {
         auto* livesGameObject = scene.AddGameObject("LivesText", { playerIndex ? 14 : -15, -12, 0 });
         auto* livesText = livesGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), -80, glm::vec2{ 0, 0 });
+            "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
         livesGameObject->AddComponent<SpriteRenderer>(
-            ResourceManager::GetSprite("LevelTiles"), -90, glm::ivec2{ 4, 20 });
+            ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
 
 
         auto* scoreGameObject = scene.AddGameObject("ScoreText", { playerIndex ? 4 : -4, 13, 0 });
