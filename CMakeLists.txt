@@ -17,7 +17,9 @@ set(BB_SOURCE_FILES
     ${SOURCE_DIR}/IDamageable.h
     ${SOURCE_DIR}/IBubbleable.h
 
-
+    ${SOURCE_DIR}/Components/LevelState.h               ${SOURCE_DIR}/Components/LevelState.cpp
+    ${SOURCE_DIR}/Components/Enemys/Enemy.h             ${SOURCE_DIR}/Components/Enemys/Enemy.cpp
+    ${SOURCE_DIR}/Components/Boulder.h                  ${SOURCE_DIR}/Components/Boulder.cpp
     ${SOURCE_DIR}/Components/CharacterInput.h           ${SOURCE_DIR}/Components/CharacterInput.cpp
     ${SOURCE_DIR}/Components/Enemys/Maita.h             ${SOURCE_DIR}/Components/Enemys/Maita.cpp
     ${SOURCE_DIR}/Components/Enemys/MaitaBehaviour.h    ${SOURCE_DIR}/Components/Enemys/MaitaBehaviour.cpp
@@ -28,11 +30,8 @@ set(BB_SOURCE_FILES
     ${SOURCE_DIR}/Components/DeadEnemy.h                ${SOURCE_DIR}/Components/DeadEnemy.cpp
     ${SOURCE_DIR}/Components/Pickup.h                   ${SOURCE_DIR}/Components/Pickup.cpp
     ${SOURCE_DIR}/Components/CaptureBubble.h            ${SOURCE_DIR}/Components/CaptureBubble.cpp
-
     ${SOURCE_DIR}/Components/Player/Player.h            ${SOURCE_DIR}/Components/Player/Player.cpp
     ${SOURCE_DIR}/Components/Player/PlayerState.h       ${SOURCE_DIR}/Components/Player/PlayerState.cpp
-
-
     ${SOURCE_DIR}/Components/BubbleSpiral.h             ${SOURCE_DIR}/Components/BubbleSpiral.cpp
     ${SOURCE_DIR}/Components/OneWayPlatform.h           ${SOURCE_DIR}/Components/OneWayPlatform.cpp
     ${SOURCE_DIR}/Components/AutoMove.h                 ${SOURCE_DIR}/Components/AutoMove.cpp
@@ -47,9 +46,6 @@ set(BB_SOURCE_FILES
 # Adds the source files to the executible
 add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
-    src/Components/LevelState.h src/Components/LevelState.cpp
-    src/Components/Enemys/Enemy.h src/Components/Enemys/Enemy.cpp
-    src/Components/Boulder.h src/Components/Boulder.cpp
 )
 
 # Include source directories

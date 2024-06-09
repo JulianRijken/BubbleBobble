@@ -8,7 +8,7 @@ namespace bb
     class Character;
     using namespace jul;
 
-    class CharacterInput : public Component, public IEventListener
+    class CharacterInput final : public Component, public IEventListener
     {
     public:
         CharacterInput(GameObject* parentPtr, bool canUseKeyboard, int controllerIndex,

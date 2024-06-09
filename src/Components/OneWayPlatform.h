@@ -6,7 +6,7 @@ namespace bb
 {
     using namespace jul;
 
-    class OneWayPlatform : public Component, public ICollisionListener
+    class OneWayPlatform final : public Component, public ICollisionListener
     {
     public:
         OneWayPlatform(GameObject* parentPtr);

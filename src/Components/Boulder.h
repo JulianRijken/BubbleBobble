@@ -7,7 +7,7 @@ namespace bb
 {
     using namespace jul;
 
-    class Boulder : public Component, public ICollisionListener
+    class Boulder final : public Component, public ICollisionListener
     {
     public:
         Boulder(GameObject* parentPtr);

@@ -200,7 +200,7 @@ void bb::PlayerAttackingState::OnEnterState(Player& player)
            player.GetTransform().GetWorldPosition(), { direction, 0 }, castDistance, out, layer::ALL_TILES))
     {
         spawnPosition.x = out.point.x;
-        spawnPosition.y -= player.m_ColliderPtr->GetSettings().size.y / 2.0;
+        spawnPosition.y -= player.m_ColliderPtr->GetSettings().size.y / 2.0f;
         firePower = 0.0;
     }
     else

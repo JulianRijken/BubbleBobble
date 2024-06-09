@@ -63,7 +63,7 @@ void bb::Maita::FixedUpdate()
 
 void bb::Maita::Update()
 {
-    m_TimeSinceLastBoulderThrow += GameTime::GetDeltaTime();
+    m_TimeSinceLastBoulderThrow += GameTime::GetDeltaTime<float>();
 
     if(GetMoveInput().x < 0)
         m_SpriteRenderer->m_FlipX = false;
@@ -101,8 +101,8 @@ void bb::Maita::OnAttackInput()
     if(m_TimeSinceLastBoulderThrow < BOULDER_THROW_INTERVAL)
         return;
 
-    const float power = (m_SpriteRenderer->m_FlipX ? -1 : 1) * BOULDER_THROW_POWER;
-    const float angle = (jul::math::RandomValue() - 0.5f) + std::numbers::pi;
+    const float power = (m_SpriteRenderer->m_FlipX ? -1.0f : 1.0f) * BOULDER_THROW_POWER;
+    const float angle = (static_cast<float>(jul::math::RandomValue()) - 0.5f) + static_cast<float>(std::numbers::pi);
     prefabs::SpawnBoulder(GetTransform().GetWorldPosition(), { std::cos(angle) * power, std::sin(angle) * power });
     m_TimeSinceLastBoulderThrow = 0;
 }
