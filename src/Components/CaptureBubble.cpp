@@ -134,11 +134,13 @@ void bb::CaptureBubble::Update()
 
         if(not m_BubbleAnimator->IsPlaying())
         {
-            // if(m_CapturedTarget != nullptr)
-            //     ReleaseCapturedTarget();
-
             if(m_CapturedTarget != nullptr)
-                KillCapturedTarget();
+            {
+                if(m_EnemyPoppingOut)
+                    ReleaseCapturedTarget();
+                else
+                    KillCapturedTarget();
+            }
 
             GetGameObject()->Destroy();
         }
@@ -149,6 +151,13 @@ void bb::CaptureBubble::Update()
             m_BubbleAnimator->Play("Idle");
 
         m_FloatingDuration += GameTime::GetDeltaTime<float>();
+
+        if(m_FloatingDuration > MAX_TIME_TILL_POP)
+        {
+            StartPop();
+            m_EnemyPoppingOut = true;
+            return;
+        }
 
         m_BubbleCenter = {};
         if(not g_Bubbles.empty())

@@ -44,8 +44,8 @@ namespace bb
         };
 
         ScoreScreen(GameObject* parentPtr);
-
         ~ScoreScreen() override = default;
+
         ScoreScreen(const ScoreScreen&) = delete;
         ScoreScreen(ScoreScreen&&) noexcept = delete;
         ScoreScreen& operator=(const ScoreScreen&) = delete;
@@ -58,7 +58,6 @@ namespace bb
         void CreateScoresFileIfNotExist(const std::filesystem::path& filePath);
         std::vector<UserScore> ParseScores(const std::filesystem::path& filePath);
         void WriteScore(const UserScore& userScore, const std::filesystem::path& filePath);
-
 
         void OnSelectButton(const InputContext& context);
         void OnUpButton(const InputContext& context);

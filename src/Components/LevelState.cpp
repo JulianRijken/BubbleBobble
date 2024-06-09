@@ -4,6 +4,7 @@
 #include <TweenEngine.h>
 
 #include "Maita.h"
+#include "MathExtensions.h"
 #include "prefabs.h"
 #include "ZenChan.h"
 
@@ -14,9 +15,18 @@ bb::LevelState::LevelState(jul::GameObject* parentPtr, const std::vector<EnemySp
     // VS mode :)
     if(Game::GetInstance().GetActiveGameMode() == GameMode::VS)
     {
-        auto* zenChan = prefabs::SpawnZenChan({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
-        zenChan->GetGameObject()->AddComponent<CharacterInput>(false, 1);
-        m_Enemies.insert(zenChan);
+        if(jul::math::RandomValue() > 0.5f)
+        {
+            auto* zenChan = prefabs::SpawnZenChan({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
+            zenChan->GetGameObject()->AddComponent<CharacterInput>(false, 1);
+            m_Enemies.insert(zenChan);
+        }
+        else
+        {
+            auto* maita = prefabs::SpawnMaita({ 0, Game::GRID_SIZE_Y * 0.5, 0 });
+            maita->GetGameObject()->AddComponent<CharacterInput>(false, 1);
+            m_Enemies.insert(maita);
+        }
     }
     else
     {

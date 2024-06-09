@@ -19,11 +19,15 @@ namespace bb
     class Maita final : public Enemy, public ICollisionListener, public IBubbleable
     {
     public:
-        static constexpr float MOVE_SPEED{ 8.0f };
-        static constexpr float FALL_SPEED{ 5.0f };
-        static constexpr float CLIMB_SPEED{ 10.0f };
+        static constexpr float MOVE_SPEED{ 6.0f };
+        static constexpr float FALL_SPEED{ 8.0f };
+        static constexpr float CLIMB_SPEED{ 12.0f };
         static constexpr float CLIMB_HEIGHT{ 5.0f };
-        static constexpr float CLIMB_MOMENTEM_KEEP{ 0.2f };
+        static constexpr float CLIMB_MOMENTEM_KEEP{ 0.5f };
+
+        static constexpr float BOULDER_THROW_POWER{ 15 };
+
+        static constexpr float BOULDER_THROW_INTERVAL{ 4.0 };
 
         enum class State
         {
@@ -57,6 +61,8 @@ namespace bb
         void OnCollisionBegin(const Collision& collision) override;
         void SpawnDeadVersion() override;
 
+
+        float m_TimeSinceLastBoulderThrow{};
         State m_State{};
 
         Animator* m_Animator{ nullptr };

@@ -28,6 +28,7 @@ void bb::Game::Initialize()
     MessageQueue::AddListener(MessageType::PlayerDied, this, &Game::OnMessage);
     MessageQueue::AddListener(MessageType::PlayerJump, this, &Game::OnMessage);
     MessageQueue::AddListener(MessageType::PlayerPickup, this, &Game::OnMessage);
+    MessageQueue::AddListener(MessageType::ShowScoreScreen, this, &Game::OnMessage);
 
     ParseMaps("Levels.jxl");
 
@@ -42,6 +43,8 @@ void bb::Game::Initialize()
     Input::Bind((int)InputBind::ForceEnd, 1, true, this, &Game::OnEndGameButton);
     Input::Bind((int)InputBind::DebugIncreaseTimeScale, 1, true, this, &Game::OnIncreaseTimeScaleButton);
     Input::Bind((int)InputBind::DebugDecreaseTimeScale, 1, true, this, &Game::OnDecreaseTimeScaleButton);
+
+    Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
 }
 
 void bb::Game::StartGame(GameMode mode)
@@ -68,8 +71,6 @@ void bb::Game::StartGame(GameMode mode)
             SceneManager::GetInstance().LoadScene((int)scenes::Id::VersusMode);
             break;
     }
-
-    // Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
 }
 
 void bb::Game::TryTransitionNextLevel(bool onlyLoadAfterTransition, bool resetPlayers)
@@ -148,7 +149,7 @@ void bb::Game::TryTransitionLevel(int levelIndex, bool onlyLoadAfterTransition, 
 
     if(levelIndex >= static_cast<int>(LEVELS.size()))
     {
-        EndGame();
+        ShowScoreScreen();
         return;
     }
 
@@ -267,7 +268,7 @@ void bb::Game::OnEndGameButton(const InputContext& context)
     if(context.state != ButtonState::Down)
         return;
 
-    EndGame();
+    ShowScoreScreen();
 }
 
 void bb::Game::OnIncreaseTimeScaleButton(const InputContext& context)
@@ -304,7 +305,7 @@ void bb::Game::ResetGame()
     SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu, SceneLoadMode::OverrideForce);
 }
 
-void bb::Game::EndGame()
+void bb::Game::ShowScoreScreen()
 {
     m_GameState = GameState::ScoreScreen;
     SceneManager::GetInstance().LoadScene((int)scenes::Id::ScoreScreen, SceneLoadMode::OverrideForce);
@@ -319,6 +320,11 @@ void bb::Game::OnMessage(const Message& message)
         {
             const GameMode mode = std::any_cast<GameMode>(message.args[0]);
             StartGame(mode);
+        }
+        break;
+        case MessageType::ShowScoreScreen:
+        {
+            ShowScoreScreen();
         }
         break;
         case MessageType::PlayerDied:

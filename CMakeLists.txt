@@ -49,6 +49,7 @@ add_executable(${TARGET_NAME}
     ${BB_SOURCE_FILES}
     src/Components/LevelState.h src/Components/LevelState.cpp
     src/Components/Enemys/Enemy.h src/Components/Enemys/Enemy.cpp
+    src/Components/Boulder.h src/Components/Boulder.cpp
 )
 
 # Include source directories

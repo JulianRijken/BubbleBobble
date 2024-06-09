@@ -31,6 +31,8 @@ namespace bb
         static constexpr float POP_VELOCITY_STRENGTH = 1;
         static constexpr float POP_THRESHOLD = 15;
 
+        static constexpr float MAX_TIME_TILL_POP = 8.0f;
+
         CaptureBubble(GameObject* parent, glm::vec3 fireVelocity = {});
         ~CaptureBubble() override;
 
@@ -60,6 +62,7 @@ namespace bb
 
         float m_FloatingDuration{};
         bool m_GettingPopped{ false };
+        bool m_EnemyPoppingOut{ false };
 
         static inline std::unordered_set<CaptureBubble*> g_Bubbles{};
     };

@@ -20,6 +20,7 @@ namespace bb
     {
     public:
         static constexpr float MOVE_SPEED{ 8.0f };
+        static constexpr float CHARGE_SPEED_MULTIPLIER{ 1.8f };
         static constexpr float FALL_SPEED{ 5.0f };
         static constexpr float CLIMB_SPEED{ 10.0f };
         static constexpr float CLIMB_HEIGHT{ 5.0f };
@@ -50,6 +51,8 @@ namespace bb
 
         [[nodiscard]] Transform* GetCaptureTransform() override;
 
+        void OnRelease() override;
+
         void FixedUpdate() override;
         void Update() override;
 
@@ -57,8 +60,8 @@ namespace bb
         void OnCollisionBegin(const Collision& collision) override;
         void SpawnDeadVersion() override;
 
+        bool m_Charging{ false };
         State m_State{};
-
         Animator* m_Animator{ nullptr };
         Rigidbody* m_Rigidbody{ nullptr };
         SpriteRenderer* m_SpriteRenderer{ nullptr };

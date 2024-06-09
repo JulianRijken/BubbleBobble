@@ -8,6 +8,8 @@
 #include <Rigidbody.h>
 
 #include "IDamageable.h"
+#include "MathExtensions.h"
+#include "numbers"
 #include "Player.h"
 #include "Prefabs.h"
 
@@ -61,6 +63,8 @@ void bb::Maita::FixedUpdate()
 
 void bb::Maita::Update()
 {
+    m_TimeSinceLastBoulderThrow += GameTime::GetDeltaTime();
+
     if(GetMoveInput().x < 0)
         m_SpriteRenderer->m_FlipX = false;
     else if(GetMoveInput().x > 0)
@@ -92,6 +96,15 @@ void bb::Maita::OnJumpInput()
     Jump();
 }
 
-void bb::Maita::OnAttackInput() {}
+void bb::Maita::OnAttackInput()
+{
+    if(m_TimeSinceLastBoulderThrow < BOULDER_THROW_INTERVAL)
+        return;
+
+    const float power = (m_SpriteRenderer->m_FlipX ? -1 : 1) * BOULDER_THROW_POWER;
+    const float angle = (jul::math::RandomValue() - 0.5f) + std::numbers::pi;
+    prefabs::SpawnBoulder(GetTransform().GetWorldPosition(), { std::cos(angle) * power, std::sin(angle) * power });
+    m_TimeSinceLastBoulderThrow = 0;
+}
 
 void bb::Maita::SpawnDeadVersion() { prefabs::SpawnMaitaDead(GetTransform().GetWorldPosition()); }

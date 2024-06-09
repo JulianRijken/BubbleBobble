@@ -140,9 +140,14 @@ void LoadResources()
             { "zenchan_normal", SpriteAnimation{ { { 0, 0 }, { 1, 0 } }, 4 } },
             { "zenchan_bubble", SpriteAnimation{ { { 6, 0 }, { 7, 0 } }, 4 } },
             { "zenchan_dead", SpriteAnimation{ { { 12, 0 }, { 13, 0 }, { 14, 0 }, { 15, 0 } }, 4 } },
+            { "zenchan_charge", SpriteAnimation{ { { 2, 0 }, { 3, 0 } }, 4 } },
+
+
             { "maita_normal", SpriteAnimation{ { { 0, 1 }, { 1, 1 } }, 4 } },
             { "maita_bubble", SpriteAnimation{ { { 6, 1 }, { 7, 1 } }, 4 } },
             { "maita_dead", SpriteAnimation{ { { 12, 1 }, { 13, 1 }, { 14, 1 }, { 15, 1 } }, 4 } },
+
+            { "boulder_throw", SpriteAnimation{ { { 5, 2 }, { 4, 2 }, { 3, 2 }, { 2, 2 }, { 1, 2 }, { 0, 2 } }, 4 } },
         });
 }
 

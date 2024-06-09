@@ -53,6 +53,7 @@ namespace bb
         CharacterScoreAdded,
 
         GameStart,
+        ShowScoreScreen
     };
 
     enum class InputBind
@@ -132,6 +133,7 @@ namespace bb
         constexpr uint16_t TILE = Index(6);
         constexpr uint16_t TILE_SEMI_SOLID = Index(7);
         constexpr uint16_t INVIS_WALLS = Index(8);
+        constexpr uint16_t BOULDER = Index(9);
         constexpr uint16_t ALL_TILES = TILE | TILE_SEMI_SOLID;
     }  // namespace layer
 
@@ -209,7 +211,7 @@ namespace bb
         void OnDecreaseTimeScaleButton(const InputContext& context);
 
         void ResetGame();
-        void EndGame();
+        void ShowScoreScreen();
 
     private:
         void OnMessage(const Message& message);

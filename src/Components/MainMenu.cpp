@@ -172,6 +172,12 @@ void bb::MainMenu::LoadSelectedMode() const
         return;
     }
 
+    if(m_SelectedItem == 3)
+    {
+        MessageQueue::Broadcast(MessageType::ShowScoreScreen, {});
+        return;
+    }
+
     throw std::runtime_error(fmt::format("Game Mode Not Implemented. Index: {}", m_SelectedItem));
 }
 

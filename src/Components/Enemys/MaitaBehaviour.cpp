@@ -38,6 +38,14 @@ void bb::MaitaBehaviour::Update()
 {
     m_TimeSinceLastJump += GameTime::GetDeltaTime<float>();
     m_TimeSinceLastFacePlayer += GameTime::GetDeltaTime<float>();
+    m_TimeSinceThrow += GameTime::GetDeltaTime<float>();
+
+    if(m_TimeSinceThrow > BOULDER_THROW_INTERVAL)
+    {
+        m_Target->OnAttackInput();
+        m_TimeSinceThrow = 0;
+    }
+
 
     if(m_Target->GetState() == Maita::State::Walking)
         HandleTurning();

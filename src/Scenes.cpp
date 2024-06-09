@@ -139,7 +139,8 @@ void bb::scenes::MainMenuScene(Scene& scene)
     GameObject* selectBubble{ nullptr };
     GameObject* p1Text{ nullptr };
     GameObject* p2Text{ nullptr };
-    GameObject* p3Text{ nullptr };
+    GameObject* vsText{ nullptr };
+    GameObject* leaderBoardText{ nullptr };
     auto* selectScreen = scene.AddGameObject("Select Screen", {}, mainMenuGO);
     {
         selectBubble = scene.AddGameObject("Select Bugble", { -7, 8, 0 }, selectScreen);
@@ -158,20 +159,26 @@ void bb::scenes::MainMenuScene(Scene& scene)
         p2Text->AddComponent<TextRenderer>(
             "2P START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
 
-        p3Text = scene.AddGameObject("Text", { -5, 2, 0 }, selectScreen);
-        p3Text->AddComponent<TextRenderer>(
+        vsText = scene.AddGameObject("Text", { -5, 2, 0 }, selectScreen);
+        vsText->AddComponent<TextRenderer>(
             "VS START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+
+        leaderBoardText = scene.AddGameObject("Text", { -5, 0, 0 }, selectScreen);
+        leaderBoardText->AddComponent<TextRenderer>(
+            "LEADERBOARD", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
     }
     selectScreen->SetActive(false);
 
 
-    mainMenuGO->AddComponent<MainMenu>(
-        &logo->GetTransform(),
-        intoScreenInfo,
-        introScreen,
-        selectScreen,
-        &selectBubble->GetTransform(),
-        std::vector<Transform*>{ &p1Text->GetTransform(), &p2Text->GetTransform(), &p3Text->GetTransform() });
+    mainMenuGO->AddComponent<MainMenu>(&logo->GetTransform(),
+                                       intoScreenInfo,
+                                       introScreen,
+                                       selectScreen,
+                                       &selectBubble->GetTransform(),
+                                       std::vector<Transform*>{ &p1Text->GetTransform(),
+                                                                &p2Text->GetTransform(),
+                                                                &vsText->GetTransform(),
+                                                                &leaderBoardText->GetTransform() });
 }
 
 

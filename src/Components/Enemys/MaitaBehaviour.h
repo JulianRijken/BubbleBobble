@@ -16,6 +16,9 @@ namespace bb
         static constexpr glm::vec2 JUMP_INTERVAL{ 1.0f, 1.5f };
         static constexpr glm::vec2 FACE_TARGET_INTERVAL{ 2.0, 3.5f };
 
+        static constexpr float BOULDER_THROW_INTERVAL{ 5.0 };
+
+
         explicit MaitaBehaviour(GameObject* parentPtr, Maita* target);
 
         ~MaitaBehaviour() override = default;
@@ -32,6 +35,7 @@ namespace bb
         float m_JumpInterval{ JUMP_INTERVAL.y };
         float m_FacePlayerInterval{ FACE_TARGET_INTERVAL.y };
 
+        float m_TimeSinceThrow{};
         Maita* m_Target;
         int m_WalkingDirection{ 1 };
         float m_TimeSinceLastJump{};

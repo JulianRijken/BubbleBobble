@@ -24,6 +24,8 @@ bb::ZenChan::ZenChan(GameObject* parentPtr) :
 
 void bb::ZenChan::FixedUpdate()
 {
+    const float speedMultiplier = m_Charging ? CHARGE_SPEED_MULTIPLIER : 1.0f;
+
     switch(m_State)
     {
         case State::Walking:
@@ -34,7 +36,8 @@ void bb::ZenChan::FixedUpdate()
                 return;
             }
 
-            m_Rigidbody->AddForce({ GetMoveInput() * MOVE_SPEED }, Rigidbody::ForceMode::VelocityChange);
+            m_Rigidbody->AddForce({ GetMoveInput() * MOVE_SPEED * speedMultiplier },
+                                  Rigidbody::ForceMode::VelocityChange);
             break;
         }
         case State::Falling:
@@ -45,7 +48,7 @@ void bb::ZenChan::FixedUpdate()
                 return;
             }
 
-            m_Rigidbody->AddForce({ 0, -FALL_SPEED }, Rigidbody::ForceMode::VelocityChange);
+            m_Rigidbody->AddForce({ 0, -FALL_SPEED * speedMultiplier }, Rigidbody::ForceMode::VelocityChange);
             break;
         }
         case State::Jumping:
@@ -84,6 +87,12 @@ void bb::ZenChan::OnCollisionBegin(const Collision& collision)
 
 jul::Transform* bb::ZenChan::GetCaptureTransform() { return &GetTransform(); }
 
+void bb::ZenChan::OnRelease()
+{
+    m_Charging = true;
+    m_Animator->Play("zenchan_charge", true);
+}
+
 
 void bb::ZenChan::OnJumpInput()
 {
@@ -93,6 +102,14 @@ void bb::ZenChan::OnJumpInput()
     Jump();
 }
 
-void bb::ZenChan::OnAttackInput() {}
+void bb::ZenChan::OnAttackInput()
+{
+    m_Charging = !m_Charging;
+
+    if(m_Charging)
+        m_Animator->Play("zenchan_charge", true);
+    else
+        m_Animator->Play("zenchan_normal", true);
+}
 
 void bb::ZenChan::SpawnDeadVersion() { prefabs::SpawnZenChanDead(GetTransform().GetWorldPosition()); }

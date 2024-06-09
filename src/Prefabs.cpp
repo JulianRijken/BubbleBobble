@@ -17,6 +17,7 @@
 #include <TextRenderer.h>
 #include <TweenEngine.h>
 
+#include "Boulder.h"
 #include "Game.h"
 #include "LevelHUD.h"
 #include "Maita.h"
@@ -47,6 +48,28 @@ void bb::prefabs::SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 v
 
     bubble->AddComponent<CaptureBubble>(glm::vec3{ velocity.x, velocity.y, 0 });
 }
+
+void bb::prefabs::SpawnBoulder(const glm::vec3& spawnPosition, glm::vec2 velocity)
+{
+    Scene* activeScene = Game::GetInstance().GetActiveLevelScene();
+    assert(activeScene);
+
+    auto* boulder = activeScene->AddGameObject("Boulder", spawnPosition);
+    auto* sprite = boulder->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    boulder->AddComponent<Animator>(sprite, "boulder_throw", false);
+    auto* rigidbody = boulder->AddComponent<Rigidbody>();
+    boulder->AddComponent<BoxCollider>(BoxCollider::Settings{
+        .friction = 0.0f,
+        .restitution = 0.9f,
+        .size = {                       1.5,                                            1.5f},
+        .mask = {.category = layer::BOULDER, .collideWith = layer::PLAYER | layer::ALL_TILES}
+    });
+    boulder->AddComponent<Boulder>();
+    rigidbody->AddForce(glm::vec3{ velocity.x, velocity.y, 0 }, jul::Rigidbody::ForceMode::VelocityChange);
+
+    boulder->DestroyDelayed(3.0);
+}
+
 
 bb::ZenChan* bb::prefabs::SpawnZenChanWithBehaviour(const glm::vec3& spawnPosition)
 {
@@ -81,7 +104,7 @@ void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
 
     auto* deadZenChen = activeScene->AddGameObject("Dead Maita", spawnPosition);
     auto* spriteRenderer = deadZenChen->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
-    deadZenChen->AddComponent<Animator>(spriteRenderer, "maita_dead");
+    deadZenChen->AddComponent<Animator>(spriteRenderer, "zenchan_dead");
     auto* rigidbody = deadZenChen->AddComponent<Rigidbody>();
     deadZenChen->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,

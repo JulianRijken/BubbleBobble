@@ -28,6 +28,8 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
     m_LocalP2Score.score = Game::GetInstance().GetGameScore().GetScore(1);
     m_LocalP2Score.round = Game::GetInstance().GetActiveLevelIndex();
 
+    Input::Bind((int)InputBind::UiSelect, 1, true, this, &bb::ScoreScreen::OnSelectButton);
+    Input::Bind((int)InputBind::UiSelect, 0, false, this, &bb::ScoreScreen::OnSelectButton);
 
     if(m_LocalP1Score.score == -1)
     {
@@ -60,6 +62,7 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
                 "ARE YOU READY TO BE THE BEST!", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
 
             m_TopCount = 10;
+            m_FillingInScore = false;
             ShowTop();
             return;
         }
@@ -158,10 +161,9 @@ bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
 
         ShowTop();
 
-        Input::Bind((int)InputBind::UiSelect, 1, true, this, &bb::ScoreScreen::OnSelectButton);
+
         Input::Bind((int)InputBind::UiDown, 1, true, this, &bb::ScoreScreen::OnDownButton);
         Input::Bind((int)InputBind::UiUp, 1, true, this, &bb::ScoreScreen::OnUpButton);
-        Input::Bind((int)InputBind::UiSelect, 0, false, this, &bb::ScoreScreen::OnSelectButton);
         Input::Bind((int)InputBind::UiDown, 0, false, this, &bb::ScoreScreen::OnDownButton);
         Input::Bind((int)InputBind::UiUp, 0, false, this, &bb::ScoreScreen::OnUpButton);
     }

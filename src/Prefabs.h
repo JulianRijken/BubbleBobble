@@ -21,6 +21,8 @@ namespace bb
         using namespace jul;
 
         void SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 velocity);
+        void SpawnBoulder(const glm::vec3& spawnPosition, glm::vec2 velocity);
+
 
         ZenChan* SpawnZenChanWithBehaviour(const glm::vec3& spawnPosition);
         ZenChan* SpawnZenChan(const glm::vec3& spawnPosition);
