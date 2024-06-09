@@ -9,10 +9,11 @@ namespace bb
 {
     using namespace jul;
 
-    class LevelState final : public Component
+    class LevelState final : public Component, public IEventListener
     {
     public:
         inline static constexpr double SPAWN_DURATION{ 2.0 };
+        inline static constexpr double DELAY_BEFORE_LOADING_NEXT_LEVEL{ 7.0 };
 
         struct EnemySpawn
         {
@@ -24,6 +25,9 @@ namespace bb
         LevelState(GameObject* parentPtr, const std::vector<EnemySpawn>& enemySpawns);
 
     private:
+        void OnLevelWin();
+
+        void OnEnemyDestroyed(Object* object);
         std::unordered_set<Enemy*> m_Enemies{};
     };
 

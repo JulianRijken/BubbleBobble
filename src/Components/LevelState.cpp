@@ -51,11 +51,27 @@ bb::LevelState::LevelState(jul::GameObject* parentPtr, const std::vector<EnemySp
         }
     }
 
+    for(auto&& enemy : m_Enemies)
+        enemy->GetOnDestroyedEvent().AddListener(this, &LevelState::OnEnemyDestroyed);
+}
 
-    ///
-    ///         // enemy->GetOnDestroyedEvent().AddListener(this,[this](){
-    //     m_Enemies.erase()
+void bb::LevelState::OnLevelWin()
+{
+    TweenEngine::Start({ .delay = DELAY_BEFORE_LOADING_NEXT_LEVEL,
+                         .duration = 0,
+                         .invokeWhenDestroyed = false,
+                         .onEnd = []() { Game::GetInstance().TryTransitionNextLevel(); } },
+                       GetGameObject());
+}
 
+void bb::LevelState::OnEnemyDestroyed(Object* object)
+{
+    auto* enemy = dynamic_cast<Enemy*>(object);
+    assert(enemy != nullptr);
 
-    // });
+    m_Enemies.erase(enemy);
+
+    fmt::println("Enemys Left: {}", m_Enemies.size());
+    if(m_Enemies.empty())
+        OnLevelWin();
 }

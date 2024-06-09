@@ -187,12 +187,12 @@ namespace bb
 
         [[nodiscard]] const GameScore& GetGameScore() { return m_GameScore; }
 
-
         void Initialize();
 
         // Starts the actual game with a mode
         void StartGame(GameMode mode);
 
+        void TryTransitionNextLevel(bool onlyLoadAfterTransition = true, bool resetPlayers = true);
         void TryTransitionLevel(int levelIndex, bool onlyLoadAfterTransition = true, bool resetPlayers = true);
         void SetPlayer(int playerIndex, Player* player);
         void SetMainCamera(Camera* camera);

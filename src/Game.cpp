@@ -72,6 +72,11 @@ void bb::Game::StartGame(GameMode mode)
     // Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
 }
 
+void bb::Game::TryTransitionNextLevel(bool onlyLoadAfterTransition, bool resetPlayers)
+{
+    TryTransitionLevel(m_ActiveLevelIndex + 1, onlyLoadAfterTransition, resetPlayers);
+}
+
 
 bb::Player* bb::Game::GetPlayer(int playerIndex) const { return m_Players[playerIndex]; }
 
@@ -254,7 +259,7 @@ void bb::Game::OnTransitionGameButton(const InputContext& context)
         return;
     }
 
-    TryTransitionLevel(m_ActiveLevelIndex + 1);
+    TryTransitionNextLevel();
 }
 
 void bb::Game::OnEndGameButton(const InputContext& context)
