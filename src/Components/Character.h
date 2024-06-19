@@ -14,7 +14,6 @@ namespace jul
 
 namespace bb
 {
-    using namespace jul;
 
     class Character : public Component
     {

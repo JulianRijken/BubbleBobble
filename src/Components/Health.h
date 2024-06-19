@@ -4,8 +4,6 @@
 
 namespace bb
 {
-    using namespace jul;
-
     class Health final : public Component
     {
     public:

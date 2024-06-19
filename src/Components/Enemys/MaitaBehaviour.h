@@ -5,8 +5,6 @@
 
 namespace bb
 {
-    using namespace jul;
-
     class Maita;
 
     class MaitaBehaviour final : public Component

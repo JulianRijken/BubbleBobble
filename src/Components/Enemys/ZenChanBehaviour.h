@@ -5,8 +5,6 @@
 
 namespace bb
 {
-    using namespace jul;
-
     class ZenChan;
 
     class ZenChanBehaviour final : public Component

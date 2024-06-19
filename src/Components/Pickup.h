@@ -10,14 +10,12 @@ namespace jul
 
 namespace bb
 {
-    using namespace jul;
-
-    class Pickup final : public Component
+    class Pickup final : public jul::Component
     {
     public:
         inline static constexpr double LIFE_TIME{ 10 };
 
-        Pickup(GameObject* parentPtr, PickupType pickupType);
+        Pickup(jul::GameObject* parentPtr, PickupType pickupType);
 
         Pickup(Pickup&&) = delete;
         Pickup(const Pickup&) = delete;
@@ -31,6 +29,6 @@ namespace bb
 
         PickupType m_PickupType{};
 
-        Rigidbody* m_Rigidbody{ nullptr };
+        jul::Rigidbody* m_Rigidbody{ nullptr };
     };
 }  // namespace bb

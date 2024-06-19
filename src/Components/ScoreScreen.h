@@ -14,8 +14,6 @@ namespace jul
 
 namespace bb
 {
-    using namespace jul;
-
     class ScoreScreen final : public Component, public IEventListener
     {
 

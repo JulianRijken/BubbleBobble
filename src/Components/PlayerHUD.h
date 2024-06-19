@@ -12,8 +12,6 @@ namespace jul
 
 namespace bb
 {
-    using namespace jul;
-
     class PlayerHUD final : public Component, public IEventListener
     {
     public:

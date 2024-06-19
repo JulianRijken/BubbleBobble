@@ -4,8 +4,6 @@
 
 namespace bb
 {
-    using namespace jul;
-
     class AutoMove final : public Component
     {
     public:

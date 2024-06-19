@@ -4,8 +4,6 @@
 
 namespace bb
 {
-    using namespace jul;
-
     class BubbleSpiral final : public Component
     {
     public:

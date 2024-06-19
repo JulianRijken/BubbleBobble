@@ -18,8 +18,6 @@ namespace bb
     // More like a factory :)
     namespace prefabs
     {
-        using namespace jul;
-
         void SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 velocity);
         void SpawnBoulder(const glm::vec3& spawnPosition, glm::vec2 velocity);
 

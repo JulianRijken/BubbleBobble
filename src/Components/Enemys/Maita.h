@@ -14,8 +14,6 @@ namespace jul
 
 namespace bb
 {
-    using namespace jul;
-
     class Maita final : public Enemy, public ICollisionListener, public IBubbleable
     {
     public:

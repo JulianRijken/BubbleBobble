@@ -5,8 +5,6 @@
 
 namespace bb
 {
-    using namespace jul;
-
     class Boulder final : public Component, public ICollisionListener
     {
     public:

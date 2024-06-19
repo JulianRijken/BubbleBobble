@@ -10,9 +10,6 @@
 
 namespace bb
 {
-
-    using namespace jul;
-
     class MainMenu final : public Component, public IEventListener
     {
     public:

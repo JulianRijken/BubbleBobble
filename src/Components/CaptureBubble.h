@@ -17,8 +17,6 @@ namespace jul
 
 namespace bb
 {
-    using namespace jul;
-
     class CaptureBubble final : public Component, public ICollisionListener
     {
     public:

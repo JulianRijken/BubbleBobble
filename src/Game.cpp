@@ -311,7 +311,6 @@ void bb::Game::ShowScoreScreen()
     SceneManager::GetInstance().LoadScene((int)scenes::Id::ScoreScreen, SceneLoadMode::OverrideForce);
 }
 
-
 void bb::Game::OnMessage(const Message& message)
 {
     switch(static_cast<MessageType>(message.id))

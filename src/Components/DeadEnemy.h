@@ -6,8 +6,6 @@
 
 namespace bb
 {
-    using namespace jul;
-
     class DeadEnemy final : public Component, public ICollisionListener
     {
     public:

@@ -7,8 +7,6 @@
 
 namespace bb
 {
-    using namespace jul;
-
     class LevelState final : public Component, public IEventListener
     {
     public:

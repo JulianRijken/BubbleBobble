@@ -19,8 +19,6 @@ namespace jul
 
 namespace bb
 {
-    using namespace jul;
-
     class Player final : public Character, public IDamageable, public ICollisionListener
     {
         friend class PlayerWalkingState;

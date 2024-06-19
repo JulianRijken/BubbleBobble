@@ -6,7 +6,6 @@
 
 namespace bb
 {
-    using namespace jul;
 
     class GameScore final
     {
@@ -19,7 +18,7 @@ namespace bb
 
     private:
         void AddScore(int playerIndex, int delta);
-        void OnMessage(const Message& message);
+        void OnMessage(const jul::Message& message);
         std::array<int, 2> m_PlayerScore{};
         const int PLAYER_COUNT{ static_cast<int>(m_PlayerScore.size()) };
     };

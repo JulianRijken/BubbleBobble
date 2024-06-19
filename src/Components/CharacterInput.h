@@ -4,9 +4,7 @@
 
 namespace bb
 {
-
     class Character;
-    using namespace jul;
 
     class CharacterInput final : public Component, public IEventListener
     {

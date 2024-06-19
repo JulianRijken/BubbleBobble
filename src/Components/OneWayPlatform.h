@@ -4,8 +4,6 @@
 
 namespace bb
 {
-    using namespace jul;
-
     class OneWayPlatform final : public Component, public ICollisionListener
     {
     public:

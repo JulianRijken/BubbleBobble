@@ -12,8 +12,6 @@ namespace jul
 
 namespace bb
 {
-    using namespace jul;
-
     class LevelHUD final : public Component, public IEventListener
     {
     public:

@@ -14,8 +14,6 @@ namespace jul
 
 namespace bb
 {
-    using namespace jul;
-
     class ZenChan final : public Enemy, public ICollisionListener, public IBubbleable
     {
     public:
