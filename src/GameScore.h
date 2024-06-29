@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAMESCORE_H
+#define GAMESCORE_H
 
 #include <MessageQueue.h>
 
@@ -30,3 +31,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif // GAMESCORE_H

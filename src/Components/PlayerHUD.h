@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLAYERHUD_H
+#define PLAYERHUD_H
 #include <Component.h>
 #include <Event.h>
 #include <MessageQueue.h>
@@ -41,3 +42,4 @@ namespace bb
         jul::TextRenderer* m_LivesText{ nullptr };
     };
 }
+#endif // PLAYERHUD_H

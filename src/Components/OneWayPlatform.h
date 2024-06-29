@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ONEWAYPLATFORM_H
+#define ONEWAYPLATFORM_H
 #include <Component.h>
 #include <ICollisionListener.h>
 
@@ -16,3 +17,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif // ONEWAYPLATFORM_H

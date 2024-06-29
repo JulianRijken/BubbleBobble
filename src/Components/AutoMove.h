@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AUTOMOVE_H
+#define AUTOMOVE_H
 #include "Component.h"
 #include <glm/vec3.hpp>
 
@@ -24,3 +25,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif // AUTOMOVE_H

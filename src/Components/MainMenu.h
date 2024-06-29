@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MAINMENU_H
+#define MAINMENU_H
 
 #include <Component.h>
 
@@ -59,3 +60,4 @@ namespace bb
         std::vector<AutoMove*> m_Bubbles{};
     };
 }  // namespace bb
+#endif // MAINMENU_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CHARACTER_H
+#define CHARACTER_H
 
 #include <Component.h>
 
@@ -32,3 +33,4 @@ namespace bb
         glm::vec2 m_MovementInput{};
     };
 }
+#endif // CHARACTER_H

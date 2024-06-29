@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DEADENEMY_H
+#define DEADENEMY_H
 #include <ICollisionListener.h>
 
 #include "Component.h"
@@ -32,3 +33,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif // DEADENEMY_H

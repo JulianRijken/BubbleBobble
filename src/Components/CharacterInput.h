@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CHARACTERINPUT_H
+#define CHARACTERINPUT_H
 #include <Component.h>
 #include <InputContext.h>
 
@@ -23,3 +24,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif // CHARACTERINPUT_H

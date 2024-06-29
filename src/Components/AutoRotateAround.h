@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AUTOROTATEAROUND_H
+#define AUTOROTATEAROUND_H
 
 #include <Component.h>
 
@@ -16,3 +17,4 @@ private:
     float m_Speed{};
 	float m_DistanceFromTarget{};
 };
+#endif // AUTOROTATEAROUND_H

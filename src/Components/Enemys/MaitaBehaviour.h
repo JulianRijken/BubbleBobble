@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MAITABEHAVIOUR_H
+#define MAITABEHAVIOUR_H
 #include <Component.h>
 
 #include <glm/vec2.hpp>
@@ -44,3 +45,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif // MAITABEHAVIOUR_H

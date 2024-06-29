@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ZENCHAN_H
+#define ZENCHAN_H
 #include <IBubbleable.h>
 #include <ICollisionListener.h>
 
@@ -68,3 +69,4 @@ namespace bb
 }  // namespace bb
 
 
+#endif // ZENCHAN_H

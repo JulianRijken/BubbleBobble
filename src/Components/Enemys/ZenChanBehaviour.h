@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ZENCHANBEHAVIOUR_H
+#define ZENCHANBEHAVIOUR_H
 #include <Component.h>
 
 #include <glm/vec2.hpp>
@@ -40,3 +41,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif // ZENCHANBEHAVIOUR_H

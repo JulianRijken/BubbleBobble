@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SCORESCREEN_H
+#define SCORESCREEN_H
 
 #include <Component.h>
 
@@ -87,3 +88,4 @@ namespace bb
         jul::GameObject* m_TopFiveScoresPtr{ nullptr };
     };
 }  // namespace bb
+#endif // SCORESCREEN_H

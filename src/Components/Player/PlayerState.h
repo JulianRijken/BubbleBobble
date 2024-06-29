@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLAYERSTATE_H
+#define PLAYERSTATE_H
 
 namespace bb
 {
@@ -143,3 +144,4 @@ namespace bb
         void Update(Player& player) override;
     };
 }  // namespace bb
+#endif // PLAYERSTATE_H

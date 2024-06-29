@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FPSCOUNTER_H
+#define FPSCOUNTER_H
 #include <Component.h>
 
 
@@ -21,3 +22,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif // FPSCOUNTER_H

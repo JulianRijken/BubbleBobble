@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LEVELHUD_H
+#define LEVELHUD_H
 #include <Component.h>
 #include <Event.h>
 #include <MessageQueue.h>
@@ -26,3 +27,4 @@ namespace bb
         jul::TextRenderer* m_LevelNumberText{ nullptr };
     };
 }
+#endif // LEVELHUD_H

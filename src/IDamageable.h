@@ -1,4 +1,5 @@
-#pragma once
+#ifndef IDAMAGEABLE_H
+#define IDAMAGEABLE_H
 
 #include "GameObject.h"
 
@@ -25,3 +26,4 @@ namespace bb
         IDamageable() = default;
     };
 }  // namespace bb
+#endif // IDAMAGEABLE_H

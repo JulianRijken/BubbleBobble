@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LEVELSTATE_H
+#define LEVELSTATE_H
 #include <Component.h>
 
 #include <unordered_set>
@@ -30,3 +31,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif // LEVELSTATE_H

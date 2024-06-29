@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BUBBLESPIRAL_H
+#define BUBBLESPIRAL_H
 
 #include <Component.h>
 
@@ -21,3 +22,4 @@ namespace bb
         double m_SpawnIntervalTimer{};
     };
 }  // namespace bb
+#endif // BUBBLESPIRAL_H

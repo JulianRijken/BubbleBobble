@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PREFABS_H
+#define PREFABS_H
 
 #include <Scene.h>
 #include <SDL_pixels.h>
@@ -41,3 +42,4 @@ namespace bb
         void SpawnScoreText(const glm::vec3& spawnPosition, int score, const SDL_Color& color = { 255, 255, 255, 255 });
     }  // namespace prefabs
 }  // namespace bb
+#endif // PREFABS_H
