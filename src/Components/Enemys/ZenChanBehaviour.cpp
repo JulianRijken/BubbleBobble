@@ -9,10 +9,14 @@
 #include "MathExtensions.h"
 #include "ZenChan.h"
 
+using jul::GameObject;
+using jul::GameTime;
+using jul::Physics;
+
 bb::ZenChanBehaviour::ZenChanBehaviour(GameObject* parentPtr, ZenChan* target) :
     Component(parentPtr, "ZenChanBehaviour"),
     m_Target(target),
-    m_WalkingDirection(math::RandomValue() > 0.5 ? 1 : -1)
+    m_WalkingDirection(jul::math::RandomValue() > 0.5 ? 1 : -1)
 {
 }
 

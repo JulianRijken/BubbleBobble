@@ -17,6 +17,17 @@
 #include "Game.h"
 #include "GameScore.h"
 
+using jul::ButtonState;
+using jul::Camera;
+using jul::EaseFunction;
+using jul::GameObject;
+using jul::Input;
+using jul::InputContext;
+using jul::ResourceManager;
+using jul::Scene;
+using jul::TextRenderer;
+using jul::TweenEngine;
+
 bb::ScoreScreen::ScoreScreen(GameObject* parentPtr) :
     Component(parentPtr),
     m_SelectedPlayerWriting(0)

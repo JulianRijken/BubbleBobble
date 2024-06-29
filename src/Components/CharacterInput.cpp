@@ -6,6 +6,11 @@
 #include "Character.h"
 #include "Game.h"
 
+using jul::ButtonState;
+using jul::GameObject;
+using jul::Input;
+using jul::InputContext;
+
 bb::CharacterInput::CharacterInput(GameObject* parentPtr, bool canUseKeyboard, int controllerIndex,
                                    Character* characterPtr) :
     Component(parentPtr, "CharacterInput"),

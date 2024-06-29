@@ -17,7 +17,7 @@ namespace bb
     private:
         void Update() override;
 
-        TextRenderer* m_TextRenderer{};
+        jul::TextRenderer* m_TextRenderer{};
     };
 
 }  // namespace bb

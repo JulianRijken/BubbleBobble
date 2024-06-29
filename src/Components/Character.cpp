@@ -4,8 +4,12 @@
 #include <Physics.h>
 #include <Rigidbody.h>
 
+using jul::BoxCollider;
+using jul::GameObject;
+using jul::Physics;
+using jul::Rigidbody;
 
-bb::Character::Character(jul::GameObject* parentPtr, const std::string& name) :
+bb::Character::Character(GameObject* parentPtr, const std::string& name) :
     jul::Component(parentPtr, name)
 {
 }

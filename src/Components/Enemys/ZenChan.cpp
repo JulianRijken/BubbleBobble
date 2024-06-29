@@ -11,6 +11,13 @@
 #include "Player.h"
 #include "Prefabs.h"
 
+using jul::Animator;
+using jul::BoxCollider;
+using jul::Collision;
+using jul::GameObject;
+using jul::Rigidbody;
+using jul::SpriteRenderer;
+
 bb::ZenChan::ZenChan(GameObject* parentPtr) :
     Enemy(parentPtr, "Zen Chan"),
     m_Animator(parentPtr->GetComponent<Animator>()),

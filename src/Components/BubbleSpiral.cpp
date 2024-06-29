@@ -11,6 +11,13 @@
 
 #include <numbers>
 
+using jul::Animator;
+using jul::GameObject;
+using jul::GameTime;
+using jul::ResourceManager;
+using jul::Scene;
+using jul::SpriteRenderer;
+
 bb::BubbleSpiral::BubbleSpiral(GameObject* parentPtr) :
     Component(parentPtr, "BubbleSpiral")
 {

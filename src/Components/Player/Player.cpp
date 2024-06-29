@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include <fmt/core.h>
+#include <GameObject.h>
 #include <GameTime.h>
 #include <MessageQueue.h>
 #include <Physics.h>
@@ -8,8 +9,18 @@
 
 #include "CaptureBubble.h"
 #include "Game.h"
-#include "GameObject.h"
 #include "Pickup.h"
+
+using jul::Animator;
+using jul::BoxCollider;
+using jul::Collision;
+using jul::EaseFunction;
+using jul::GameObject;
+using jul::MessageQueue;
+using jul::Rigidbody;
+using jul::SpriteRenderer;
+using jul::TweenEngine;
+
 
 bb::Player::Player(GameObject* parentPtr, int playerIndex, SpriteRenderer* bodySpriteRenderer,
                    SpriteRenderer* bubbleSpriteRenderer, Animator* bodyAnimator, Animator* bubbleAnimator) :

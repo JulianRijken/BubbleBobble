@@ -6,13 +6,13 @@
 
 namespace bb
 {
-    class DeadEnemy final : public Component, public ICollisionListener
+    class DeadEnemy final : public jul::Component, public jul::ICollisionListener
     {
     public:
         inline static constexpr int MAX_BOUNCES{ 3 };
         inline static constexpr double TIME_BETWEEN_BOUNCES{ 0.5 };
 
-        DeadEnemy(GameObject* parentPtr, PickupType fruitType);
+        DeadEnemy(jul::GameObject* parentPtr, PickupType fruitType);
 
         DeadEnemy(DeadEnemy&&) = delete;
         DeadEnemy(const DeadEnemy&) = delete;
@@ -20,8 +20,7 @@ namespace bb
         DeadEnemy& operator=(const DeadEnemy&) = delete;
 
     private:
-        void OnCollisionPreSolve(const Collision& collision, const b2Manifold*) override;
-        void OnCollisionBegin(const Collision&) override;
+        void OnCollisionBegin(const jul::Collision& /*unused*/) override;
 
         void Update() override;
 

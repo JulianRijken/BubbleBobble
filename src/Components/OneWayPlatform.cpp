@@ -5,6 +5,10 @@
 #include <Physics.h>
 #include <Rigidbody.h>
 
+using jul::Collision;
+using jul::GameObject;
+using jul::GameTime;
+
 bb::OneWayPlatform::OneWayPlatform(GameObject* parentPtr) :
     Component(parentPtr, "One Way Platform")
 {

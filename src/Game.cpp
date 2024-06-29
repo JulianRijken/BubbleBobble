@@ -21,6 +21,24 @@
 #include "Player.h"
 #include "ZenChan.h"
 
+using jul::BoxCollider;
+using jul::ButtonState;
+using jul::Camera;
+using jul::EaseFunction;
+using jul::GameTime;
+using jul::Input;
+using jul::InputContext;
+using jul::Locator;
+using jul::Message;
+using jul::MessageQueue;
+using jul::ResourceManager;
+using jul::Rigidbody;
+using jul::SceneLoadMode;
+using jul::SceneManager;
+using jul::Sound;
+using jul::SpriteRenderer;
+using jul::TweenEngine;
+
 void bb::Game::Initialize()
 {
     MessageQueue::AddListener(MessageType::GameStart, this, &Game::OnMessage);
@@ -44,7 +62,7 @@ void bb::Game::Initialize()
     Input::Bind((int)InputBind::DebugIncreaseTimeScale, 1, true, this, &Game::OnIncreaseTimeScaleButton);
     Input::Bind((int)InputBind::DebugDecreaseTimeScale, 1, true, this, &Game::OnDecreaseTimeScaleButton);
 
-    Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
+    // Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
 }
 
 void bb::Game::StartGame(GameMode mode)

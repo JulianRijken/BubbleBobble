@@ -29,6 +29,19 @@
 #include "ZenChan.h"
 #include "ZenChanBehaviour.h"
 
+using jul::Animator;
+using jul::BoxCollider;
+using jul::Camera;
+using jul::GameObject;
+using jul::GameSettings;
+using jul::ResourceManager;
+using jul::Rigidbody;
+using jul::Scene;
+using jul::SpriteRenderer;
+using jul::TextRenderer;
+using jul::TweenEngine;
+
+
 void bb::prefabs::SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 velocity)
 {
     Scene* activeScene = Game::GetInstance().GetActiveLevelScene();

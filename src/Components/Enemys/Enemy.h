@@ -1,13 +1,14 @@
-#pragma once
+#ifndef Enemy_H
+#define Enemy_H
 
-#include <Character.h>
+#include "Character.h"
 
 namespace bb
 {
     class Enemy : public Character
     {
     public:
-        explicit Enemy(GameObject* parentPtr = nullptr, const std::string& name = "Enemy");
+        explicit Enemy(jul::GameObject* parentPtr = nullptr, const std::string& name = "Enemy");
         ~Enemy() override = default;
 
         Enemy(Enemy&&) = delete;
@@ -19,3 +20,4 @@ namespace bb
         virtual void OnLevelPlaced(){};
     };
 }  // namespace bb
+#endif  // Enemy_H

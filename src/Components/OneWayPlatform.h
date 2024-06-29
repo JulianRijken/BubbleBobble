@@ -4,15 +4,15 @@
 
 namespace bb
 {
-    class OneWayPlatform final : public Component, public ICollisionListener
+    class OneWayPlatform final : public jul::Component, public jul::ICollisionListener
     {
     public:
-        OneWayPlatform(GameObject* parentPtr);
+        OneWayPlatform(jul::GameObject* parentPtr);
 
         static constexpr float DELTA_EPSILON = -0.05f;
 
     private:
-        void OnCollisionPreSolve(const Collision& collision, const b2Manifold* oldManifold) override;
+        void OnCollisionPreSolve(const jul::Collision& collision, const b2Manifold* oldManifold) override;
     };
 
 }  // namespace bb

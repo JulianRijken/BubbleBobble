@@ -12,12 +12,13 @@ namespace jul
 
 namespace bb
 {
-    class PlayerHUD final : public Component, public IEventListener
+    class PlayerHUD final : public jul::Component, public jul::IEventListener
     {
     public:
         inline static constexpr int SCORE_CHANGE_PER_SECOND = 400;
 
-        PlayerHUD(GameObject* parentPtr, TextRenderer* scoreText, TextRenderer* livesText, int playerIndex);
+        PlayerHUD(jul::GameObject* parentPtr, jul::TextRenderer* scoreText, jul::TextRenderer* livesText,
+                  int playerIndex);
         ~PlayerHUD();
 
     private:
@@ -26,8 +27,8 @@ namespace bb
         void UpdateLives(int lives);
         void OnLevelTransitionChange(bool inTransition, int levelIndex);
 
-        void OnCharacterLivesChanged(const Message& message);
-        void OnCharacterScoreChanged(const Message& message);
+        void OnCharacterLivesChanged(const jul::Message& message);
+        void OnCharacterScoreChanged(const jul::Message& message);
 
         int m_PlayerIndex{};
 
@@ -36,7 +37,7 @@ namespace bb
         double m_VisualScore{};
         int m_TargetScore{};
 
-        TextRenderer* m_ScoreText{ nullptr };
-        TextRenderer* m_LivesText{ nullptr };
+        jul::TextRenderer* m_ScoreText{ nullptr };
+        jul::TextRenderer* m_LivesText{ nullptr };
     };
 }

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
+
 #include <Event.h>
 #include <InputContext.h>
 #include <Locator.h>
@@ -234,3 +236,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif  // GAME_H

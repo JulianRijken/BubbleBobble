@@ -8,9 +8,15 @@
 
 #include "Scenes.h"
 
+using bb::Game;
+using bb::InputBind;
+using bb::Sounds;
 
-using namespace jul;
-using namespace bb;
+using jul::Input;
+using jul::InputBinding;
+using jul::MuteGameCommand;
+using jul::ResourceManager;
+using jul::SpriteAnimation;
 
 void LoadResources()
 {
@@ -151,15 +157,10 @@ void LoadResources()
         });
 }
 
-void InitControls()
-{
-    Input::RegisterCommand<MuteGameCommand>((int)InputBind::ToggleSound, 1, true);
-    Input::RegisterCommand<DebugGameCommand>((int)InputBind::ToggleDebug, 1, true);
-}
+void InitControls() { Input::RegisterCommand<MuteGameCommand>((int)InputBind::ToggleSound, 1, true); }
 
 void jul::Julgen::PreInit()
 {
-
     // 32 by 28 tiles
     GameSettings::g_WindowTitle = "Bubble Bobble Made In Julgen";
     GameSettings::g_RenderWidth = Game::GRID_SIZE_X * Game::PIXELS_PER_GRID_CELL;
@@ -247,6 +248,6 @@ void jul::Julgen::GameStart()
     LoadResources();
     Game::GetInstance().Initialize();
     bb::scenes::BindScenes();
-    SceneManager::GetInstance().LoadScene((int)scenes::Id::MainMenu);
+    SceneManager::GetInstance().LoadScene((int)bb::scenes::Id::MainMenu);
     SDL_SetRelativeMouseMode(SDL_TRUE);
 }

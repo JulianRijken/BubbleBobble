@@ -19,6 +19,19 @@
 
 #include "Game.h"
 
+using jul::Animator;
+using jul::EaseFunction;
+using jul::GameObject;
+using jul::GameTime;
+using jul::Input;
+using jul::InputContext;
+using jul::MessageQueue;
+using jul::ResourceManager;
+using jul::Scene;
+using jul::SpriteRenderer;
+using jul::Transform;
+using jul::TweenEngine;
+
 bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameObject* intoTextPtr,
                        GameObject* introScreen, GameObject* selectScreen, Transform* selectBubble,
                        std::vector<Transform*>&& options) :
@@ -46,7 +59,7 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
     {
         for(int x = -16; x < 16; ++x)
         {
-            if(math::RandomValue() < 0.90)
+            if(jul::math::RandomValue() < 0.90)
                 continue;
 
             auto* bubbleParticle = scene.AddGameObject("Bubble Particle", { x, y, 0 });
@@ -68,7 +81,7 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
                          .onUpdate =
                              [this](double value)
                          {
-                             const double alpha = math::MapValueInRange(value, 20.0, 4.0);
+                             const double alpha = jul::math::MapValueInRange(value, 20.0, 4.0);
 
                              const auto activeBubbleCount =
                                  static_cast<size_t>(std::lerp(0.0, static_cast<double>(m_Bubbles.size() - 1), alpha));

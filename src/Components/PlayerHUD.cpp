@@ -7,6 +7,11 @@
 #include "GameTime.h"
 #include "MathExtensions.h"
 
+using jul::GameObject;
+using jul::Message;
+using jul::MessageQueue;
+using jul::TextRenderer;
+
 bb::PlayerHUD::PlayerHUD(GameObject* parentPtr, TextRenderer* scoreText, TextRenderer* livesText, int playerIndex) :
     Component(parentPtr, "ScoreDisplay"),
     m_PlayerIndex(playerIndex),

@@ -8,8 +8,11 @@
 #include "prefabs.h"
 #include "ZenChan.h"
 
+using jul::EaseFunction;
+using jul::GameObject;
+using jul::TweenEngine;
 
-bb::LevelState::LevelState(jul::GameObject* parentPtr, const std::vector<EnemySpawn>& enemySpawns) :
+bb::LevelState::LevelState(GameObject* parentPtr, const std::vector<EnemySpawn>& enemySpawns) :
     Component(parentPtr, "LevelState")
 {
     // VS mode :)

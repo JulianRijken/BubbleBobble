@@ -5,12 +5,12 @@
 
 namespace bb
 {
-    class Boulder final : public Component, public ICollisionListener
+    class Boulder final : public jul::Component, public jul::ICollisionListener
     {
     public:
-        Boulder(GameObject* parentPtr);
+        Boulder(jul::GameObject* parentPtr);
 
     private:
-        void OnCollisionBegin(const Collision&) override;
+        void OnCollisionBegin(const jul::Collision& /*unused*/) override;
     };
 }  // namespace bb

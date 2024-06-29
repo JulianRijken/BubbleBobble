@@ -4,10 +4,10 @@
 
 namespace bb
 {
-    class AutoMove final : public Component
+    class AutoMove final : public jul::Component
     {
     public:
-        AutoMove(GameObject* parentPtr, const glm::vec3& velocity = {}, const glm::vec3& boundingBox = {},
+        AutoMove(jul::GameObject* parentPtr, const glm::vec3& velocity = {}, const glm::vec3& boundingBox = {},
                  const glm::vec3& boundingBoxCenter = {});
 
         void SetVelocity(glm::vec3 velocity);

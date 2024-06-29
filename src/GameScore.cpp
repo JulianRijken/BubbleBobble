@@ -6,6 +6,9 @@
 
 #include "Game.h"
 
+using jul::Message;
+using jul::MessageQueue;
+
 bb::GameScore::GameScore()
 {
     ResetScore();

@@ -7,14 +7,14 @@ namespace bb
 {
     class ZenChan;
 
-    class ZenChanBehaviour final : public Component
+    class ZenChanBehaviour final : public jul::Component
     {
     public:
         static constexpr float MIN_TIME_BETWEEN_WALL_TURN{ 1.0f };
         static constexpr glm::vec2 JUMP_INTERVAL{ 1.0f, 1.5f };
         static constexpr glm::vec2 FACE_TARGET_INTERVAL{ 2.0, 3.5f };
 
-        explicit ZenChanBehaviour(GameObject* parentPtr, ZenChan* target);
+        explicit ZenChanBehaviour(jul::GameObject* parentPtr, ZenChan* target);
 
         ~ZenChanBehaviour() override = default;
 

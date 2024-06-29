@@ -4,7 +4,7 @@
 
 namespace bb
 {
-    class BubbleSpiral final : public Component
+    class BubbleSpiral final : public jul::Component
     {
     public:
         inline static constexpr double SPAWN_INTERVAL = 0.3;
@@ -12,7 +12,7 @@ namespace bb
         inline static constexpr double ROTATE_SPEED = 0.5;
         inline static constexpr int SIDES = 7;
 
-        BubbleSpiral(GameObject* parentPtr);
+        BubbleSpiral(jul::GameObject* parentPtr);
 
     private:
         void Update() override;

@@ -1,8 +1,10 @@
 #include "Boulder.h"
+#include "IDamageable.h"
 
-#include <IDamageable.h>
+using jul::BoxCollider;
+using jul::Collision;
+using jul::GameObject;
 
-#include "GameObject.h"
 
 bb::Boulder::Boulder(GameObject* parentPtr) :
     Component(parentPtr)

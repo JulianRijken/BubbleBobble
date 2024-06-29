@@ -15,6 +15,12 @@
 #include "Player.h"
 #include "Prefabs.h"
 
+using jul::GameTime;
+using jul::MessageQueue;
+using jul::Physics;
+using jul::RayCastResult;
+using jul::Rigidbody;
+
 /////////////////////
 /// WALKING STATE ///
 /////////////////////

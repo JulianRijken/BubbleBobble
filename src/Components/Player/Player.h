@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Character.h>
 #include <Event.h>
 #include <ICollisionListener.h>
 #include <IDamageable.h>
 #include <InputContext.h>
 
+#include "Character.h"
 #include "Health.h"
 #include "PlayerState.h"
 
@@ -19,7 +19,7 @@ namespace jul
 
 namespace bb
 {
-    class Player final : public Character, public IDamageable, public ICollisionListener
+    class Player final : public Character, public IDamageable, public jul::ICollisionListener
     {
         friend class PlayerWalkingState;
         friend class PlayerJumpingState;
@@ -28,8 +28,8 @@ namespace bb
         friend class PlayerBubbleState;
 
     public:
-        Player(GameObject* parentPtr, int playerIndex, SpriteRenderer* bodySpriteRenderer,
-               SpriteRenderer* bubbleSpriteRenderer, Animator* bodyAnimator, Animator* bubbleAnimator);
+        Player(jul::GameObject* parentPtr, int playerIndex, jul::SpriteRenderer* bodySpriteRenderer,
+               jul::SpriteRenderer* bubbleSpriteRenderer, jul::Animator* bodyAnimator, jul::Animator* bubbleAnimator);
 
         ~Player() override;
 
@@ -58,7 +58,7 @@ namespace bb
 
         void ObtainPickup(PickupType pickupType);
         void OnDamage(jul::Component* instigator) override;
-        void OnCollisionPreSolve(const Collision& collision, const b2Manifold* /*unused*/) override;
+        void OnCollisionPreSolve(const jul::Collision& collision, const b2Manifold* /*unused*/) override;
 
         const std::string DEATH_ANIMATION_NAME{ "Death" };
         const std::string IDLE_ANIMATION_NAME{ "Idle" };
@@ -84,12 +84,13 @@ namespace bb
         int m_PlayerIndex{ 0 };
         bool m_Respawning{ false };
 
-        Animator* m_BodyAnimatorPtr{ nullptr };
-        Animator* m_BubbleAnimatorPtr{ nullptr };
-        Rigidbody* m_RigidbodyPtr{ nullptr };
-        SpriteRenderer* m_BodySpriteRendererPtr{ nullptr };
-        SpriteRenderer* m_BubbleSpriteRendererPtr{ nullptr };
-        BoxCollider* m_ColliderPtr{ nullptr };
+        jul::Animator* m_BodyAnimatorPtr{ nullptr };
+        jul::Animator* m_BubbleAnimatorPtr{ nullptr };
+        jul::Rigidbody* m_RigidbodyPtr{ nullptr };
+        jul::SpriteRenderer* m_BodySpriteRendererPtr{ nullptr };
+        jul::SpriteRenderer* m_BubbleSpriteRendererPtr{ nullptr };
+        jul::BoxCollider* m_ColliderPtr{ nullptr };
+
         Health* m_Health{ nullptr };
     };
 }

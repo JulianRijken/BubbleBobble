@@ -3,7 +3,7 @@
 #include "GameTime.h"
 #include "Transform.h"
 
-bb::AutoMove::AutoMove(GameObject* parentPtr, const glm::vec3& velocity, const glm::vec3& boundingBox,
+bb::AutoMove::AutoMove(jul::GameObject* parentPtr, const glm::vec3& velocity, const glm::vec3& boundingBox,
                        const glm::vec3& boundingBoxCenter) :
     Component(parentPtr, "AutoMove"),
     m_Velocity(velocity),

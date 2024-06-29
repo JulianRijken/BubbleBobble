@@ -12,17 +12,17 @@ namespace jul
 
 namespace bb
 {
-    class LevelHUD final : public Component, public IEventListener
+    class LevelHUD final : public jul::Component, public jul::IEventListener
     {
     public:
         inline static constexpr int SCORE_CHANGE_PER_SECOND = 400;
 
-        LevelHUD(GameObject* parentPt);
+        LevelHUD(jul::GameObject* parentPt);
 
     private:
         void OnLevelTransitionChange(bool inTransition, int levelIndex);
         void UpdateText(int levelIndex);
 
-        TextRenderer* m_LevelNumberText{ nullptr };
+        jul::TextRenderer* m_LevelNumberText{ nullptr };
     };
 }

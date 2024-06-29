@@ -12,6 +12,15 @@
 #include "IBubbleable.h"
 #include "IDamageable.h"
 
+using jul::Animator;
+using jul::BoxCollider;
+using jul::Collision;
+using jul::GameObject;
+using jul::GameTime;
+using jul::ResourceManager;
+using jul::Rigidbody;
+using jul::SpriteRenderer;
+
 bb::CaptureBubble::CaptureBubble(GameObject* parent, glm::vec3 fireVelocity) :
     Component(parent),
     m_BubbleSpriteRenderer(parent->GetComponent<SpriteRenderer>()),

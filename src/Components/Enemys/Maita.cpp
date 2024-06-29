@@ -13,6 +13,14 @@
 #include "Player.h"
 #include "Prefabs.h"
 
+using jul::Animator;
+using jul::BoxCollider;
+using jul::Collision;
+using jul::GameObject;
+using jul::GameTime;
+using jul::Rigidbody;
+using jul::SpriteRenderer;
+
 bb::Maita::Maita(GameObject* parentPtr) :
     Enemy(parentPtr, "Maita"),
     m_Animator(parentPtr->GetComponent<Animator>()),

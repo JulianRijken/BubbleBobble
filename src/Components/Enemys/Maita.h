@@ -1,20 +1,20 @@
-#pragma once
-#include <IBubbleable.h>
+#ifndef MAITA_H
+#define MAITA_H
+
 #include <ICollisionListener.h>
 
 #include "Enemy.h"
+#include "IBubbleable.h"
 
 namespace jul
 {
-    class Animator;
-    class Rigidbody;
     class SpriteRenderer;
-    class BoxCollider;
-}
+    class Animator;
+}  // namespace jul
 
 namespace bb
 {
-    class Maita final : public Enemy, public ICollisionListener, public IBubbleable
+    class Maita final : public Enemy, public jul::ICollisionListener, public IBubbleable
     {
     public:
         static constexpr float MOVE_SPEED{ 6.0f };
@@ -34,11 +34,16 @@ namespace bb
             Jumping
         };
 
-        Maita(GameObject* parent);
+        Maita(jul::GameObject* parent);
 
-        [[nodiscard]] Rigidbody* GetRigidbody() { return m_Rigidbody; }
+        Maita(Maita&&) = delete;
+        Maita(const Maita&) = delete;
+        Maita& operator=(Maita&&) = delete;
+        Maita& operator=(const Maita&) = delete;
 
-        [[nodiscard]] BoxCollider* GetBoxCollider() { return m_BoxCollider; }
+        [[nodiscard]] jul::Rigidbody* GetRigidbody() { return m_Rigidbody; }
+
+        [[nodiscard]] jul::BoxCollider* GetBoxCollider() { return m_BoxCollider; }
 
         [[nodiscard]] State GetState() { return m_State; }
 
@@ -50,24 +55,22 @@ namespace bb
 
         [[nodiscard]] std::string GetSpriteAnimationName() override { return "maita_bubble"; }
 
-        [[nodiscard]] Transform* GetCaptureTransform() override;
+        [[nodiscard]] jul::Transform* GetCaptureTransform() override;
 
         void FixedUpdate() override;
         void Update() override;
 
         void Jump();
-        void OnCollisionBegin(const Collision& collision) override;
+        void OnCollisionBegin(const jul::Collision& collision) override;
         void SpawnDeadVersion() override;
-
 
         float m_TimeSinceLastBoulderThrow{};
         State m_State{};
 
-        Animator* m_Animator{ nullptr };
-        Rigidbody* m_Rigidbody{ nullptr };
-        SpriteRenderer* m_SpriteRenderer{ nullptr };
-        BoxCollider* m_BoxCollider{ nullptr };
+        jul::Animator* m_Animator{ nullptr };
+        jul::Rigidbody* m_Rigidbody{ nullptr };
+        jul::SpriteRenderer* m_SpriteRenderer{ nullptr };
+        jul::BoxCollider* m_BoxCollider{ nullptr };
     };
 }  // namespace bb
-
-
+#endif  // MAITA_H;

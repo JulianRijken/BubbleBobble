@@ -4,6 +4,10 @@
 
 #include "GameObject.h"
 
+using jul::GameObject;
+using jul::Rigidbody;
+using jul::TweenEngine;
+
 bb::Pickup::Pickup(GameObject* parentPtr, PickupType pickupType) :
     Component(parentPtr),
     m_PickupType(pickupType),

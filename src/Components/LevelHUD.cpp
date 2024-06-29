@@ -7,6 +7,11 @@
 #include "Game.h"
 #include "GameObject.h"
 
+using jul::GameObject;
+using jul::ResourceManager;
+using jul::SpriteRenderer;
+using jul::TextRenderer;
+
 bb::LevelHUD::LevelHUD(GameObject* parentPt) :
     Component(parentPt, "LevelHUD")
 

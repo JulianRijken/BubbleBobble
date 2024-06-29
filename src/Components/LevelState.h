@@ -7,7 +7,7 @@
 
 namespace bb
 {
-    class LevelState final : public Component, public IEventListener
+    class LevelState final : public jul::Component, public jul::IEventListener
     {
     public:
         inline static constexpr double SPAWN_DURATION{ 2.0 };
@@ -20,7 +20,7 @@ namespace bb
             glm::vec3 location = {};
         };
 
-        LevelState(GameObject* parentPtr, const std::vector<EnemySpawn>& enemySpawns);
+        LevelState(jul::GameObject* parentPtr, const std::vector<EnemySpawn>& enemySpawns);
 
     private:
         void OnLevelWin();

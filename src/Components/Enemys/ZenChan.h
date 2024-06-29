@@ -14,7 +14,7 @@ namespace jul
 
 namespace bb
 {
-    class ZenChan final : public Enemy, public ICollisionListener, public IBubbleable
+    class ZenChan final : public Enemy, public jul::ICollisionListener, public IBubbleable
     {
     public:
         static constexpr float MOVE_SPEED{ 8.0f };
@@ -31,11 +31,11 @@ namespace bb
             Jumping
         };
 
-        ZenChan(GameObject* parent);
+        ZenChan(jul::GameObject* parent);
 
-        [[nodiscard]] Rigidbody* GetRigidbody() { return m_Rigidbody; }
+        [[nodiscard]] jul::Rigidbody* GetRigidbody() { return m_Rigidbody; }
 
-        [[nodiscard]] BoxCollider* GetBoxCollider() { return m_BoxCollider; }
+        [[nodiscard]] jul::BoxCollider* GetBoxCollider() { return m_BoxCollider; }
 
         [[nodiscard]] State GetState() { return m_State; }
 
@@ -47,7 +47,7 @@ namespace bb
 
         [[nodiscard]] std::string GetSpriteAnimationName() override { return "zenchan_bubble"; }
 
-        [[nodiscard]] Transform* GetCaptureTransform() override;
+        [[nodiscard]] jul::Transform* GetCaptureTransform() override;
 
         void OnRelease() override;
 
@@ -55,15 +55,15 @@ namespace bb
         void Update() override;
 
         void Jump();
-        void OnCollisionBegin(const Collision& collision) override;
+        void OnCollisionBegin(const jul::Collision& collision) override;
         void SpawnDeadVersion() override;
 
         bool m_Charging{ false };
         State m_State{};
-        Animator* m_Animator{ nullptr };
-        Rigidbody* m_Rigidbody{ nullptr };
-        SpriteRenderer* m_SpriteRenderer{ nullptr };
-        BoxCollider* m_BoxCollider{ nullptr };
+        jul::Animator* m_Animator{ nullptr };
+        jul::Rigidbody* m_Rigidbody{ nullptr };
+        jul::SpriteRenderer* m_SpriteRenderer{ nullptr };
+        jul::BoxCollider* m_BoxCollider{ nullptr };
     };
 }  // namespace bb
 

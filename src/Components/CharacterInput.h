@@ -6,17 +6,17 @@ namespace bb
 {
     class Character;
 
-    class CharacterInput final : public Component, public IEventListener
+    class CharacterInput final : public jul::Component, public jul::IEventListener
     {
     public:
-        CharacterInput(GameObject* parentPtr, bool canUseKeyboard, int controllerIndex,
+        CharacterInput(jul::GameObject* parentPtr, bool canUseKeyboard, int controllerIndex,
                        Character* characterPtr = nullptr);
 
-        void OnMoveLeftInput(const InputContext& context);
-        void OnMoveRightInput(const InputContext& context);
-        void OnMoveStickInput(const InputContext& context);
-        void OnJumpInput(const InputContext& context);
-        void OnAttackInput(const InputContext& context);
+        void OnMoveLeftInput(const jul::InputContext& context);
+        void OnMoveRightInput(const jul::InputContext& context);
+        void OnMoveStickInput(const jul::InputContext& context);
+        void OnJumpInput(const jul::InputContext& context);
+        void OnAttackInput(const jul::InputContext& context);
 
     private:
         Character* m_CharacterPtr{ nullptr };

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GameObject.h"
+
 namespace jul
 {
     class Component;

@@ -7,7 +7,7 @@ namespace bb
 {
     class Maita;
 
-    class MaitaBehaviour final : public Component
+    class MaitaBehaviour final : public jul::Component
     {
     public:
         static constexpr float MIN_TIME_BETWEEN_WALL_TURN{ 1.0f };
@@ -17,7 +17,7 @@ namespace bb
         static constexpr float BOULDER_THROW_INTERVAL{ 5.0 };
 
 
-        explicit MaitaBehaviour(GameObject* parentPtr, Maita* target);
+        explicit MaitaBehaviour(jul::GameObject* parentPtr, Maita* target);
 
         ~MaitaBehaviour() override = default;
 
@@ -34,7 +34,7 @@ namespace bb
         float m_FacePlayerInterval{ FACE_TARGET_INTERVAL.y };
 
         float m_TimeSinceThrow{};
-        Maita* m_Target;
+        Maita* m_Target{ nullptr };
         int m_WalkingDirection{ 1 };
         float m_TimeSinceLastJump{};
         float m_TimeSinceLastFacePlayer{};

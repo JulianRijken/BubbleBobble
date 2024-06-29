@@ -1,18 +1,22 @@
 #include "MaitaBehaviour.h"
 
+#include <GameObject.h>
 #include <GameTime.h>
+#include <MathExtensions.h>
 #include <Physics.h>
-#include <Player.h>
 
 #include "Game.h"
-#include "GameObject.h"
 #include "Maita.h"
-#include "MathExtensions.h"
+#include "Player.h"
+
+using jul::GameObject;
+using jul::GameTime;
+using jul::Physics;
 
 bb::MaitaBehaviour::MaitaBehaviour(GameObject* parentPtr, Maita* target) :
     Component(parentPtr, "MaitaBehaviour"),
     m_Target(target),
-    m_WalkingDirection(math::RandomValue() > 0.5 ? 1 : -1)
+    m_WalkingDirection(jul::math::RandomValue() > 0.5 ? 1 : -1)
 {
 }
 

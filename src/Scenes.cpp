@@ -31,6 +31,17 @@
 #include "ScoreScreen.h"
 #include "Transform.h"
 
+using jul::Animator;
+using jul::GameObject;
+using jul::GameTime;
+using jul::ResourceManager;
+using jul::Scene;
+using jul::SceneManager;
+using jul::SpriteRenderer;
+using jul::TextRenderer;
+using jul::Transform;
+using jul::TweenEngine;
+
 void bb::scenes::BindScenes()
 {
     SceneManager::GetInstance().BindScene((int)Id::MainMenu, MainMenuScene);
