@@ -10,7 +10,7 @@
 #include <GameTime.h>
 #include <Input.h>
 #include <MathExtensions.h>
-#include <ResourceManager.h>
+#include <Resources.h>
 #include <SceneManager.h>
 #include <SpriteRenderer.h>
 #include <Transform.h>
@@ -26,7 +26,7 @@ using jul::GameTime;
 using jul::Input;
 using jul::InputContext;
 using jul::MessageQueue;
-using jul::ResourceManager;
+using jul::Resources;
 using jul::Scene;
 using jul::SpriteRenderer;
 using jul::Transform;
@@ -64,7 +64,7 @@ bb::MainMenu::MainMenu(GameObject* parentPtr, Transform* logoTransformPtr, GameO
 
             auto* bubbleParticle = scene.AddGameObject("Bubble Particle", { x, y, 0 });
             bubbleParticle->SetActive(false);
-            bubbleParticle->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleParticle"), -90);
+            bubbleParticle->AddComponent<SpriteRenderer>(Resources::GetSprite("BubbleParticle"), -90);
             bubbleParticle->AddComponent<Animator>()->Play("Twinkle", true, jul::math::RandomValue<float>());
             auto* autoMove = bubbleParticle->AddComponent<AutoMove>(
                 glm::vec3{ 0, jul::math::RandomRange(1.5f, 4.0f), 0 }, glm::vec3{ 16, 15, 1 });

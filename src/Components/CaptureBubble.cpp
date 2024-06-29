@@ -6,7 +6,7 @@
 #include <GameObject.h>
 #include <GameTime.h>
 #include <MathExtensions.h>
-#include <ResourceManager.h>
+#include <Resources.h>
 
 #include "Game.h"
 #include "IBubbleable.h"
@@ -17,7 +17,7 @@ using jul::BoxCollider;
 using jul::Collision;
 using jul::GameObject;
 using jul::GameTime;
-using jul::ResourceManager;
+using jul::Resources;
 using jul::Rigidbody;
 using jul::SpriteRenderer;
 
@@ -53,7 +53,7 @@ void bb::CaptureBubble::Capture(IBubbleable* target)
 {
     m_CapturedTarget = target;
     target->GetCaptureTransform()->GetGameObject()->SetActive(false);
-    m_CapturedSpriteRenderer->SetSprite(ResourceManager::GetSprite(target->GetSpriteName()));
+    m_CapturedSpriteRenderer->SetSprite(Resources::GetSprite(target->GetSpriteName()));
     m_CapturedAnimator->Play(target->GetSpriteAnimationName(), true);
     m_BubbleSpriteRenderer->SetEnabled(false);
 

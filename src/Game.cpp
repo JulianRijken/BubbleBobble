@@ -7,7 +7,7 @@
 #include <GameTime.h>
 #include <Input.h>
 #include <Prefabs.h>
-#include <ResourceManager.h>
+#include <Resources.h>
 #include <SceneManager.h>
 #include <SDL_image.h>
 #include <SpriteRenderer.h>
@@ -31,7 +31,7 @@ using jul::InputContext;
 using jul::Locator;
 using jul::Message;
 using jul::MessageQueue;
-using jul::ResourceManager;
+using jul::Resources;
 using jul::Rigidbody;
 using jul::SceneLoadMode;
 using jul::SceneManager;
@@ -126,7 +126,7 @@ jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
         if(block.solidity == BlockSolidity::Semi)
         {
             tile->AddComponent<SpriteRenderer>(
-                ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, levelIndex });
+                Resources::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, levelIndex });
             tile->AddComponent<Rigidbody>(Rigidbody::Settings{ .mode = Rigidbody::Mode::Static });
             tile->AddComponent<OneWayPlatform>();
             tile->AddComponent<BoxCollider>(BoxCollider::Settings{
@@ -139,7 +139,7 @@ jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
         if(block.solidity == BlockSolidity::Solid)
         {
             tile->AddComponent<SpriteRenderer>(
-                ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, levelIndex });
+                Resources::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, levelIndex });
             tile->AddComponent<BoxCollider>(BoxCollider::Settings{
                 .size{ 1.0f, 1.0f },
                 .center{ 0.5f, -0.5f },
@@ -150,7 +150,7 @@ jul::GameObject* bb::Game::SpawnLevelTiles(int levelIndex)
         if(block.solidity == BlockSolidity::None)
         {
             tile->AddComponent<SpriteRenderer>(
-                ResourceManager::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, levelIndex });
+                Resources::GetSprite("LevelTiles"), -50, glm::ivec2{ 0, levelIndex });
         }
     }
 
@@ -426,7 +426,7 @@ void bb::Game::ParseMaps(const std::string& fileName)
 // They are RGBA 8bits
 SDL_Surface* bb::Game::JxlToSurface(const std::string& fileName)
 {
-    const std::filesystem::path filePath = ResourceManager::GetAssetsPath() / fileName;
+    const std::filesystem::path filePath = Resources::GetAssetsPath() / fileName;
 
     if(not exists(filePath))
         throw std::runtime_error("File does not exist: " + filePath.string());

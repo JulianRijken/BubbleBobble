@@ -9,7 +9,7 @@
 #include <fmt/core.h>
 #include <GameSettings.h>
 #include <Health.h>
-#include <ResourceManager.h>
+#include <Resources.h>
 #include <Rigidbody.h>
 #include <Scene.h>
 #include <SceneManager.h>
@@ -34,7 +34,7 @@ using jul::BoxCollider;
 using jul::Camera;
 using jul::GameObject;
 using jul::GameSettings;
-using jul::ResourceManager;
+using jul::Resources;
 using jul::Rigidbody;
 using jul::Scene;
 using jul::SpriteRenderer;
@@ -48,7 +48,7 @@ void bb::prefabs::SpawnCaptureBubble(const glm::vec3& spawnPosition, glm::vec2 v
     assert(activeScene);
 
     auto* bubble = activeScene->AddGameObject("AttackBubble", spawnPosition);
-    bubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), 0);
+    bubble->AddComponent<SpriteRenderer>(Resources::GetSprite("AttackBubble"), 0);
     bubble->AddComponent<Animator>();
     bubble->AddComponent<Rigidbody>();
     bubble->AddComponent<BoxCollider>(BoxCollider::Settings{
@@ -68,7 +68,7 @@ void bb::prefabs::SpawnBoulder(const glm::vec3& spawnPosition, glm::vec2 velocit
     assert(activeScene);
 
     auto* boulder = activeScene->AddGameObject("Boulder", spawnPosition);
-    auto* sprite = boulder->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    auto* sprite = boulder->AddComponent<SpriteRenderer>(Resources::GetSprite("Enemys"), 0);
     boulder->AddComponent<Animator>(sprite, "boulder_throw", false);
     auto* rigidbody = boulder->AddComponent<Rigidbody>();
     boulder->AddComponent<BoxCollider>(BoxCollider::Settings{
@@ -97,7 +97,7 @@ bb::ZenChan* bb::prefabs::SpawnZenChan(const glm::vec3& spawnPosition)
     assert(activeScene);
 
     auto* zenchanGO = activeScene->AddGameObject("ZenChan", spawnPosition);
-    zenchanGO->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    zenchanGO->AddComponent<SpriteRenderer>(Resources::GetSprite("Enemys"), 0);
     zenchanGO->AddComponent<Animator>();
     zenchanGO->AddComponent<Rigidbody>();
     zenchanGO->AddComponent<BoxCollider>(BoxCollider::Settings{
@@ -116,7 +116,7 @@ void bb::prefabs::SpawnZenChanDead(const glm::vec3& spawnPosition)
     assert(activeScene);
 
     auto* deadZenChen = activeScene->AddGameObject("Dead Maita", spawnPosition);
-    auto* spriteRenderer = deadZenChen->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    auto* spriteRenderer = deadZenChen->AddComponent<SpriteRenderer>(Resources::GetSprite("Enemys"), 0);
     deadZenChen->AddComponent<Animator>(spriteRenderer, "zenchan_dead");
     auto* rigidbody = deadZenChen->AddComponent<Rigidbody>();
     deadZenChen->AddComponent<BoxCollider>(BoxCollider::Settings{
@@ -148,7 +148,7 @@ bb::Maita* bb::prefabs::SpawnMaita(const glm::vec3& spawnPosition)
     assert(activeScene);
 
     auto* maitaGoPtr = activeScene->AddGameObject("Maita", spawnPosition);
-    maitaGoPtr->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    maitaGoPtr->AddComponent<SpriteRenderer>(Resources::GetSprite("Enemys"), 0);
     maitaGoPtr->AddComponent<Animator>();
     maitaGoPtr->AddComponent<Rigidbody>();
     maitaGoPtr->AddComponent<BoxCollider>(BoxCollider::Settings{
@@ -167,7 +167,7 @@ void bb::prefabs::SpawnMaitaDead(const glm::vec3& spawnPosition)
     assert(activeScene);
 
     auto* deadMaita = activeScene->AddGameObject("Dead Maita", spawnPosition);
-    auto* spriteRenderer = deadMaita->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Enemys"), 0);
+    auto* spriteRenderer = deadMaita->AddComponent<SpriteRenderer>(Resources::GetSprite("Enemys"), 0);
     deadMaita->AddComponent<Animator>(spriteRenderer, "maita_dead");
     auto* rigidbody = deadMaita->AddComponent<Rigidbody>();
     deadMaita->AddComponent<BoxCollider>(BoxCollider::Settings{
@@ -196,8 +196,8 @@ bb::Player* bb::prefabs::SpawnPlayer(jul::Scene& scene, int playerIndex, glm::ve
 
     auto* playerGameObject = scene.AddGameObject("Player", spawnLocation);
 
-    auto* bodySprite = playerGameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite(spriteName), 0);
-    auto* bubbleSprite = playerGameObject->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("BubbleLarge"), 0);
+    auto* bodySprite = playerGameObject->AddComponent<SpriteRenderer>(Resources::GetSprite(spriteName), 0);
+    auto* bubbleSprite = playerGameObject->AddComponent<SpriteRenderer>(Resources::GetSprite("BubbleLarge"), 0);
     auto* bodyAnimator = playerGameObject->AddComponent<Animator>(bodySprite);
     auto* bubbleAnimator = playerGameObject->AddComponent<Animator>(bubbleSprite);
     playerGameObject->AddComponent<Rigidbody>();
@@ -220,14 +220,14 @@ void bb::prefabs::SpawnPlayerHUD(jul::Scene& scene, int playerIndex)
     {
         auto* livesGameObject = scene.AddGameObject("LivesText", { playerIndex ? 14 : -15, -12, 0 });
         auto* livesText = livesGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), 100, glm::vec2{ 0, 0 });
+            "error", Resources::GetFont("NES"), 100, glm::vec2{ 0, 0 });
         livesGameObject->AddComponent<SpriteRenderer>(
-            ResourceManager::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
+            Resources::GetSprite("LevelTiles"), 90, glm::ivec2{ 4, 20 });
 
 
         auto* scoreGameObject = scene.AddGameObject("ScoreText", { playerIndex ? 4 : -4, 13, 0 });
         auto* scoreText = scoreGameObject->AddComponent<TextRenderer>(
-            "error", ResourceManager::GetFont("NES"), -100, glm ::vec2{ playerIndex ? 0 : 1, 0 });
+            "error", Resources::GetFont("NES"), -100, glm ::vec2{ playerIndex ? 0 : 1, 0 });
 
 
         livesGameObject->GetTransform().SetParent(&player1Hud->GetTransform(), false);
@@ -259,7 +259,7 @@ void bb::prefabs::SpawnPickup(PickupType pickup, const glm::vec3& spawnPosition)
 
 
     auto* fruit = activeScene->AddGameObject("Fruit", spawnPosition);
-    fruit->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Items"), 0, itemCell);
+    fruit->AddComponent<SpriteRenderer>(Resources::GetSprite("Items"), 0, itemCell);
     fruit->AddComponent<Rigidbody>(jul::Rigidbody::Settings{ .mode = jul::Rigidbody::Mode::Dynamic });
     fruit->AddComponent<BoxCollider>(BoxCollider::Settings{
         .friction = 0.0f,
@@ -304,7 +304,7 @@ void bb::prefabs::SpawnScoreText(const glm::vec3& spawnPosition, int score, cons
 
     auto* scoreText = activeScene->AddGameObject("ScoreText", spawnPosition);
     scoreText->AddComponent<TextRenderer>(
-        std::to_string(score), ResourceManager::GetFont("NES"), 0, glm::vec2{ 0.5, 0.5 }, true, 1.0, color);
+        std::to_string(score), Resources::GetFont("NES"), 0, glm::vec2{ 0.5, 0.5 }, true, 1.0, color);
 
     TweenEngine::Start({ .from = scoreText->GetTransform().GetWorldPosition().y,
                          .to = scoreText->GetTransform().GetWorldPosition().y + 4.0,

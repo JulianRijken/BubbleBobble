@@ -3,7 +3,7 @@
 #include <Input.h>
 #include <Julgen.h>
 #include <Player.h>
-#include <ResourceManager.h>
+#include <Resources.h>
 #include <SceneManager.h>
 
 #include "Scenes.h"
@@ -15,28 +15,28 @@ using bb::Sounds;
 using jul::Input;
 using jul::InputBinding;
 using jul::MuteGameCommand;
-using jul::ResourceManager;
+using jul::Resources;
 using jul::SpriteAnimation;
 
 void LoadResources()
 {
-    ResourceManager::BindSound(Sounds::GameStart, "SFX/The Quest Begins.ogg", true);
-    ResourceManager::BindSound(Sounds::FireBubble, "SFX/Bubble Bobble SFX (2).wav");
-    ResourceManager::BindSound(Sounds::Death, "SFX/Bubble Bobble SFX (3).wav");
-    ResourceManager::BindSound(Sounds::Jump, "SFX/Jump.wav");
+    Resources::BindSound(Sounds::GameStart, "SFX/The Quest Begins.ogg", true);
+    Resources::BindSound(Sounds::FireBubble, "SFX/Bubble Bobble SFX (2).wav");
+    Resources::BindSound(Sounds::Death, "SFX/Bubble Bobble SFX (3).wav");
+    Resources::BindSound(Sounds::Jump, "SFX/Jump.wav");
 
 
-    ResourceManager::LoadFont("NES", "NES_Font.ttf", 8);
+    Resources::LoadFont("NES", "NES_Font.ttf", 8);
 
-    ResourceManager::LoadSprite("Logo", "Logo.png", 8, { 0.5f, 0.5f });
-    ResourceManager::LoadSprite("Julgen_Retro_Logo", "Julgen_Logo_BB_Retro.png", 8, { 0.5f, 0.5f });
+    Resources::LoadSprite("Logo", "Logo.png", 8, { 0.5f, 0.5f });
+    Resources::LoadSprite("Julgen_Retro_Logo", "Julgen_Logo_BB_Retro.png", 8, { 0.5f, 0.5f });
 
 
-    ResourceManager::LoadSprite("DebugCube", "DebugCube.png", 4, { 0, 0 });
+    Resources::LoadSprite("DebugCube", "DebugCube.png", 4, { 0, 0 });
 
-    ResourceManager::LoadSprite("Items", "Items.png", 8, { 0.5f, 0.5f }, 4, 36);
+    Resources::LoadSprite("Items", "Items.png", 8, { 0.5f, 0.5f }, 4, 36);
 
-    ResourceManager::LoadSprite("AttackBubble",
+    Resources::LoadSprite("AttackBubble",
                                 "AttackBubble.png",
                                 8,
                                 {
@@ -48,12 +48,12 @@ void LoadResources()
                                   { "Idle", SpriteAnimation{ { { 3, 0 }, { 4, 0 } }, 12 } },
                                   { "Pop", SpriteAnimation{ { { 5, 0 }, { 6, 0 } }, 8 } } });
 
-    ResourceManager::LoadSprite("LevelTiles", "LevelTiles.png", 8, { 0.0f, 0.0f }, 25, 5);
+    Resources::LoadSprite("LevelTiles", "LevelTiles.png", 8, { 0.0f, 0.0f }, 25, 5);
 
 
     auto loadPLayerSprite = [](const std::string& spriteName, const std::string& fileName)
     {
-        ResourceManager::LoadSprite(spriteName,
+        Resources::LoadSprite(spriteName,
                                     fileName,
                                     8,
                                     {
@@ -86,7 +86,7 @@ void LoadResources()
     loadPLayerSprite("BobbleCharacter", "BobbleCharacter.png");
 
 
-    ResourceManager::LoadSprite("BubbleLarge",
+    Resources::LoadSprite("BubbleLarge",
                                 "BubbleLarge.png",
                                 8,
                                 {
@@ -121,7 +121,7 @@ void LoadResources()
                                 });
 
 
-    ResourceManager::LoadSprite("BubbleParticle",
+    Resources::LoadSprite("BubbleParticle",
                                 "BubbleParticle.png",
                                 8,
                                 {
@@ -133,7 +133,7 @@ void LoadResources()
                                     { "Twinkle", SpriteAnimation{ { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 } }, 4 } },
                                 });
 
-    ResourceManager::LoadSprite(
+    Resources::LoadSprite(
         "Enemys",
         "Enemys.png",
         8,

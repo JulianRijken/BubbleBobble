@@ -1,14 +1,14 @@
 #include "LevelHUD.h"
 
 #include <fmt/format.h>
-#include <ResourceManager.h>
+#include <Resources.h>
 #include <SpriteRenderer.h>
 
 #include "Game.h"
 #include "GameObject.h"
 
 using jul::GameObject;
-using jul::ResourceManager;
+using jul::Resources;
 using jul::SpriteRenderer;
 using jul::TextRenderer;
 
@@ -22,12 +22,12 @@ bb::LevelHUD::LevelHUD(GameObject* parentPt) :
 
     auto* levelTextGoPtr = scene.AddGameObject("LevelText", { 0, spawnHeight, 0 }, GetGameObject());
     m_LevelNumberText =
-        levelTextGoPtr->AddComponent<TextRenderer>("error", ResourceManager::GetFont("NES"), -5, glm::vec2{ 0.5, 0 });
+        levelTextGoPtr->AddComponent<TextRenderer>("error", Resources::GetFont("NES"), -5, glm::vec2{ 0.5, 0 });
 
     auto* blackBox1 = scene.AddGameObject("LevelText", { 0, spawnHeight, 0 }, GetGameObject());
-    blackBox1->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -10, glm::ivec2{ 4, 20 });
+    blackBox1->AddComponent<SpriteRenderer>(Resources::GetSprite("LevelTiles"), -10, glm::ivec2{ 4, 20 });
     auto* blackBox2 = scene.AddGameObject("LevelText", { -1, spawnHeight, 0 }, GetGameObject());
-    blackBox2->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("LevelTiles"), -10, glm::ivec2{ 4, 20 });
+    blackBox2->AddComponent<SpriteRenderer>(Resources::GetSprite("LevelTiles"), -10, glm::ivec2{ 4, 20 });
 
 
     UpdateText(1);

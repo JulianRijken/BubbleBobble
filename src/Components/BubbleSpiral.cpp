@@ -5,7 +5,7 @@
 #include <GameObject.h>
 #include <GameTime.h>
 #include <MathExtensions.h>
-#include <ResourceManager.h>
+#include <Resources.h>
 #include <Scene.h>
 #include <SpriteRenderer.h>
 
@@ -14,7 +14,7 @@
 using jul::Animator;
 using jul::GameObject;
 using jul::GameTime;
-using jul::ResourceManager;
+using jul::Resources;
 using jul::Scene;
 using jul::SpriteRenderer;
 
@@ -46,7 +46,7 @@ void bb::BubbleSpiral::SpawnBubble()
         Scene& thisScene = GetGameObject()->GetScene();
 
         auto* bubble = thisScene.AddGameObject("Bubble");
-        auto* sprite = bubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), 0);
+        auto* sprite = bubble->AddComponent<SpriteRenderer>(Resources::GetSprite("AttackBubble"), 0);
         bubble->AddComponent<Animator>(sprite, "Spawn");
         auto* autoMove = bubble->AddComponent<AutoMove>(glm::vec3(velocity.x, velocity.y, 0));
         autoMove->SetUseBoundingBox(false);
