@@ -13,21 +13,13 @@ Julgen was originally developed for Bubble Bobble
 
 ## Gameplay
 
-<img src="https://i.imgur.com/bTZx3r7.gif" style="width:70%;  display: block;
-  margin-left: 0;
-  margin-right: auto;"/>
-  <img src="https://i.imgur.com/qBpx6Ev.gif" style="width:70%;  display: block;
-  margin-left: 0;
-  margin-right: auto;"/>
-  <img src="https://i.imgur.com/rq9fiZv.gif" style="width:70%;  display: block;
-  margin-left: 0;
-  margin-right: auto;"/>
-  <img src="https://i.imgur.com/7kL8VgN.gif" style="width:70%;  display: block;
-  margin-left: 0;
-  margin-right: auto;"/>
+[intro-1.webm](https://github.com/user-attachments/assets/830f9b07-3c98-4d94-972a-46ec3e2cd240)
 
+[2.webm](https://github.com/user-attachments/assets/577c8460-ad1e-415b-94cd-237bc0a95f41)
 
+[3.webm](https://github.com/user-attachments/assets/e5b7dcb5-b47b-4001-b40f-aca536d00010)
 
+[score.webm](https://github.com/user-attachments/assets/2e284b44-7c54-46ea-9516-ccf012d4d38f)
 
 
 ## License
