@@ -4,12 +4,12 @@
 
 #include "Game.h"
 
-bb::Health::Health(GameObject* parentPtr, int startingLives, int playerIndex) :
+bb::Health::Health(jul::GameObject* parentPtr, int startingLives, int playerIndex) :
     Component(parentPtr),
     m_LivesLeft(startingLives),
     m_PlayerIndex(playerIndex)
 {
-    MessageQueue::Broadcast(MessageType::CharacterLivesChange, { m_PlayerIndex, m_LivesLeft });
+    jul::MessageQueue::Broadcast(MessageType::CharacterLivesChange, { m_PlayerIndex, m_LivesLeft });
 }
 
 void bb::Health::Damage()
@@ -27,5 +27,5 @@ void bb::Health::Damage()
         return;
     }
 
-    MessageQueue::Broadcast(MessageType::CharacterLivesChange, { m_PlayerIndex, m_LivesLeft });
+    jul::MessageQueue::Broadcast(MessageType::CharacterLivesChange, { m_PlayerIndex, m_LivesLeft });
 }

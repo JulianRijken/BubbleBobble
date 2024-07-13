@@ -1,5 +1,10 @@
-#pragma once
+#ifndef IBUBBLEABLE_H
+#define IBUBBLEABLE_H
+
 #include <Transform.h>
+
+#include <string>
+
 
 namespace bb
 {
@@ -34,3 +39,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif  // IBUBBLEABLE_H

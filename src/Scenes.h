@@ -1,10 +1,9 @@
-#pragma once
+#ifndef SCENES_H
+#define SCENES_H
 #include <Scene.h>
 
 namespace bb::scenes
 {
-    using namespace jul;
-
     enum class Id
     {
         MainMenu,
@@ -24,15 +23,16 @@ namespace bb::scenes
     // mode scenes don't get loaded
     void AssertModeSceneLoaded();
 
-    void OnePlayerModeScene(Scene& scene);
-    void TwoPlayerModeScene(Scene& scene);
-    void VersusModeScene(Scene& scene);
+    void OnePlayerModeScene(jul::Scene& scene);
+    void TwoPlayerModeScene(jul::Scene& scene);
+    void VersusModeScene(jul::Scene& scene);
 
-    void IntroLevelScene(Scene& scene);
-    void Level1Scene(Scene& scene);
-    void Level2Scene(Scene& scene);
-    void Level3Scene(Scene& scene);
-    void ScoreScene(Scene& scene);
+    void IntroLevelScene(jul::Scene& scene);
+    void Level1Scene(jul::Scene& scene);
+    void Level2Scene(jul::Scene& scene);
+    void Level3Scene(jul::Scene& scene);
+    void ScoreScene(jul::Scene& scene);
 
-    void MainMenuScene(Scene& scene);
+    void MainMenuScene(jul::Scene& scene);
 }  // namespace bb
+#endif // SCENES_H

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
+
 #include <Event.h>
 #include <InputContext.h>
 #include <Locator.h>
@@ -26,8 +28,6 @@ namespace bb
 {
 
     class Player;
-    using namespace jul;
-
 
     enum class MessageType
     {
@@ -151,7 +151,7 @@ namespace bb
 
     // going for https://www.youtube.com/watch?v=VyK_cpp9pT4
     // BubbleBobble NES
-    class Game final : public jul::Singleton<Game>, public IEventListener
+    class Game final : public jul::Singleton<Game>, public jul::IEventListener
     {
     public:
         inline const static std::string BUBBLE_SPRITE_NAME = "BubbleCharacter";
@@ -180,11 +180,11 @@ namespace bb
 
         [[nodiscard]] std::vector<Map>& GetMaps() { return m_Maps; }
 
-        [[nodiscard]] Scene* GetActiveLevelScene() const;
+        [[nodiscard]] jul::Scene* GetActiveLevelScene() const;
 
-        [[nodiscard]] Camera* GetMainCamera() const { return m_MainCameraPtr; }
+        [[nodiscard]] jul::Camera* GetMainCamera() const { return m_MainCameraPtr; }
 
-        [[nodiscard]] Event<bool, int>& GetLevelTransitionChangeEvent() { return m_LevelTransitionChangeEvent; }
+        [[nodiscard]] jul::Event<bool, int>& GetLevelTransitionChangeEvent() { return m_LevelTransitionChangeEvent; }
 
         [[nodiscard]] GameMode GetActiveGameMode() { return m_ActiveGameMode; }
 
@@ -200,21 +200,21 @@ namespace bb
         void TryTransitionNextLevel(bool onlyLoadAfterTransition = true, bool resetPlayers = true);
         void TryTransitionLevel(int levelIndex, bool onlyLoadAfterTransition = true, bool resetPlayers = true);
         void SetPlayer(int playerIndex, Player* player);
-        void SetMainCamera(Camera* camera);
+        void SetMainCamera(jul::Camera* camera);
 
-        GameObject* SpawnLevelTiles(int levelIndex);
+        jul::GameObject* SpawnLevelTiles(int levelIndex);
 
-        void OnResetGameButton(const InputContext& context);
-        void OnTransitionGameButton(const InputContext& context);
-        void OnEndGameButton(const InputContext& context);
-        void OnIncreaseTimeScaleButton(const InputContext& context);
-        void OnDecreaseTimeScaleButton(const InputContext& context);
+        void OnResetGameButton(const jul::InputContext& context);
+        void OnTransitionGameButton(const jul::InputContext& context);
+        void OnEndGameButton(const jul::InputContext& context);
+        void OnIncreaseTimeScaleButton(const jul::InputContext& context);
+        void OnDecreaseTimeScaleButton(const jul::InputContext& context);
 
         void ResetGame();
         void ShowScoreScreen();
 
     private:
-        void OnMessage(const Message& message);
+        void OnMessage(const jul::Message& message);
         void ParseMaps(const std::string& fileName);
 
         static SDL_Surface* JxlToSurface(const std::string& fileName);
@@ -225,14 +225,15 @@ namespace bb
         // Transition
         bool m_InTransition{ false };
         int m_ActiveLevelIndex{ 0 };
-        GameObject* m_ActiveLevelTilesPtr{ nullptr };
+        jul::GameObject* m_ActiveLevelTilesPtr{ nullptr };
 
         GameState m_GameState{};
         GameMode m_ActiveGameMode{};
-        Camera* m_MainCameraPtr{ nullptr };
+        jul::Camera* m_MainCameraPtr{ nullptr };
 
-        Event<bool, int> m_LevelTransitionChangeEvent{};
+        jul::Event<bool, int> m_LevelTransitionChangeEvent{};
         GameScore m_GameScore{};
     };
 
 }  // namespace bb
+#endif  // GAME_H
