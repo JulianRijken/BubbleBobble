@@ -12,15 +12,10 @@ Bubble Bobble is powered by [Julgen](https://github.com/JulianRijken/Julgen)
 Julgen was originally developed for Bubble Bobble
 
 ## Gameplay
-
-[intro-1.webm](https://github.com/user-attachments/assets/830f9b07-3c98-4d94-972a-46ec3e2cd240)
-
-[2.webm](https://github.com/user-attachments/assets/577c8460-ad1e-415b-94cd-237bc0a95f41)
-
-[3.webm](https://github.com/user-attachments/assets/e5b7dcb5-b47b-4001-b40f-aca536d00010)
-
-[score.webm](https://github.com/user-attachments/assets/2e284b44-7c54-46ea-9516-ccf012d4d38f)
-
+![intro mp4](https://github.com/user-attachments/assets/774e6101-6657-4664-86ee-8b2610725707)
+![1 mp4](https://github.com/user-attachments/assets/ad42504c-cc6e-4d14-a406-43a24c49340e)
+![3 mp4](https://github.com/user-attachments/assets/95fc0b0a-f94c-4e86-b0a6-9dc61b63d62b)
+![score mp4](https://github.com/user-attachments/assets/f07c097e-a277-4a96-be86-6d90b16dc076)
 
 ## License
 BubbleBubble is free software; you can redistribute it and/or modify it under the terms of the [GNU General Public License](LICENSE.md) as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
