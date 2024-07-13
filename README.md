@@ -1,21 +1,33 @@
 # Bubble Bobble
+A fresh take on the [Original Game](https://en.wikipedia.org/wiki/Bubble_Bobble), taking inspiration from both the NES and Arcade versions.
 
-A fresh take on the [Original Game](https://en.wikipedia.org/wiki/Bubble_Bobble), taking inspiration from both the NES and arcade versions.
-
-<img src="./ReadmeContent/Screenshot_2.png" style="width:80%;  display: block;
-  margin-left: auto;
-  margin-right: auto;"/>
-<img src="./ReadmeContent/BB_ScoreScreen.gif" style="width:80%;  display: block;
-  margin-left: auto;
-  margin-right: auto;"/>
+# [Play The Game!](https://julianrijken.com/BubbleBobbleWeb/BubbleBobble)
 
 
 ## Made With Julgen
-<img alt="Julgen Logo" src="./ReadmeContent/Julgen_Logo_Large.png" width="70" align="right"/>
+<img alt="Julgen Logo" src="./ReadmeContent/Julgen_Logo_Large.png" width="70" align="left"/>
 
 Bubble Bobble is powered by [Julgen](https://github.com/JulianRijken/Julgen)
 
 Julgen was originally developed for Bubble Bobble
+
+## Gameplay
+
+<img src="https://i.imgur.com/bTZx3r7.gif" style="width:70%;  display: block;
+  margin-left: 0;
+  margin-right: auto;"/>
+  <img src="https://i.imgur.com/qBpx6Ev.gif" style="width:70%;  display: block;
+  margin-left: 0;
+  margin-right: auto;"/>
+  <img src="https://i.imgur.com/rq9fiZv.gif" style="width:70%;  display: block;
+  margin-left: 0;
+  margin-right: auto;"/>
+  <img src="https://i.imgur.com/7kL8VgN.gif" style="width:70%;  display: block;
+  margin-left: 0;
+  margin-right: auto;"/>
+
+
+
 
 
 ## License
