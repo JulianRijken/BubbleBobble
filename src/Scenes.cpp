@@ -11,7 +11,7 @@
 #include <OneWayPlatform.h>
 #include <Player.h>
 #include <PlayerHUD.h>
-#include <ResourceManager.h>
+#include <Resources.h>
 #include <Rigidbody.h>
 #include <SceneManager.h>
 #include <SpriteRenderer.h>
@@ -30,6 +30,17 @@
 #include "Prefabs.h"
 #include "ScoreScreen.h"
 #include "Transform.h"
+
+using jul::Animator;
+using jul::GameObject;
+using jul::GameTime;
+using jul::Resources;
+using jul::Scene;
+using jul::SceneManager;
+using jul::SpriteRenderer;
+using jul::TextRenderer;
+using jul::Transform;
+using jul::TweenEngine;
 
 void bb::scenes::BindScenes()
 {
@@ -115,20 +126,20 @@ void bb::scenes::MainMenuScene(Scene& scene)
     auto* introScreen = scene.AddGameObject("Intro Screen", {}, mainMenuGO);
 
     auto* logo = scene.AddGameObject("Logo", { 0, 0, 0 }, introScreen);
-    logo->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Logo"), 1);
+    logo->AddComponent<SpriteRenderer>(Resources::GetSprite("Logo"), 1);
 
     auto* intoScreenInfo = scene.AddGameObject("Into Screen Info", { 0, 0, 0 }, introScreen);
     {
         auto* julgenLogo = scene.AddGameObject("Julgen_Retro_Logo", { 0, -5, 0 }, intoScreenInfo);
-        julgenLogo->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("Julgen_Retro_Logo"), 1);
+        julgenLogo->AddComponent<SpriteRenderer>(Resources::GetSprite("Julgen_Retro_Logo"), 1);
 
         auto* introText = scene.AddGameObject("Main Menu Text", { 0, -8, 0 }, intoScreenInfo);
         introText->AddComponent<TextRenderer>(
-            "Made With Julgen", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+            "Made With Julgen", Resources::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
 
         auto* nameText = scene.AddGameObject("Name Text", { 0, -10, 0 }, intoScreenInfo);
         nameText->AddComponent<TextRenderer>(
-            "Created By Julian Rijken", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
+            "Created By Julian Rijken", Resources::GetFont("NES"), 100, glm ::vec2{ 0.5f, 0.5f }, true);
     }
     intoScreenInfo->SetActive(false);
 
@@ -144,28 +155,28 @@ void bb::scenes::MainMenuScene(Scene& scene)
     auto* selectScreen = scene.AddGameObject("Select Screen", {}, mainMenuGO);
     {
         selectBubble = scene.AddGameObject("Select Bugble", { -7, 8, 0 }, selectScreen);
-        selectBubble->AddComponent<SpriteRenderer>(ResourceManager::GetSprite("AttackBubble"), 1);
+        selectBubble->AddComponent<SpriteRenderer>(Resources::GetSprite("AttackBubble"), 1);
         selectBubble->AddComponent<Animator>(nullptr, "Idle");
 
         auto* titleText = scene.AddGameObject("Text", { -5, 8, 0 }, selectScreen);
         titleText->AddComponent<TextRenderer>(
-            "BUBBLE BOBBLE", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+            "BUBBLE BOBBLE", Resources::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
 
         p1Text = scene.AddGameObject("Text", { -5, 6, 0 }, selectScreen);
         p1Text->AddComponent<TextRenderer>(
-            "1P START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+            "1P START", Resources::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
 
         p2Text = scene.AddGameObject("Text", { -5, 4, 0 }, selectScreen);
         p2Text->AddComponent<TextRenderer>(
-            "2P START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+            "2P START", Resources::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
 
         vsText = scene.AddGameObject("Text", { -5, 2, 0 }, selectScreen);
         vsText->AddComponent<TextRenderer>(
-            "VS START", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+            "VS START", Resources::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
 
         leaderBoardText = scene.AddGameObject("Text", { -5, 0, 0 }, selectScreen);
         leaderBoardText->AddComponent<TextRenderer>(
-            "LEADERBOARD", ResourceManager::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
+            "LEADERBOARD", Resources::GetFont("NES"), 100, glm ::vec2{ 0.0f, 0.5f }, true);
     }
     selectScreen->SetActive(false);
 
@@ -198,7 +209,7 @@ void bb::scenes::IntroLevelScene(Scene& scene)
                                          "make A journey to\n"
                                          "the cave of monsters!\n \n"
                                          "Good Luck!",
-                                         ResourceManager::GetFont("NES"),
+                                         Resources::GetFont("NES"),
                                          100,
                                          glm ::vec2{ 0.5f, 0.0f },
                                          true);

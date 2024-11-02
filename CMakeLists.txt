@@ -9,38 +9,49 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # Add all files from game
 set(BB_SOURCE_FILES
+    ${SOURCE_DIR}/Game.cpp                                          ${SOURCE_DIR}/Game.h
     ${SOURCE_DIR}/GameEntry.cpp
-    ${SOURCE_DIR}/Game.cpp                              ${SOURCE_DIR}/Game.h
-    ${SOURCE_DIR}/GameScore.h                           ${SOURCE_DIR}/GameScore.cpp
-    ${SOURCE_DIR}/Scenes.h                              ${SOURCE_DIR}/Scenes.cpp
-    ${SOURCE_DIR}/Prefabs.h                             ${SOURCE_DIR}/Prefabs.cpp
-    ${SOURCE_DIR}/IDamageable.h
+    ${SOURCE_DIR}/GameScore.h                                       ${SOURCE_DIR}/GameScore.cpp
     ${SOURCE_DIR}/IBubbleable.h
+    ${SOURCE_DIR}/IDamageable.h
+    ${SOURCE_DIR}/Prefabs.h                                         ${SOURCE_DIR}/Prefabs.cpp
+    ${SOURCE_DIR}/Scenes.h                                          ${SOURCE_DIR}/Scenes.cpp
 
-    ${SOURCE_DIR}/Components/LevelState.h               ${SOURCE_DIR}/Components/LevelState.cpp
-    ${SOURCE_DIR}/Components/Enemys/Enemy.h             ${SOURCE_DIR}/Components/Enemys/Enemy.cpp
-    ${SOURCE_DIR}/Components/Boulder.h                  ${SOURCE_DIR}/Components/Boulder.cpp
-    ${SOURCE_DIR}/Components/CharacterInput.h           ${SOURCE_DIR}/Components/CharacterInput.cpp
-    ${SOURCE_DIR}/Components/Enemys/Maita.h             ${SOURCE_DIR}/Components/Enemys/Maita.cpp
-    ${SOURCE_DIR}/Components/Enemys/MaitaBehaviour.h    ${SOURCE_DIR}/Components/Enemys/MaitaBehaviour.cpp
-    ${SOURCE_DIR}/Components/Enemys/ZenChan.h           ${SOURCE_DIR}/Components/Enemys/ZenChan.cpp
-    ${SOURCE_DIR}/Components/Enemys/ZenChanBehaviour.h  ${SOURCE_DIR}/Components/Enemys/ZenChanBehaviour.cpp
-    ${SOURCE_DIR}/Components/ScoreScreen.h              ${SOURCE_DIR}/Components/ScoreScreen.cpp
-    ${SOURCE_DIR}/Components/Health.h                   ${SOURCE_DIR}/Components/Health.cpp
-    ${SOURCE_DIR}/Components/DeadEnemy.h                ${SOURCE_DIR}/Components/DeadEnemy.cpp
-    ${SOURCE_DIR}/Components/Pickup.h                   ${SOURCE_DIR}/Components/Pickup.cpp
-    ${SOURCE_DIR}/Components/CaptureBubble.h            ${SOURCE_DIR}/Components/CaptureBubble.cpp
-    ${SOURCE_DIR}/Components/Player/Player.h            ${SOURCE_DIR}/Components/Player/Player.cpp
-    ${SOURCE_DIR}/Components/Player/PlayerState.h       ${SOURCE_DIR}/Components/Player/PlayerState.cpp
-    ${SOURCE_DIR}/Components/BubbleSpiral.h             ${SOURCE_DIR}/Components/BubbleSpiral.cpp
-    ${SOURCE_DIR}/Components/OneWayPlatform.h           ${SOURCE_DIR}/Components/OneWayPlatform.cpp
-    ${SOURCE_DIR}/Components/AutoMove.h                 ${SOURCE_DIR}/Components/AutoMove.cpp
-    ${SOURCE_DIR}/Components/AutoRotateAround.h         ${SOURCE_DIR}/Components/AutoRotateAround.cpp
-    ${SOURCE_DIR}/Components/FpsCounter.h               ${SOURCE_DIR}/Components/FpsCounter.cpp
-    ${SOURCE_DIR}/Components/Character.h                ${SOURCE_DIR}/Components/Character.cpp
-    ${SOURCE_DIR}/Components/PlayerHUD.h                ${SOURCE_DIR}/Components/PlayerHUD.cpp
-    ${SOURCE_DIR}/Components/LevelHUD.h                 ${SOURCE_DIR}/Components/LevelHUD.cpp
-    ${SOURCE_DIR}/Components/MainMenu.h                 ${SOURCE_DIR}/Components/MainMenu.cpp
+    # Components/
+    ${SOURCE_DIR}/Components/Boulder.h                              ${SOURCE_DIR}/Components/Boulder.cpp
+    ${SOURCE_DIR}/Components/Health.h                               ${SOURCE_DIR}/Components/Health.cpp
+    ${SOURCE_DIR}/Components/DeadEnemy.h                            ${SOURCE_DIR}/Components/DeadEnemy.cpp
+    ${SOURCE_DIR}/Components/Pickup.h                               ${SOURCE_DIR}/Components/Pickup.cpp
+    ${SOURCE_DIR}/Components/CaptureBubble.h                        ${SOURCE_DIR}/Components/CaptureBubble.cpp
+    ${SOURCE_DIR}/Components/OneWayPlatform.h                       ${SOURCE_DIR}/Components/OneWayPlatform.cpp
+
+    # Components/Character/
+    ${SOURCE_DIR}/Components/Character/Character.h                  ${SOURCE_DIR}/Components/Character/Character.cpp
+    ${SOURCE_DIR}/Components/Character/CharacterInput.h             ${SOURCE_DIR}/Components/Character/CharacterInput.cpp
+
+    # Components/Character/Enemys/
+    ${SOURCE_DIR}/Components/Character/Enemys/Enemy.h               ${SOURCE_DIR}/Components/Character/Enemys/Enemy.cpp
+    ${SOURCE_DIR}/Components/Character/Enemys/Maita.h               ${SOURCE_DIR}/Components/Character/Enemys/Maita.cpp
+    ${SOURCE_DIR}/Components/Character/Enemys/MaitaBehaviour.h      ${SOURCE_DIR}/Components/Character/Enemys/MaitaBehaviour.cpp
+    ${SOURCE_DIR}/Components/Character/Enemys/ZenChan.h             ${SOURCE_DIR}/Components/Character/Enemys/ZenChan.cpp
+    ${SOURCE_DIR}/Components/Character/Enemys/ZenChanBehaviour.h    ${SOURCE_DIR}/Components/Character/Enemys/ZenChanBehaviour.cpp
+
+    # Components/Character/Player/
+    ${SOURCE_DIR}/Components/Character/Player/Player.h              ${SOURCE_DIR}/Components/Character/Player/Player.cpp
+    ${SOURCE_DIR}/Components/Character/Player/PlayerState.h         ${SOURCE_DIR}/Components/Character/Player/PlayerState.cpp
+
+    # Components/Level/
+    ${SOURCE_DIR}/Components/Level/AutoMove.h                       ${SOURCE_DIR}/Components/Level/AutoMove.cpp
+    ${SOURCE_DIR}/Components/Level/AutoRotateAround.h               ${SOURCE_DIR}/Components/Level/AutoRotateAround.cpp
+    ${SOURCE_DIR}/Components/Level/BubbleSpiral.h                   ${SOURCE_DIR}/Components/Level/BubbleSpiral.cpp
+    ${SOURCE_DIR}/Components/Level/LevelState.h                     ${SOURCE_DIR}/Components/Level/LevelState.cpp
+
+    # Components/UI/
+    ${SOURCE_DIR}/Components/UI/FpsCounter.h                        ${SOURCE_DIR}/Components/UI/FpsCounter.cpp
+    ${SOURCE_DIR}/Components/UI/LevelHUD.h                          ${SOURCE_DIR}/Components/UI/LevelHUD.cpp
+    ${SOURCE_DIR}/Components/UI/MainMenu.h                          ${SOURCE_DIR}/Components/UI/MainMenu.cpp
+    ${SOURCE_DIR}/Components/UI/PlayerHUD.h                         ${SOURCE_DIR}/Components/UI/PlayerHUD.cpp
+    ${SOURCE_DIR}/Components/UI/ScoreScreen.h                       ${SOURCE_DIR}/Components/UI/ScoreScreen.cpp
 )
 
 # Adds the source files to the executible
@@ -52,8 +63,11 @@ add_executable(${TARGET_NAME}
 target_include_directories(${TARGET_NAME} PUBLIC
     ${SOURCE_DIR}
     ${SOURCE_DIR}/Components
-    ${SOURCE_DIR}/Components/Player
-    ${SOURCE_DIR}/Components/Enemys
+    ${SOURCE_DIR}/Components/UI
+    ${SOURCE_DIR}/Components/Level
+    ${SOURCE_DIR}/Components/Character
+    ${SOURCE_DIR}/Components/Character/Player
+    ${SOURCE_DIR}/Components/Character/Enemys
 )
 
 # enable c++20 features

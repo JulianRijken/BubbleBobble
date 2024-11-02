@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SCENES_H
+#define SCENES_H
 #include <Scene.h>
 
 namespace bb::scenes
@@ -34,3 +35,4 @@ namespace bb::scenes
 
     void MainMenuScene(jul::Scene& scene);
 }  // namespace bb
+#endif // SCENES_H

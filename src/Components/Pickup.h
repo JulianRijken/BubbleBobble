@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PICKUP_H
+#define PICKUP_H
 
 #include "Component.h"
 #include "Game.h"
@@ -32,3 +33,4 @@ namespace bb
         jul::Rigidbody* m_Rigidbody{ nullptr };
     };
 }  // namespace bb
+#endif // PICKUP_H

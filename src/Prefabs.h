@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PREFABS_H
+#define PREFABS_H
 
 #include <Scene.h>
 #include <SDL_pixels.h>
@@ -32,12 +33,13 @@ namespace bb
 
         void SpawnPickup(PickupType fruitType, const glm::vec3& spawnPosition);
 
-        Player* SpawnPlayer(Scene& scene, int playerIndex, glm::vec3 spawnLocation = {});
+        Player* SpawnPlayer(jul::Scene& scene, int playerIndex, glm::vec3 spawnLocation = {});
 
-        void SpawnLevelHUD(Scene& scene);
-        void SpawnPlayerHUD(Scene& scene, int playerIndex);
-        void SpawnMainCamera(Scene& scene);
-        void SpawnSideWalls(Scene& scene);
+        void SpawnLevelHUD(jul::Scene& scene);
+        void SpawnPlayerHUD(jul::Scene& scene, int playerIndex);
+        void SpawnMainCamera(jul::Scene& scene);
+        void SpawnSideWalls(jul::Scene& scene);
         void SpawnScoreText(const glm::vec3& spawnPosition, int score, const SDL_Color& color = { 255, 255, 255, 255 });
     }  // namespace prefabs
 }  // namespace bb
+#endif // PREFABS_H

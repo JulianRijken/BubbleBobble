@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CAPTURE_BUBBLE_H
+#define CAPTURE_BUBBLE_H
 
 #include <Animator.h>
 #include <Component.h>
@@ -9,7 +10,6 @@
 
 #include "IBubbleable.h"
 
-
 namespace jul
 {
     class Animator;
@@ -17,7 +17,7 @@ namespace jul
 
 namespace bb
 {
-    class CaptureBubble final : public Component, public ICollisionListener
+    class CaptureBubble final : public jul::Component, public jul::ICollisionListener
     {
     public:
         static constexpr float BUBBLE_FLOAT_UP_FORCE = 3.0f;
@@ -31,7 +31,7 @@ namespace bb
 
         static constexpr float MAX_TIME_TILL_POP = 8.0f;
 
-        CaptureBubble(GameObject* parent, glm::vec3 fireVelocity = {});
+        CaptureBubble(jul::GameObject* parent, glm::vec3 fireVelocity = {});
         ~CaptureBubble() override;
 
     private:
@@ -42,7 +42,7 @@ namespace bb
         void KillCapturedTarget();
         void ReleaseCapturedTarget();
 
-        void OnCollisionPreSolve(const Collision& collision, const b2Manifold* /*unused*/) override;
+        void OnCollisionPreSolve(const jul::Collision& collision, const b2Manifold* /*unused*/) override;
 
         void Update() override;
         void FixedUpdate() override;
@@ -50,13 +50,13 @@ namespace bb
         glm::vec2 m_BubbleCenter{};
 
         IBubbleable* m_CapturedTarget{ nullptr };
-        SpriteRenderer* m_BubbleSpriteRenderer{ nullptr };
-        Animator* m_BubbleAnimator{ nullptr };
+        jul::SpriteRenderer* m_BubbleSpriteRenderer{ nullptr };
+        jul::Animator* m_BubbleAnimator{ nullptr };
 
-        SpriteRenderer* m_CapturedSpriteRenderer{ nullptr };
-        Animator* m_CapturedAnimator{ nullptr };
+        jul::SpriteRenderer* m_CapturedSpriteRenderer{ nullptr };
+        jul::Animator* m_CapturedAnimator{ nullptr };
 
-        Rigidbody* m_Rigidbody{ nullptr };
+        jul::Rigidbody* m_Rigidbody{ nullptr };
 
         float m_FloatingDuration{};
         bool m_GettingPopped{ false };
@@ -66,3 +66,4 @@ namespace bb
     };
 
 }  // namespace bb
+#endif  // CAPTURE_BUBBLE_H

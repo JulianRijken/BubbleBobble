@@ -2,9 +2,12 @@
 
 #include <GameTime.h>
 
-#include "BoxCollider.h"
 #include "GameObject.h"
 #include "Prefabs.h"
+
+using jul::Collision;
+using jul::GameObject;
+using jul::GameTime;
 
 bb::DeadEnemy::DeadEnemy(GameObject* parentPtr, PickupType fruitType) :
     Component(parentPtr),
@@ -12,14 +15,7 @@ bb::DeadEnemy::DeadEnemy(GameObject* parentPtr, PickupType fruitType) :
 {
 }
 
-void bb::DeadEnemy::OnCollisionPreSolve(const Collision&, const b2Manifold*)
-{
-    // TODO: Add collision layers
-    // yes this can't be solved with just get component as it's all but world and
-    // world has no component
-}
-
-void bb::DeadEnemy::OnCollisionBegin(const Collision&)
+void bb::DeadEnemy::OnCollisionBegin(const Collision& /*unused*/)
 {
     if(m_ShouldGetDestroyed)
         return;
