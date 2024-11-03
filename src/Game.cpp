@@ -48,7 +48,7 @@ void bb::Game::Initialize()
     MessageQueue::AddListener(MessageType::PlayerPickup, this, &Game::OnMessage);
     MessageQueue::AddListener(MessageType::ShowScoreScreen, this, &Game::OnMessage);
 
-    ParseMaps("Levels.jxl");
+    ParseMaps("Levels.png");
 
     Input::Bind((int)InputBind::ForceReset, 0, false, this, &Game::OnResetGameButton);
     Input::Bind((int)InputBind::ForceTransition, 0, false, this, &Game::OnTransitionGameButton);
