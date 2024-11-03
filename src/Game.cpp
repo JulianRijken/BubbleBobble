@@ -62,7 +62,7 @@ void bb::Game::Initialize()
     Input::Bind((int)InputBind::DebugIncreaseTimeScale, 1, true, this, &Game::OnIncreaseTimeScaleButton);
     Input::Bind((int)InputBind::DebugDecreaseTimeScale, 1, true, this, &Game::OnDecreaseTimeScaleButton);
 
-    // Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
+    Locator::Get<Sound>().PlaySound((int)Sounds::GameStart);
 }
 
 void bb::Game::StartGame(GameMode mode)

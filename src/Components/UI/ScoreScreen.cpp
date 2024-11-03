@@ -13,6 +13,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 
 #include "Game.h"
 #include "GameScore.h"
@@ -204,6 +205,12 @@ void bb::ScoreScreen::CreateScoresFileIfNotExist(const std::filesystem::path& fi
 
 std::vector<bb::ScoreScreen::UserScore> bb::ScoreScreen::ParseScores(const std::filesystem::path& filePath)
 {
+    #ifdef __EMSCRIPTEN__
+        // TODO: Make it work :)
+        std::cerr << "Writing files not supported on web (yet)" << std::endl;
+        return {};
+    #endif
+
     CreateScoresFileIfNotExist(filePath);
 
     std::ifstream inFile;
@@ -247,6 +254,12 @@ std::vector<bb::ScoreScreen::UserScore> bb::ScoreScreen::ParseScores(const std::
 
 void bb::ScoreScreen::WriteScore(const UserScore& userScore, const std::filesystem::path& filePath)
 {
+    #ifdef __EMSCRIPTEN__
+        // TODO: Make it work :)
+        std::cerr << "Writing files not supported on web (yet)" << std::endl;
+        return;
+    #endif
+
     CreateScoresFileIfNotExist(filePath);
 
     std::ofstream outFile;
@@ -353,6 +366,7 @@ void bb::ScoreScreen::OnScoreFilledIn()
 
     fmt::println("Score Filled In");
 
+
     WriteScore(newScore, SCORE_PATH);
     ShowTop(newScore);
 
@@ -369,7 +383,6 @@ void bb::ScoreScreen::OnScoreFilledIn()
 
 void bb::ScoreScreen::ShowTop(std::optional<UserScore> showcaseScore)
 {
-
     const int startHeight = m_TopCount == 10 ? 5 : -2;
 
     const std::unordered_map<int, std::string> numberToText{
