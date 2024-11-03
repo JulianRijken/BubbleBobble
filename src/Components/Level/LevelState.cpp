@@ -5,7 +5,7 @@
 
 #include "Maita.h"
 #include "MathExtensions.h"
-#include "prefabs.h"
+#include "Prefabs.h"
 #include "ZenChan.h"
 
 using jul::EaseFunction;
